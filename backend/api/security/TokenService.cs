@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using api.helpers;
 using infrastructure.Models;
 using JWT;
 using JWT.Algorithms;
@@ -17,10 +18,11 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(user, Environment.GetEnvironmentVariable("FULLSTACK_JWT_PRIVATE_KEY") ?? "alskjdhffffflisdjfnidssssjf948jfoiejfs9jv9s84roisjdmvlkxdjvcs4jfdslvjdsfls4jdlivjdslifs");
+            return encoder.Encode(user, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
         }
         catch (Exception e)
         {
+            //todo should be Logged and caught in a global exception handler. 
             throw new InvalidOperationException("User authentication succeeded, but could not create token");
         }
     }
@@ -34,9 +36,7 @@ public class TokenService
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, new HMACSHA512Algorithm());
-            
-            //todo JWT private key should be saved and loaded in drone and azure
-            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable("JWT_PRIVATE_KEY"));
+            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
         }
         catch (Exception e)
