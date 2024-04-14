@@ -1,3 +1,71 @@
-<p>
-  register works!
-</p>
+<ion-content color="light">
+
+  <p  style="text-align: center; font-size: 25px; margin: 4%" >
+    Cool logo
+  </p>
+
+  <div style="display: block; justify-content: center; align-items: center;">
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <ion-card class="ion-padding" id="register-card"
+                style="overflow: hidden; border-radius: 15px; max-width: 500px; width: 90%;">
+
+        <ion-card-content class="ion-color ion-color-danger">
+          <form (ngSubmit)="register()" [formGroup]="form">
+
+            <ion-list>
+
+              <ion-item>
+                <ion-input formControlName="name" label="Full name *" label-placement="stacked">
+                </ion-input>
+              </ion-item>
+              <div *ngIf="name.touched && name.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">Required</ion-text>
+              </div>
+
+              <ion-item>
+                <ion-input formControlName="email" label="E-mail *" label-placement="stacked">
+                </ion-input>
+              </ion-item>
+              <div *ngIf="email.touched && email.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">Valid email is required</ion-text>
+              </div>
+
+              <ion-item>
+                <ion-input formControlName="phone" label="Phone *" label-placement="stacked">
+                </ion-input>
+              </ion-item>
+              <div *ngIf="phone.touched && phone.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">Required</ion-text>
+              </div>
+
+              <ion-item>
+                <ion-input type="password" formControlName="password" label="Password *" label-placement="stacked">
+                </ion-input>
+              </ion-item>
+              <div *ngIf="password.touched && password.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">Required</ion-text>
+              </div>
+
+              <ion-item>
+                <ion-input type="password" formControlName="repeatPassword" label="Repeat password *" label-placement="stacked"></ion-input>
+              </ion-item>
+              <div class="passwordField" *ngIf="(repeatPassword.touched && (repeatPassword.invalid || !isPasswordSame))" slot="label"
+                   style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">Password must match</ion-text>
+              </div>
+
+            </ion-list>
+            <div class="ion-text-center ion-padding">
+              <ion-button (click)="register()" [disabled]="form.invalid" size="large">
+                Create account
+              </ion-button>
+            </div>
+            <p class="ion-text-center">Already hava an account? <a href="/register">Login</a></p>
+          </form>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+  </div>
+</ion-content>
