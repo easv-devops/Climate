@@ -1,4 +1,4 @@
-﻿services:
+services:
   climate-frontend:
     build: 
       context: .
@@ -25,10 +25,9 @@
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: climate
-      MYSQL_USER: aladeen
-      MYSQL_PASSWORD: xAladeen4life
+      MYSQL_DATABASE: ${DBNameSecret}
+      MYSQL_USER: ${DBUserSecret}
+      MYSQL_PASSWORD: ${DBPasswordSecret}
     ports:
       - "3306:3306"
     volumes:
