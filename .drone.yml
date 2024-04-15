@@ -52,4 +52,8 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       commands:
-        - flyway migrate -url="jdbc:mariadb://${DB_URL}" -user="$DB_USER" -password="$DB_PASSWORD" -locations=filesystem:./db/sql
+        - flyway migrate 
+            -url="jdbc:mariadb://${DB_URL}" 
+            -user="$DB_USER" 
+            -password="$DB_PASSWORD" 
+            -locations=filesystem:./db/sql
