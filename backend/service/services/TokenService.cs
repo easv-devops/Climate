@@ -20,7 +20,7 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(user, "rHNu7+Q7XB8xc/FzAwciaf+QffnBlSyA1jsQZJIxP1M=");
+            return encoder.Encode(user, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
         }
         catch (Exception e)
         {
