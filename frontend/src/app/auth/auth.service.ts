@@ -6,6 +6,11 @@ export class AuthService{
 
 
   loginUser(){
-    this.ws.socketConnection.sendDto()
+    var object ={
+      eventType: "ClientWantsToAuthenticate",
+      Email: "Anelise@gmail.com",
+      Password: "qwertyuiop"
+    }
+    this.ws.socketConnection.send(JSON.stringify(object));
   }
 }

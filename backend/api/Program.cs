@@ -20,7 +20,6 @@ builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
 
 builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
 builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
-builder.Services.AddSingleton<UserRepository>();
 
 
 builder.Services.AddSingleton<TokenService>();

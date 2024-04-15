@@ -13,19 +13,25 @@ class User {
   email?: string;
 }
 
+class ServerAuthenticatesUserDto {
+  Jwt?: string;
+}
+
+
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
 
   AllRooms: number[] = [];
   AllDevices: number[] = [];
-  currentUser: User = {}
+  currentUser: User = {};
+  jwt: string | undefined;
 
 
   //Socket connection
   public socketConnection: WebSocket;
 
   constructor() {
-    this.socketConnection = new WebSocket("ws://localhost:5138")
+    this.socketConnection = new WebSocket("ws://0.0.0.0:8181")
     this.handleEvent();
   }
 
@@ -39,9 +45,8 @@ export class WebSocketConnectionService {
   }
 
   //All the return objects
-  /*ServerSendsMessage(dto: ServerSendsMessageBroadDto) {
-    this.chatMessages.push(dto.message!)
-  }*/
-
-
+  ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
+    console.log("Jwt: " + dto.Jwt)
+    this.jwt = dto.Jwt;
+  }
 }
