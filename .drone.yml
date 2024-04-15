@@ -43,16 +43,9 @@ depends_on:
 steps:
   - name: update database
     image: flyway/flyway
-    environment:
-      DB_URL:
-        from_secret: DBUrlSecret
-      DB_USER:
-        from_secret: DBUserSecret
-      DB_PASSWORD:
-        from_secret: DBPasswordSecret
     commands:
       - flyway migrate 
-          -url="jdbc:mariadb://${DB_URL}" 
-          -user="$DB_USER" 
-          -password="$DB_PASSWORD" 
+          -url="jdbc:mariadb://localhost:3306/climate" 
+          -user="aladeen" 
+          -password="xAladeen#4life" 
           -locations=filesystem:./db/sql
