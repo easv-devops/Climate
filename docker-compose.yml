@@ -46,6 +46,3 @@
       - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - 8080:8080
-
-volumes:
-  mariadb:
