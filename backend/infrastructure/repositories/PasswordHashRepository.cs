@@ -34,14 +34,15 @@ public class PasswordHashRepository
     public bool TestConnection()
     {
         using var connection = new MySqlConnection(_connectionString);
-        
         try
         {
             connection.Open();
+            
             return true; // Connection successful
         }
-        catch (Exception)
+        catch (Exception e)
         {
+         
             return false; // Connection failed
         }
     }
