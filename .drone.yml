@@ -52,7 +52,7 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       - flyway migrate
-        -url="localhost:3306/climate"
-        -user="aladeen"
-        -password="xAladeen#4life"
+        -url="jdbc:mariadb://${DB_URL}"
+        -user="$DB_USER"
+        -password="$DB_PASSWORD"
         -locations=filesystem:./db/sql
