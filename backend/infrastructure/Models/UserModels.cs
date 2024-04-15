@@ -12,10 +12,10 @@ public class EndUser
 {
     public int Id { get; set; }
     public string? Email { get; set; }
-    public string? Hash { get; set; }
-    public string? Salt { get; set; }
+
+    public PasswordHash? PasswordInfo;
     //todo should we have admin and ban rights??
-    //public bool Isbanned { get; set; }
+    public bool Isbanned { get; set; }
     //public bool Isadmin { get; set; }
 }
 /**
@@ -35,6 +35,13 @@ public class FullUserDto
 public class ShortUserDto
 {
     public required int Id { get; set; }
-    public required string FullName { get; set; }
+    public required string Email { get; set; }
 }
 
+public class UserRegisterDto
+{
+    [Required] public required string FullName { get; set; }
+    [Required] public required string Phone { get; set; }
+    [Required] public required string Password { get; set; }
+    [Required, EmailAddress] public required string Email { get; set; }
+}

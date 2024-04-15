@@ -9,6 +9,7 @@ namespace api.WebSocket;
 public class WebSocketMetaData
 {
     public IWebSocketConnection Connection { get; set; }
+    public bool IsAuthenticated { get; set; } = false;
     public EndUser? User { get; set; }
     
     public WebSocketMetaData(IWebSocketConnection connection)
