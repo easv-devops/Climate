@@ -7,13 +7,13 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["backend/api/api.csproj", "api/"]
-COPY ["backend/infrastructure/infrastructure.csproj", "infrastructure/"]
-COPY ["backend/service/service.csproj", "service/"]
+COPY ["api/api.csproj", "api/"]
+COPY ["infrastructure/infrastructure.csproj", "infrastructure/"]
+COPY ["service/service.csproj", "service/"]
 RUN dotnet restore "api/api.csproj"
 COPY . .
 WORKDIR "/src/api"
-RUN dotnet build "backend/api/api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
