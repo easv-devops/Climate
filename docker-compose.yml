@@ -17,14 +17,15 @@
     ports:
       - "5002:8080"
     depends_on:
-      - maria-db
+      - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-  maria-db:
+  mariadb:
     image: mariadb:latest
     restart: always
     environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: climate
       MYSQL_USER: aladeen
       MYSQL_PASSWORD: xAladeen4life
