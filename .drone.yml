@@ -52,7 +52,7 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       - flyway migrate
-        -url="$DB_URL"
-        -user="$DB_USER"
-        -password="$DB_PASSWORD"
+        -url="localhost:3306/climate"
+        -user="aladeen"
+        -password="xAladeen#4life"
         -locations=filesystem:./db/sql
