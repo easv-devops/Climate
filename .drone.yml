@@ -45,7 +45,7 @@ steps:
     image: flyway/flyway
     commands:
       - flyway migrate 
-          -url="jdbc:mariadb://localhost:3306/climate" 
+          -url="jdbc:mariadb://74.234.8.67:3306/climate" 
           -user="aladeen" 
           -password="xAladeen#4life" 
           -locations=filesystem:./db/sql
