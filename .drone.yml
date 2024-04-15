@@ -1,0 +1,31 @@
+﻿
+---
+
+kind: pipeline
+type: docker
+name: deliver
+trigger:
+  branch:
+    - master
+  event:
+    exclude:
+      - pull_request
+depends_on:
+  - integration
+
+steps:
+  - name: update database
+    image: flyway/flyway
+    environment:
+      DB_NAME:
+        from_secret: DBNameSecret
+      DB_USER: 
+        from_secret: DBUserSecret
+      DB_PASSWORD:
+        from_secret: DBPasswordSecret
+    commands:
+      - flyway migrate
+          -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
+          -user="$DB_USER"
+          -password="$DB_PASSWORD"
+          -locations=filesystem:./db/sql
