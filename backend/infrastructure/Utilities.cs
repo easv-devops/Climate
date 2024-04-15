@@ -1,9 +1,8 @@
-﻿namespace infrastructure;
+﻿using api.helpers;
+
+namespace infrastructure;
 public class Utilities
 {
-    private static readonly string _connectionString = Environment.GetEnvironmentVariable("pgconn")!;
-    
-
     public static readonly string
-        MySqlConnectionString = _connectionString;
+        MySqlConnectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
 }
