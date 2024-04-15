@@ -20,7 +20,7 @@ public class PasswordHashRepository
         try
         {
             connection.Open();
-
+            
         }
         catch (Exception ex)
         {
@@ -28,5 +28,21 @@ public class PasswordHashRepository
         }
         
         throw new NotImplementedException("Ane du burde lige lave det her");
+    }
+    
+    // Method to test the database connection
+    public bool TestConnection()
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        
+        try
+        {
+            connection.Open();
+            return true; // Connection successful
+        }
+        catch (Exception)
+        {
+            return false; // Connection failed
+        }
     }
 }

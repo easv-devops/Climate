@@ -66,4 +66,9 @@ public class AuthService
         var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm); 
         return hashAlgorithm.VerifyHashedPassword(requestPassword, userPasswordInfo.Hash, userPasswordInfo.Salt);
     }
+
+    public bool TestConnection()
+    {
+        return _passwordHashRepository.TestConnection();
+    }
 }
