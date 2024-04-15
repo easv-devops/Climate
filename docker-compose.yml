@@ -31,8 +31,6 @@
       MYSQL_PASSWORD: xAladeen4life
     ports:
       - "3306:3306"
-    volumes:
-      - mariadb:/var/lib/mysql
 
   watchtower:
     image: containrrr/watchtower
@@ -46,3 +44,6 @@
       - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - 8080:8080
+
+volumes:
+  mariadb:
