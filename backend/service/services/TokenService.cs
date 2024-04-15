@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using api.helpers;
 using infrastructure.Models;
 using JWT;
 using JWT.Algorithms;
@@ -19,7 +20,7 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(user, "2aX4QvDzexGuENuvVTpEc3t7mRdKJd9H3iO0CtjtlVU="); //todo should be a pgconn
+            return encoder.Encode(user, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
         }
         catch (Exception e)
         {
@@ -37,7 +38,7 @@ public class TokenService
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, new HMACSHA512Algorithm());
-            var json = decoder.Decode(jwt, "2aX4QvDzexGuENuvVTpEc3t7mRdKJd9H3iO0CtjtlVU="); //todo should be a pgconn
+            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
         }
         catch (Exception e)

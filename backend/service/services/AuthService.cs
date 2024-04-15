@@ -69,6 +69,7 @@ public class AuthService
 
     public bool TestConnection()
     {
+    
         return _passwordHashRepository.TestConnection();
     }
 }
