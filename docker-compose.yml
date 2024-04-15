@@ -17,7 +17,7 @@
     ports:
       - "5002:8080"
     depends_on:
-      - mariadb
+      - maria-db
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
