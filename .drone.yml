@@ -56,5 +56,3 @@ steps:
         -user="$DB_USER"
         -password="$DB_PASSWORD"
         -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
