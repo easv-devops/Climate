@@ -2,7 +2,6 @@
 
 namespace service.services.Password;
 
-
 public abstract class PasswordHashAlgorithm
 {
     const string PreferredAlgorithmName = Argon2idPasswordHashAlgorithm.Name;
@@ -33,7 +32,7 @@ public abstract class PasswordHashAlgorithm
     {
         return Convert.FromBase64String(value);
     }
-
+    
     protected string Encode(byte[] value)
     {
         return Convert.ToBase64String(value);

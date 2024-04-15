@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Fleck" Version="1.2.0" />
+    <PackageReference Include="MySqlConnector.DependencyInjection" Version="2.3.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>

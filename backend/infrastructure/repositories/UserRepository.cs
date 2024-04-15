@@ -4,6 +4,13 @@ namespace infrastructure;
 
 public class UserRepository
 {
+    private readonly string _connectionString;
+    
+    public UserRepository(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+    
     //todo should create a end user with all information including hash and salt 
     public EndUser Create(UserRegisterDto model)
     {

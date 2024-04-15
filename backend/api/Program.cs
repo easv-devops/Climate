@@ -9,11 +9,18 @@ using Fleck;
 using infrastructure;
 using infrastructure.Models.serverEvents;
 using lib;
+using MySqlConnector;
 using service.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<PasswordHashRepository>();
+//saves connection string
+//gets connection string to db
+builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
+
+builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
+builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
+builder.Services.AddSingleton(provider => new (provider.GetRequiredService<string>()));
 builder.Services.AddSingleton<UserRepository>();
 
 
@@ -54,11 +61,9 @@ server.Start(socket =>
                     errorMessage = "Something went wrong",
                     receivedMessage = message
                 });
-            
             }
             else
             {
-        
                 socket.SendDto(new ServerSendsErrorMessageToClient
                     { errorMessage = e.Message, receivedMessage = message });
             }
