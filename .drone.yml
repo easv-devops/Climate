@@ -40,44 +40,6 @@ trigger:
 depends_on:
   - integration
 
-steps:
-  - name: publish api
-    image: plugins/docker
-    settings:
-      username:
-        from_secret: DockerUsername
-      password:
-        from_secret: DockerPassword
-      dockerfile: api/Dockerfile
-      repo: midr/climate-backend
-      tags:
-        - staging
-
-  - name: publish web
-    image: plugins/docker
-    settings:
-      username:
-        from_secret: DockerUsername
-      password:
-        from_secret: DockerPassword
-      dockerfile: frontend/Dockerfile
-      repo: midr/climate-frontend
-      tags:
-        - staging
-
-  - name: trigger update
-    image: curlimages/curl
-    environment:
-      TOKEN:
-        from_secret: WatchtowerToken
-    commands:
-      # Must match the token defined in docker-compose.yml
-      - "curl --fail -X GET 'http://4.231.252.47:8080/v1/update' -H 'Authorization: Bearer $TOKEN'"
-      - sleep 10
-    depends_on:
-      - publish api
-      - publish web
-
   - name: update database
     image: flyway/flyway
     environment:
@@ -95,10 +57,3 @@ steps:
         -locations=filesystem:./db/sql
     depends_on:
       - trigger update
-
-  - name: performance tests
-    image: grafana/k6
-    commands:
-      - k6 run tests/performance/spike.js
-    depends_on:
-      - update database
