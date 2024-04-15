@@ -17,11 +17,11 @@
     ports:
       - "5002:8080"
     depends_on:
-      - maria-db
+      - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-  maria-db:
+  mariadb:
     image: mariadb:latest
     restart: always
     environment:
@@ -31,6 +31,8 @@
       MYSQL_PASSWORD: xAladeen4life
     ports:
       - "3306:3306"
+    volumes:
+      - mariadb:/var/lib/mysql
 
   watchtower:
     image: containrrr/watchtower
@@ -44,3 +46,6 @@
       - "com.centurylinklabs.watchtower.enable=false"
     ports:
       - 8080:8080
+
+volumes:
+  mariadb:
