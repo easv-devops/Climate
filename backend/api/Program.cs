@@ -22,9 +22,9 @@ builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.Ge
 builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
 
 
-
-builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<TokenService>();
+
 
 
 // Add services to the container.

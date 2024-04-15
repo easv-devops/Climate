@@ -63,7 +63,7 @@ public class AuthService
 
     public bool ValidateHash(string requestPassword, PasswordHash userPasswordInfo)
     {
-        var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm); 
+        var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm);
         return hashAlgorithm.VerifyHashedPassword(requestPassword, userPasswordInfo.Hash, userPasswordInfo.Salt);
     }
 

@@ -26,8 +26,8 @@ public class PasswordHashRepository
         {
             throw new SqlTypeException("failed to Save Password", ex);
         }
-        
-        throw new NotImplementedException("Ane du burde lige lave det her");
+
+        return true;
     }
     
     // Method to test the database connection
