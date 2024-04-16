@@ -21,7 +21,6 @@ public class UserRepository
         {
             Id = 1,
             Email = "kfe@gmail.com",
-            Isbanned = false,
             PasswordInfo = new PasswordHash
             {
                 Id = 1,
@@ -38,11 +37,11 @@ public class UserRepository
         try
         {
             connection.Open();
-
+            Console.WriteLine("Before sql script");
             // Define the query using joins to fetch all information related to the user
             string query = @"
-            SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.CountryCode, ci.Number, us.BanTimestamp,
-                   ph.Id as PasswordInfoId, ph.Hash, ph.Salt, ph.Algorithm
+            SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.CountryCode, ci.Number,
+                   ph.UserId, ph.Hash, ph.Salt, ph.Algorithm
             FROM User u
             LEFT JOIN UserInformation ui ON u.Id = ui.UserId
             LEFT JOIN ContactInformation ci ON u.Id = ci.UserId
