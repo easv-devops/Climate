@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlTypes;
+using Dapper;
 using infrastructure.Models;
 using MySqlConnector;
 
@@ -28,6 +29,30 @@ public class PasswordHashRepository
         }
 
         return true;
+    }
+    
+    public PasswordHash GetPasswordHashById(int userId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            // Define the query using joins to fetch all information related to the user
+            string query = @"
+            SELECT *
+            FROM PasswordHash
+            WHERE UserId = @UserId";
+
+            // Execute the query using Dapper and retrieve the user information
+            var pwHash = connection.QueryFirstOrDefault<PasswordHash>(query, new { UserId = userId });
+            
+            return pwHash;
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions, maybe log them
+            throw new SqlTypeException("Failed to retrieve password hash by email", ex);
+        }
     }
     
     // Method to test the database connection

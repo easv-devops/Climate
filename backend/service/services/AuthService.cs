@@ -22,6 +22,7 @@ public class AuthService
     public EndUser GetUser(string requestEmail)
     {
         var user = _userRepository.GetUserByEmail(requestEmail);
+        user.PasswordInfo = _passwordHashRepository.GetPasswordHashById(user.Id);
         return user;
     }
     
