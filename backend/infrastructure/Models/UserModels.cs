@@ -15,8 +15,7 @@ public class EndUser
 
     public PasswordHash? PasswordInfo;
     //todo should we have admin and ban rights??
-    public bool Isbanned { get; set; }
-    //public bool Isadmin { get; set; }
+
 }
 /**
  * contains all information from a single user EXCLUDING password
@@ -36,6 +35,7 @@ public class ShortUserDto
 {
     public required int Id { get; set; }
     public required string Email { get; set; }
+    public required string Name { get; set; }
 }
 
 public class UserRegisterDto
