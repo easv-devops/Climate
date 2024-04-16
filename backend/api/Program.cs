@@ -14,7 +14,8 @@ public static class Startup
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Hello world");
+        var app = Start(args);
+        app.Run();
     }
 
     public static WebApplication Start(string[] args)
