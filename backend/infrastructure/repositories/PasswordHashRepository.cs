@@ -31,6 +31,7 @@ public class PasswordHashRepository
     }
     
     // Method to test the database connection
+    //todo should be deleted when other ways of testing is done
     public bool TestConnection()
     {
         using var connection = new MySqlConnection(_connectionString);

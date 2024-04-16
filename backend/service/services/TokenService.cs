@@ -10,7 +10,7 @@ namespace api.security;
 
 public class TokenService
 {
-    public string IssueJwt(ShortUserDto user)
+    public string IssueJwt(int userId)
     {
         
         try
@@ -20,7 +20,7 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(user, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+            return encoder.Encode(userId, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
         }
         catch (Exception e)
         {

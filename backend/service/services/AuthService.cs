@@ -9,17 +9,14 @@ namespace service.services;
 
 public class AuthService
 {
-    
     private readonly PasswordHashRepository _passwordHashRepository;
     private readonly UserRepository _userRepository;
-
 
     public AuthService(UserRepository userRepository,
         PasswordHashRepository passwordHashRepository)
     {
         _userRepository = userRepository;
         _passwordHashRepository = passwordHashRepository;
-
     }
     
     public EndUser GetUser(string requestEmail)
@@ -27,7 +24,6 @@ public class AuthService
         var user = _userRepository.GetUserByEmail(requestEmail);
         return user;
     }
-
     
     public bool DoesUserAlreadyExist(string dtoEmail)
     {
@@ -61,13 +57,14 @@ public class AuthService
         
         return user; 
     }
+    
 
     public bool ValidateHash(string requestPassword, PasswordHash userPasswordInfo)
     {
         var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm);
         return hashAlgorithm.VerifyHashedPassword(requestPassword, userPasswordInfo.Hash, userPasswordInfo.Salt);
     }
-
+    
     public bool TestConnection()
     {
         return _passwordHashRepository.TestConnection();

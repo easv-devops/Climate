@@ -18,7 +18,6 @@ public class ClientWantsToSignInDto : BaseDto
     public string password { get; set; }
 }
 
-
 public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto>
 {
     private readonly AuthService _authService;
@@ -34,28 +33,20 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
 
     public override Task Handle(ClientWantsToSignInDto request, IWebSocketConnection socket)
     {
-   
-        //gets user from db and checks for ban status
+        //gets user information from db and checks for ban status
         var user = _authService.GetUser(request.email);
         if (user.Isbanned) throw new AuthenticationException("User is banned");
-            
-   
+        
         //checks password hash
         bool validated = _authService.ValidateHash(request.password!, user.PasswordInfo!);
         if (!validated) throw new AuthenticationException("Wrong credentials!");
-           
 
         //authenticates and sets user information in state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
             
         //sends the JWT token to the client
-        socket.SendDto(new ServerAuthenticatesUser { Jwt = _tokenService.IssueJwt(new ShortUserDto
-        {
-            Id = user.Id,
-            Email = user.Email
-        }) });
-  
+        socket.SendDto(new ServerAuthenticatesUser { Jwt = _tokenService.IssueJwt(user.Id) });
         return Task.CompletedTask;
     }
 }
