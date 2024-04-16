@@ -13,7 +13,7 @@ COPY ["backend/service/service.csproj", "service/"]
 RUN dotnet restore "api/api.csproj"
 COPY . .
 WORKDIR "/src/api"
-RUN dotnet build "api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "api.csproj" -c $BUILD_CONFIGURATION --self-contained --runtime linux-x64 -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
