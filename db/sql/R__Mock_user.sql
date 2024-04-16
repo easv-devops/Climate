@@ -1,6 +1,6 @@
 ﻿-- Insert user data
 INSERT INTO User (Email)
-VALUES ('kfe@gmail.com');
+VALUES ('user@example.com');
 
 -- Insert user information
 INSERT INTO UserInformation (UserId, FirstName, LastName)
