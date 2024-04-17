@@ -13,6 +13,8 @@ services:
       - climate-backend
   
   climate-backend:
+    environment:
+      dbconn: ${dbconn}
     image: midr/climate-backend:staging
     ports:
       - "5002:8080"
