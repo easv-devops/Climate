@@ -14,21 +14,23 @@ public class PasswordHashRepository
         _connectionString = connectionString;
     }
     
-    //todo should create in db
     public bool Create(PasswordHash password)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
+
+            string insertQuery = "INSERT INTO PasswordHash (UserId, Hash, Salt, Algorithm) VALUES (@UserId, @Hash, @Salt, @Algorithm)";
             
+            connection.Execute(insertQuery, new { UserId = password.Id, Hash = password.Hash, Salt = password.Salt, Algorithm = password.Algorithm });
+
+            return true;
         }
         catch (Exception ex)
         {
-            throw new SqlTypeException("failed to Save Password", ex);
+            throw new SqlTypeException("Failed to save PasswordHash", ex);
         }
-
-        return true;
     }
     
     public PasswordHash GetPasswordHashById(int userId)

@@ -12,12 +12,12 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToRegisterDto : BaseDto
 {
-    
     public string Email { get; set; }
     public string Phone { get; set; }
-    
-    public string Name { get; set; }
-     public string Password { get; set; }
+    public string Password { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string CountryCode { get; set; }
 }
 
 
@@ -42,12 +42,14 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             throw new ValidationException("User with this email already exists");
         
         //save the user and password to the db
-        var user = _authService.RegisterUser(new UserRegisterDto
+        EndUser user = _authService.RegisterUser(new UserRegisterDto
         {
-            FullName = dto.Name,
-            Phone = dto.Phone,
-            Password = dto.Password,
             Email = dto.Email,
+            Password = dto.Password,
+            CountryCode = dto.CountryCode,
+            Phone = dto.Phone,
+            FirstName = dto.FirstName,
+            LastName = dto.LastName
         });
         
         //issue token

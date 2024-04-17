@@ -19,9 +19,16 @@ public class AuthService
         _passwordHashRepository = passwordHashRepository;
     }
     
+    /**
+     * should not be used for returning to frontend!
+     */
     public EndUser GetUser(string requestEmail)
     {
         var user = _userRepository.GetUserByEmail(requestEmail);
+        if (ReferenceEquals(user, null))
+        {
+            throw new AuthenticationException();
+        }
         user.PasswordInfo = _passwordHashRepository.GetPasswordHashById(user.Id);
         return user;
     }
@@ -33,9 +40,7 @@ public class AuthService
 
     public EndUser RegisterUser(UserRegisterDto model)
     {
-        if (DoesUserAlreadyExist(model.Email))
-            throw new ValidationException("User Already Exists");
-        
+
         var user = _userRepository.Create(model); //creates the user 
         if (ReferenceEquals(user, null)) throw new SqlTypeException(" Could not create user");
 
@@ -44,6 +49,7 @@ public class AuthService
         var salt = hashAlgorithm.GenerateSalt();
         var hash = hashAlgorithm.HashPassword(model.Password, salt);
         
+
         var password = new PasswordHash
         {
             Id = user.Id,
