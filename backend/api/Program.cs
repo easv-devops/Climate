@@ -43,7 +43,7 @@ public static class Startup
         
         var app = builder.Build();
         
-        var port = Environment.GetEnvironmentVariable("PORT") ?? "8181";
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
         var server = new WebSocketServer("ws://0.0.0.0:"+port);
         server.RestartAfterListenError = true;
         
