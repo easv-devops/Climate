@@ -1,0 +1,51 @@
+﻿kind: pipeline
+type: docker
+name: integration
+
+trigger: 
+  branch:
+    - master
+  event:
+    exclude:
+      - pull_request
+steps:
+  - name: code-analysis
+    image: boulundeasv/dotnet-sdk-with-java
+    environment:
+      SONARSECRET:
+        from_secret: SonarQubeSecret
+    commands:
+      - exit 0
+      - dotnet sonarscanner begin 
+          /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
+          /d:sonar.host.url="http://sonar.setgo.dk:9000" 
+          /d:sonar.token="$SONARSECRET"
+          /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          /d:sonar.qualitygate.wait=true
+      - dotnet build backend/api/api.csproj --no-incremental
+      - dotnet-coverage collect "dotnet test tests/tests.csproj" -f xml -o "coverage.xml"
+      - dotnet sonarscanner end /d:sonar.token="$SONARSECRET"
+
+---
+
+kind: pipeline
+type: docker
+name: deliver
+trigger:
+  branch:
+    - master
+  event:
+    exclude:
+      - pull_request
+depends_on:
+  - integration
+
+steps:
+  - name: update database
+    image: flyway/flyway
+    commands:
+      - flyway migrate 
+          -url="jdbc:mariadb://74.234.8.67:3306/climate" 
+          -user="aladeen" 
+          -password="xAladeen4life" 
+          -locations=filesystem:./db/sql

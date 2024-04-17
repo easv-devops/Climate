@@ -26,22 +26,23 @@ public class PasswordHashRepository
         {
             throw new SqlTypeException("failed to Save Password", ex);
         }
-        
-        throw new NotImplementedException("Ane du burde lige lave det her");
+
+        return true;
     }
     
     // Method to test the database connection
     public bool TestConnection()
     {
         using var connection = new MySqlConnection(_connectionString);
-        
         try
         {
             connection.Open();
+            
             return true; // Connection successful
         }
-        catch (Exception)
+        catch (Exception e)
         {
+         
             return false; // Connection failed
         }
     }

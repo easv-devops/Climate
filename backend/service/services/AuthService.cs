@@ -46,6 +46,7 @@ public class AuthService
         var hashAlgorithm = PasswordHashAlgorithm.Create();
         var salt = hashAlgorithm.GenerateSalt();
         var hash = hashAlgorithm.HashPassword(model.Password, salt);
+        
         var password = new PasswordHash
         {
             Id = user.Id,
@@ -63,7 +64,7 @@ public class AuthService
 
     public bool ValidateHash(string requestPassword, PasswordHash userPasswordInfo)
     {
-        var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm); 
+        var hashAlgorithm = PasswordHashAlgorithm.Create(userPasswordInfo.Algorithm);
         return hashAlgorithm.VerifyHashedPassword(requestPassword, userPasswordInfo.Hash, userPasswordInfo.Salt);
     }
 

@@ -28,12 +28,10 @@ public class TestDbConnection : BaseEventHandler<DbTestDto>
     {
 
         var test = _authService.TestConnection();
-
         if (test)
         {
             socket.Send("your db worked");
         }
-        socket.Send("your db did not word");
         return Task.CompletedTask;
     }
 }

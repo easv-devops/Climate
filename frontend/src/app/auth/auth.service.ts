@@ -1,15 +1,21 @@
-import {Inject} from "@angular/core";
+import {inject, Inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
-
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService{
-  ws = Inject(WebSocketConnectionService);
+  private ws: WebSocketConnectionService = inject(WebSocketConnectionService);
+
+
+  constructor() {
+  }
 
 
   loginUser(){
     var object ={
       eventType: "ClientWantsToAuthenticate",
-      Email: "Anelise@gmail.com",
-      Password: "qwertyuiop"
+      Email: "user@example.com",
+      Password: "12345678"
     }
     this.ws.socketConnection.send(JSON.stringify(object));
   }

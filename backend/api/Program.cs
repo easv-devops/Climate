@@ -1,4 +1,3 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Authentication;
@@ -9,7 +8,6 @@ using Fleck;
 using infrastructure;
 using infrastructure.Models.serverEvents;
 using lib;
-using MySqlConnector;
 using service.services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,8 +20,9 @@ builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.Ge
 builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
 
 
-builder.Services.AddSingleton<TokenService>();
 builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<TokenService>();
+
 
 
 // Add services to the container.
@@ -40,7 +39,10 @@ server.RestartAfterListenError = true;
 
 server.Start(socket =>
 {
-    socket.OnOpen = () => StateService.AddClient(socket.ConnectionInfo.Id, socket);
+    socket.OnOpen = () =>
+    {
+        StateService.AddClient(socket.ConnectionInfo.Id, socket);
+    };
     socket.OnClose = () => StateService.RemoveClient(socket.ConnectionInfo.Id);
     socket.OnMessage = async message =>
     {

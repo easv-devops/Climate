@@ -48,11 +48,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         });
 
         //issue token
-        var token = _tokenService.IssueJwt(new ShortUserDto
-        {
-            Id = user.Id,
-            Email = user.Email!,
-        });
+        var token = _tokenService.IssueJwt(user.Id);
 
         //add user information and validates user to state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
