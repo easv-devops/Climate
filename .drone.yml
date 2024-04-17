@@ -42,9 +42,6 @@ depends_on:
 
 steps:
   - name: publish api
-    environment:
-      dbconn:
-        from_secret: dbconn
     image: plugins/docker
     settings:
       username:
