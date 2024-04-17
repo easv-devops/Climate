@@ -45,6 +45,7 @@ public class UserRegisterDto
     public string Email { get; set; }
     
     [Required(ErrorMessage = "Password is required.")]
+    [MinLength(6, ErrorMessage = "Password is required.")]
     [DataType(DataType.Password)]
     public string Password { get; set; }
     

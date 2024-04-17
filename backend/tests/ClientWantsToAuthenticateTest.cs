@@ -15,7 +15,7 @@ public class ClientWantsToAuthenticateTest
 
     [TestCase("user@example.com", "12345678", TestName = "Valid")]
     [TestCase("user@example.com", "87654321", TestName = "Invalid password")]
-    [TestCase("userATexample.com", "12345678", TestName = "Invalid email")]
+    [TestCase("userAbTexample.com", "12345678", TestName = "Invalid email")]
     public async Task LoginTest(string email, string password)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();

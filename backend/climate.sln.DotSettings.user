@@ -3,5 +3,8 @@
   &lt;Assembly Path="C:\Users\micha\.nuget\packages\uldahlalex.websocket.boilerplate\1.6.0\lib\net8.0\lib.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0338ba93_002D3167_002D4438_002Dbebb_002D9ae8146e6c02/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ClientWantsToAuthenticateTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;94C6FD6B-E921-42CE-AE8C-AE82F6E3BFB3/f:ClientWantsToAuthenticateTest.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;ProjectFile&gt;94C6FD6B-E921-42CE-AE8C-AE82F6E3BFB3/f:ClientWantsToAuthenticateTest.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;94C6FD6B-E921-42CE-AE8C-AE82F6E3BFB3/f:ClientWantsToRegisterTests.cs&lt;/ProjectFile&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

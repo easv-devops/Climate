@@ -13,10 +13,10 @@ public class ClientWantsToRegisterTests
         Startup.Start(null);
     }
     
-    [TestCase("user@example.com", "12345678", "register", "+1234567890", "John", "Doe", "+45", TestName = "Valid")]
-    [TestCase("user@example.com", "87654321", "register", "+1234567890", "John", "Doe", "+44", TestName = "Invalid password")]
-    [TestCase("userATexample.com", "12345678", "register", "+1234567890", "John", "Doe", "+80", TestName = "invalid email")]
-    public async Task RegisterTest(string email, string password, string eventType, string phone, string firstName, string lastName, string countryCode)
+    [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "+45", TestName = "Valid")]
+    [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "+44", TestName = "Invalid password")]
+    [TestCase("fewia.com", "156812333", "234567890", "John", "Doe", "+80", TestName = "invalid email")]
+    public async Task RegisterTest(string email, string password,  string phone, string firstName, string lastName, string countryCode)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
@@ -40,7 +40,7 @@ public class ClientWantsToRegisterTests
                         return dto.eventType == nameof(ServerAuthenticatesUser);
                     case "Invalid password":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                    case "Invalid email":
+                    case "invalid email":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                     default:
                         return false;
@@ -48,7 +48,4 @@ public class ClientWantsToRegisterTests
             }) == 1;
         });
     }
-    
-    
-    
 }

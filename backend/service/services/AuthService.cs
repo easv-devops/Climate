@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.SqlTypes;
 using System.Security.Authentication;
 using infrastructure;
@@ -27,9 +28,13 @@ public class AuthService
         var user = _userRepository.GetUserByEmail(requestEmail);
         if (ReferenceEquals(user, null))
         {
-            throw new AuthenticationException();
+            throw new AuthenticationException("Could not log in");
         }
         user.PasswordInfo = _passwordHashRepository.GetPasswordHashById(user.Id);
+        if (ReferenceEquals(user.PasswordInfo, null))
+        {
+            throw new DataException("Could not find user info");
+        }
         return user;
     }
     
