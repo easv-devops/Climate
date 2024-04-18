@@ -14,21 +14,37 @@ public class UserRepository
         _connectionString = connectionString;
     }
     
-    //todo should create a end user with all information including hash and salt 
-    public EndUser Create(UserRegisterDto model)
+    public EndUser Create(UserRegisterDto dto)
     {
-        return new EndUser
+        using var connection = new MySqlConnection(_connectionString);
+        try
         {
-            Id = 1,
-            Email = "kfe@gmail.com",
-            PasswordInfo = new PasswordHash
+            connection.Open();
+            
+            // Opret brugeren i User-tabellen
+            string insertUserQuery = "INSERT INTO User (Email) VALUES (@Email); SELECT LAST_INSERT_ID();";
+            int userId = connection.ExecuteScalar<int>(insertUserQuery, new { Email = dto.Email });
+
+            // Opret brugeroplysninger i UserInformation-tabellen
+            string insertUserInfoQuery = "INSERT INTO UserInformation (UserId, FirstName, LastName) VALUES (@UserId, @FirstName, @LastName);";
+            connection.Execute(insertUserInfoQuery, new { UserId = userId, FirstName = dto.FirstName, LastName = dto.LastName });
+
+            // Opret kontaktoplysninger i ContactInformation-tabellen
+            string insertContactInfoQuery = "INSERT INTO ContactInformation (UserId, CountryCode, Number) VALUES (@UserId, @CountryCode, @Number);";
+            connection.Execute(insertContactInfoQuery, new { UserId = userId, CountryCode = dto.CountryCode, Number = dto.Phone });
+
+            // Returner EndUser-objektet
+            //todo should set isBanned as false when added on enduser (when isBanned is added to user object)
+            return new EndUser
             {
-                Id = 1,
-                Hash = "1EJybmIbon7kimzpBZXA17OxI3/iVLZK8euSAloQgK3W8ibEJ8G/Ql2J4kjtDDMRV5sN71LEgRuL+lXyP9dOHz9IuMXuWjTdFSwkKaDNbiNa9MsWy/dngKWo04jYvG8Tb26UV0Bnxd83V9zQZCPdPSQXENoRvPOhnDZKaayFYuRz4pVkBrooL9Hu9EgrCzE9Z3kExf+w1BwR/hqVip2wj+W3mxBwTWgm5hhsko1TZqr3d+HWPAeaFmaNTmwuG0miPhA8H9C4/V0mUs62V2zJkZEVP3QEipvTvkCyctxq7U89NSLwVIGiEsmFG/sZ1EqXnXpmpbV1PQ7pkDYFad+pzQ==",
-                Salt = "sMQAck67hWo2asVpqlbmmGVFj3jo6i86oZVTQh3c3wOpKd0LO8oxqSYhveceXkLrXlCKIIVFB+IRPXrcE3ZkFdVKmG5A7gOyvWwkOltwOytSDoPHmT3+aWUS0sFjO89RMbJxCncsghBbtF3a9hHtr/7/NcexUj8wJQz48gq6izw=",
-                Algorithm = "argon2id"
-            }
-        };
+                Id = userId,
+                Email = dto.Email
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new SqlTypeException("Could not create user in db.", ex);
+        }
     }
 
     public EndUser GetUserByEmail(string requestEmail)

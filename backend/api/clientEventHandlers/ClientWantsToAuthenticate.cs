@@ -1,5 +1,7 @@
-﻿using System.Security.Authentication;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using System.Text.Json;
+using api.ClientEventFilters;
 using Fleck;
 using api.helpers;
 using api.security;
@@ -14,10 +16,16 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToSignInDto : BaseDto
 {
+    [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Email is not valid.")]
     public string email { get; set; }
+    
+    [Required(ErrorMessage = "Password is required.")]
+    [MinLength(6, ErrorMessage = "Password is to short.")]
     public string password { get; set; }
 }
 
+[ValidateDataAnnotations]
 public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto>
 {
     private readonly AuthService _authService;

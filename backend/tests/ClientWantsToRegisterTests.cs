@@ -5,25 +5,29 @@ using tests.WebSocket;
 
 namespace tests;
 
-public class ClientWantsToAuthenticateTest
+public class ClientWantsToRegisterTests
 {
     [SetUp]
     public void Setup()
     {
         Startup.Start(null);
     }
-
-    [TestCase("user@example.com", "12345678", TestName = "Valid")]
-    [TestCase("user@example.com", "87654321", TestName = "Invalid password")]
-    [TestCase("userAbTexample.com", "12345678", TestName = "Invalid email")]
-    public async Task LoginTest(string email, string password)
+    
+    [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "+45", TestName = "Valid")]
+    [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "+44", TestName = "Invalid password")]
+    [TestCase("fewia.com", "156812333", "234567890", "John", "Doe", "+80", TestName = "invalid email")]
+    public async Task RegisterTest(string email, string password,  string phone, string firstName, string lastName, string countryCode)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        await ws.DoAndAssert(new ClientWantsToSignInDto()
+        await ws.DoAndAssert(new ClientWantsToRegisterDto
         {
-            email = email,
-            password = password
+            Email = email,
+            Password = password,
+            Phone = phone,
+            FirstName = firstName,
+            LastName = lastName,
+            CountryCode = countryCode
         }, fromServer =>
         {
             return fromServer.Count(dto =>
@@ -36,7 +40,7 @@ public class ClientWantsToAuthenticateTest
                         return dto.eventType == nameof(ServerAuthenticatesUser);
                     case "Invalid password":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                    case "Invalid email":
+                    case "invalid email":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                     default:
                         return false;

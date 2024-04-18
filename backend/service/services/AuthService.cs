@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.SqlTypes;
 using System.Security.Authentication;
 using System.Security.Cryptography;
@@ -23,11 +24,22 @@ public class AuthService
         _passwordHashRepository = passwordHashRepository;
         _smtpRepository = smtpRepository;
     }
-
+ 
+    /**
+     * should not be used for returning to frontend!
+     */
     public EndUser GetUser(string requestEmail)
     {
         var user = _userRepository.GetUserByEmail(requestEmail);
+        if (ReferenceEquals(user, null))
+        {
+            throw new AuthenticationException("Could not log in");
+        }
         user.PasswordInfo = _passwordHashRepository.GetPasswordHashById(user.Id);
+        if (ReferenceEquals(user.PasswordInfo, null))
+        {
+            throw new DataException("Could not find user info");
+        }
         return user;
     }
 
@@ -44,9 +56,11 @@ public class AuthService
         var user = _userRepository.Create(model); //creates the user 
         if (ReferenceEquals(user, null)) throw new SqlTypeException(" Could not create user");
 
+
         user.PasswordInfo = GeneratePasswordHash(user.Id, model.Password);
 
         var isCreated = _passwordHashRepository.Create(user.PasswordInfo); //stores the password
+
         if (isCreated == false) throw new SqlTypeException("Could not Create user hash");
 
         return user;
