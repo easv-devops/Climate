@@ -22,13 +22,13 @@ public static class Startup
     {
         var builder = WebApplication.CreateBuilder(args);
         
+        builder.Services.AddSingleton<SmtpRepository>();
         //saves connection string
         //gets connection string to db
         builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
-        
         
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
