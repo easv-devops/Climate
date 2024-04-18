@@ -43,7 +43,7 @@ public class NotificationService
     {
         var mailBuilder = new EmailBuilder();
 
-        mailBuilder.BuildWelcomeMessage(user.FullName);
+        mailBuilder.BuildWelcomeMessage(user.FirstName);
         throw new NotImplementedException();
     }
 }
