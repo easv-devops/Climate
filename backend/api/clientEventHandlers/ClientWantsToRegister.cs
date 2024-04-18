@@ -8,6 +8,7 @@ using Fleck;
 using infrastructure.Models;
 using lib;
 using service.services;
+using service.services.notificationServices;
 
 namespace api.clientEventHandlers;
 
@@ -41,13 +42,16 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
     private readonly AuthService _authService;
 
     private readonly TokenService _tokenService;
+    private readonly NotificationService _notificationService;
     
     public ClientWantsToRegister(
         AuthService authService,
-        TokenService tokenService)
+        TokenService tokenService,
+        NotificationService notificationService)
     {
         _authService = authService;
         _tokenService = tokenService;
+        _notificationService = notificationService;
     }
     public override Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
     {
@@ -72,6 +76,16 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         //add user information and validates user to state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
+
+        //sets noti settings and sends welcome message
+        List<MessageType> selectedMessageTypes = new List<MessageType>();
+        selectedMessageTypes.Add(MessageType.EMAIL);
+        _notificationService.SendWelcomeMessage(selectedMessageTypes, new ShortUserDto
+        {
+            Id = user.Id,
+            Email = dto.Email,
+            Name = dto.FirstName
+        });
         
         //return JWT to client 
         socket.SendDto(new ServerAuthenticatesUser { Jwt = token });

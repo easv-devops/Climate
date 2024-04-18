@@ -78,7 +78,6 @@ public static class Startup
                 }
             };
         });
-
         return app;
     }
 }
