@@ -9,6 +9,7 @@ using infrastructure;
 using infrastructure.Models.serverEvents;
 using lib;
 using service.services;
+using service.services.notificationServices;
 
 public static class Startup
 {
@@ -22,6 +23,8 @@ public static class Startup
     {
         var builder = WebApplication.CreateBuilder(args);
         
+        builder.Services.AddSingleton<SmtpRepository>();
+        
         //saves connection string
         //gets connection string to db
         builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
@@ -29,11 +32,9 @@ public static class Startup
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
         
-        
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
-        
-        
+        builder.Services.AddSingleton<NotificationService>();
         
         // Add services to the container.
         
@@ -77,7 +78,6 @@ public static class Startup
                 }
             };
         });
-
         return app;
     }
 }
