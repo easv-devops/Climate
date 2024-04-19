@@ -9,67 +9,75 @@ using infrastructure;
 using infrastructure.Models.serverEvents;
 using lib;
 using service.services;
+using service.services.notificationServices;
 
-var builder = WebApplication.CreateBuilder(args);
-
-//saves connection string
-//gets connection string to db
-builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
-
-builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
-builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
-
-
-builder.Services.AddSingleton<AuthService>();
-builder.Services.AddSingleton<TokenService>();
-
-
-
-// Add services to the container.
-
-var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
-
-
-builder.WebHost.UseUrls("http://*:9999");
-
-var app = builder.Build();
-
-var server = new WebSocketServer("ws://0.0.0.0:8181");
-server.RestartAfterListenError = true;
-
-server.Start(socket =>
+public static class Startup
 {
-    socket.OnOpen = () =>
+    public static void Main(string[] args)
     {
-        StateService.AddClient(socket.ConnectionInfo.Id, socket);
-    };
-    socket.OnClose = () => StateService.RemoveClient(socket.ConnectionInfo.Id);
-    socket.OnMessage = async message =>
+        var app = Start(args);
+        app.Run();
+    }
+
+    public static WebApplication Start(string[] args)
     {
-        try
+        var builder = WebApplication.CreateBuilder(args);
+        
+        builder.Services.AddSingleton<SmtpRepository>();
+        
+        //saves connection string
+        //gets connection string to db
+        builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
+        
+        builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
+        
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddSingleton<TokenService>();
+        builder.Services.AddSingleton<NotificationService>();
+        
+        // Add services to the container.
+        
+        var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
+        
+        builder.WebHost.UseUrls("http://*:9999");
+        
+        var app = builder.Build();
+        
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        var server = new WebSocketServer("ws://0.0.0.0:"+port);
+        server.RestartAfterListenError = true;
+        
+        server.Start(socket =>
         {
-            await app.InvokeClientEventHandler(services, socket, message);
-        }
-        catch (Exception e)
-        {
-            //error handler
-            //todo should have a logger that logs the error so we can se it when deployed 
-            if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))
+            socket.OnOpen = () => StateService.AddClient(socket.ConnectionInfo.Id, socket);
+            socket.OnClose = () => StateService.RemoveClient(socket.ConnectionInfo.Id);
+            socket.OnMessage = async message =>
             {
-                socket.SendDto(new ServerSendsErrorMessageToClient()
+                try
                 {
-                    errorMessage = "Something went wrong",
-                    receivedMessage = message
-                });
-            }
-            else
-            {
-                socket.SendDto(new ServerSendsErrorMessageToClient
-                    { errorMessage = e.Message, receivedMessage = message });
-            }
-        }
-    };
-});
-
-app.Run();
-
+                    await app.InvokeClientEventHandler(services, socket, message);
+                }
+                catch (Exception e)
+                {
+                    //error handler
+                    //todo should have a logger that logs the error so we can se it when deployed 
+                    if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))
+                    {
+                        socket.SendDto(new ServerSendsErrorMessageToClient()
+                        {
+                            errorMessage = "Something went wrong",
+                            receivedMessage = message
+                        });
+                    }
+                    else
+                    {
+                        socket.SendDto(new ServerSendsErrorMessageToClient
+                            { errorMessage = e.Message, receivedMessage = message });
+                    }
+                }
+            };
+        });
+        return app;
+    }
+}

@@ -22,8 +22,7 @@ public class TestDbConnection : BaseEventHandler<DbTestDto>
         _authService = authService;
 
     }
-
-    
+        
     public override Task Handle(DbTestDto dto, IWebSocketConnection socket)
     {
 

@@ -11,12 +11,14 @@ import {ToastController} from "@ionic/angular";
 export class RegisterComponent  implements OnInit {
 
   readonly form = this.fb.group({
-    name: ['', Validators.required],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
     repeatPassword: ['', [Validators.required]],
     phone: ['', Validators.required],
   });
+
 
   isPasswordSame = false;
   constructor(
@@ -30,8 +32,12 @@ export class RegisterComponent  implements OnInit {
     this.form.get('repeatPassword')!.valueChanges.subscribe(() => this.checkPasswords());
   }
 
-  get name() {
-    return this.form.controls.name;
+  get firstName() {
+    return this.form.controls.firstName;
+  }
+
+  get lastName() {
+    return this.form.controls.lastName;
   }
 
   get email() {

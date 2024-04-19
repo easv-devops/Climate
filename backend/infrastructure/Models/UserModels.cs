@@ -15,8 +15,7 @@ public class EndUser
 
     public PasswordHash? PasswordInfo;
     //todo should we have admin and ban rights??
-    public bool Isbanned { get; set; }
-    //public bool Isadmin { get; set; }
+
 }
 /**
  * contains all information from a single user EXCLUDING password
@@ -36,12 +35,30 @@ public class ShortUserDto
 {
     public required int Id { get; set; }
     public required string Email { get; set; }
+    public required string Name { get; set; }
 }
 
 public class UserRegisterDto
 {
-    [Required] public required string FullName { get; set; }
-    [Required] public required string Phone { get; set; }
-    [Required] public required string Password { get; set; }
-    [Required, EmailAddress] public required string Email { get; set; }
+    [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Email is not valid.")]
+    public string Email { get; set; }
+    
+    [Required(ErrorMessage = "Password is required.")]
+    [MinLength(6, ErrorMessage = "Password is required.")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; }
+    
+    [Required(ErrorMessage = "Country code is required.")]
+    public string CountryCode { get; set; }
+
+    [Required(ErrorMessage = "Phone number is required.")]
+    [Phone(ErrorMessage = "Phone number is not valid.")]
+    public string Phone { get; set; }
+
+    [Required(ErrorMessage = "First name is required.")]
+    public string FirstName { get; set; }
+
+    [Required(ErrorMessage = "Last name is required.")]
+    public string LastName { get; set; }
 }
