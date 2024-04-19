@@ -77,6 +77,9 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
 
+        //return JWT to client 
+        socket.SendDto(new ServerAuthenticatesUser { Jwt = token });
+        
         //sets noti settings and sends welcome message
         List<MessageType> selectedMessageTypes = new List<MessageType>();
         selectedMessageTypes.Add(MessageType.EMAIL);
@@ -86,9 +89,6 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             Email = dto.Email,
             Name = dto.FirstName
         });
-        
-        //return JWT to client 
-        socket.SendDto(new ServerAuthenticatesUser { Jwt = token });
         return Task.CompletedTask;
     }
 }

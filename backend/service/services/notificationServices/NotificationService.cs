@@ -68,7 +68,7 @@ public class NotificationService
         {
             subject = "Your Password Has Been Reset",
             htmlBody = mailBody,
-            recipientEmail = "kennidamkier@gmail.com"
+            recipientEmail = email
         };
         return _smtpRepository.SendEmail(mail);
         

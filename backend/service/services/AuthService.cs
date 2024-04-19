@@ -84,10 +84,6 @@ public class AuthService
         bool isReset = _passwordHashRepository.ReplacePassword(user.Id, newPassword);
         if (!isReset) throw new AuthenticationException("Could Not reset password");
         
-        
-        //todo should be done from api layer and through a service that builds cool mails.
-        _smtpRepository.SendEmail1(newPasswordPlainText);
-        
         return newPasswordPlainText;
     }
 

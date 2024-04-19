@@ -1,4 +1,5 @@
 ﻿using Fleck;
+using infrastructure.Models;
 using lib;
 using service.services;
 using service.services.notificationServices;
@@ -16,7 +17,6 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
     private readonly AuthService _authService;
     private readonly NotificationService _notificationService;
     
-
     public ClientWantsToResetPassword(AuthService authService,
         NotificationService notificationService)
     {
@@ -29,11 +29,8 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
     {
         string newPassword = _authService.ResetPassword(dto.Email);
         
-        
-        //todo should call a Notification Service that we can make cool email and maybe sms for the user
-        //todo should take the new password and a method of communication emun like (sms, email etc...)
-
-        //todo return a Server to client object that holds a bool is reset was a success.
+        _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
         return Task.CompletedTask;
+        
     }
 }
