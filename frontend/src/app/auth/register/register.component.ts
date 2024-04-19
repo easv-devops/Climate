@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {AbstractControl, FormBuilder, ValidationErrors, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
-import {ToastController} from "@ionic/angular";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-register',
