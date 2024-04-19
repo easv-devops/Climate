@@ -18,10 +18,6 @@ export class LoginComponent {
   constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService){
   }
 
-send() {
-    this.ws.socketConnection.send('asdasd')
-}
-
   get email() {
     return this.form.controls['email'];
   }
@@ -30,9 +26,21 @@ send() {
     return this.form.controls['password'];
   }
 
+  submitTestUser(){
+    this.authService.loginUser("user@example.com", "12345678");
+  }
 
-  //todo should call a auth service for connect to api
   submit() {
-    this.authService.loginUser();
+    if (this.form.get('email') && this.form.get('password')) {
+      //The ?? operator works like this:
+      //const value = possiblyNullOrUndefinedValue ?? defaultValue;
+      const email: string = this.form.get('email')?.value ?? '';
+      const password: string = this.form.get('password')?.value ?? '';
+      this.authService.loginUser(email, password);
+    }
+    //Handles if an error occurs
+    else {
+      console.error('Was not able to get the required information');
+    }
   }
 }

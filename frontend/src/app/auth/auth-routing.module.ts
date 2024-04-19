@@ -10,8 +10,7 @@ const routes: Routes = [
     component: AuthComponent, // This will be loaded into the nested router outlet
     children: [ // Child routes for authentication
       {
-        //TODO add login later
-        path: '', // Path for login component (e.g., /auth/login)
+        path: 'login', // Path for login component (e.g., /auth/login)
         component: LoginComponent
       },
       {

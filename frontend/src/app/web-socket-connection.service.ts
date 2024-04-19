@@ -1,41 +1,25 @@
 import {Injectable} from "@angular/core";
+import {environment} from "../environments/environment";
+import {WebsocketSuperclass} from "../models/websocketSuperclass";
+import {BaseDto} from "../models/baseDto";
+import {ServerAuthenticatesUserDto, User} from "../models/returnedObjectsFromBackend";
 
-class BaseDto<T> {
-}
-class ResponseDto<T> {
-  responseData?: T;
-  messageToClient?: string;
-}
-
-class User {
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-}
-
-class ServerAuthenticatesUserDto {
-  Jwt?: string;
-}
-
-class ShortUserDto {
-  Id?: number;
-  Email?: string;
-}
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
 
+  //Different objects used in the application
+  //TODO check for these objects. Make sure they are used or removed
+  //TODO use records instead of lists
   AllRooms: number[] = [];
   AllDevices: number[] = [];
-  currentUser: User = {};
   jwt: string | undefined;
 
-
   //Socket connection
-  public socketConnection: WebSocket;// = new WebSocket("ws://localhost:8181")
+  public socketConnection: WebsocketSuperclass;
 
   constructor() {
-    //pointing to the direction the websocket can be found at
-    this.socketConnection = new WebSocket("ws://localhost:8181")
+    //Pointing to the direction the websocket can be found at
+    this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl);
     this.handleEvent();
   }
 
@@ -45,18 +29,13 @@ export class WebSocketConnectionService {
       // @ts-ignore
       this[data.eventType].call(this,data);
     }
-
   }
 
-  //All the return objects
 
+  //All the return objects from the webSocket
+  //These methods are triggered from the responses from the backend
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     this.jwt = dto.Jwt;
-    console.log("Recieved token: " + this.jwt);
   }
-  /*
-
-  ServerAuthenticatesUser(dto: ShortUserDto){
-    console.log("Server authenticated user")
-  }*/
 }
+
