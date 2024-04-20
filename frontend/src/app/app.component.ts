@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
       label: 'Rooms',
       icon: 'grid',
       subItems: [
-        {label: 'Room 1', routerLink: '/home/page1'},
+        {label: 'Room 1', routerLink: '/home/page1'}, //{label: '{roomName}', routerLink: '/rooms/{roomId}'},
         {label: 'Room 2', routerLink: '/home/page1'}
       ]
     }]
@@ -62,7 +62,7 @@ export class AppComponent implements OnInit {
       label: 'Devices',
       icon: 'fitness',
       subItems: [
-        {label: 'Device 1', routerLink: '/home/page2'},
+        {label: 'Device 1', routerLink: '/home/page2'}, //{label: '{deviceName}', routerLink: '/rooms/{roomId}/{deviceId}'?}
         {label: 'Device 2', routerLink: '/home/page2'}
       ]
     }]
