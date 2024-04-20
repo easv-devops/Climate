@@ -1,7 +1,7 @@
 <div style="display: flex; align-items: center; justify-content: space-between; height: 7.5vh; min-height: 50px">
   <div id="left" style="justify-content: flex-start">
     <ion-buttons class="ion-margin">
-      <ion-menu-button menu="main-menu" color="primary"></ion-menu-button>
+      <ion-menu-button menu="main-menu" class="climate-color"></ion-menu-button>
       <ion-button routerLink="/home" shape="round">
         <ion-img src="../assets/icon/logo_light_no_bg.png" style="width: 150px;"></ion-img>
       </ion-button>
@@ -9,8 +9,8 @@
   </div>
 
   <div id="right" style="justify-content: flex-end">
-    <ion-button fill="clear" shape="round" class="ion-padding" color="primary">
-      <ion-icon slot="icon-only" name="person-circle"></ion-icon>
+    <ion-button fill="clear" shape="round" class="ion-padding" color="primary" routerLink="/user">
+      <ion-icon class="climate-color" slot="icon-only" name="person-circle"></ion-icon>
     </ion-button>
   </div>
 </div>
