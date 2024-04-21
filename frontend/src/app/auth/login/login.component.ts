@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../auth.service";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
+import {Subject, takeUntil} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +17,26 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(7)]],
   });
 
-  constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService){
+  private unsubscribe$ = new Subject<void>();
+
+  constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService, private router: Router){
+  }
+
+  ngOnInit() {
+    // Subscribe to jwt observable
+    this.ws.jwt.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(jwt => {
+      if (jwt !== null) {
+        // JWT is received, perform redirection or other actions here
+        this.router.navigate(['/home']);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   get email() {
@@ -34,16 +55,18 @@ export class LoginComponent {
     if (this.form.get('email') && this.form.get('password')) {
       //The ?? operator works like this:
       //const value = possiblyNullOrUndefinedValue ?? defaultValue;
+      //todo should be from form group instead (so it is validated) look in register component for example code
       const email: string = this.form.get('email')!.value ?? '';
       const password: string = this.form.get('password')!.value ?? '';
       this.authService.loginUser(email, password);
-      //todo should sub on JWT so we can se when the user is logged in and redirect if success
-      //todo should show a toast if the server sends a error.
-
     }
     //Handles if an error occurs
     else {
       console.error('Was not able to get the required information');
     }
+  }
+
+  RedirectToForgotPassword() {
+    this.router.navigate(['/resetpassword']);
   }
 }

@@ -1,9 +1,11 @@
 import {BaseDto} from "./baseDto";
 
-export class ClientWantsToRegister extends BaseDto<ClientWantsToRegister>{
+export class ClientWantsToRegisterDto extends BaseDto<ClientWantsToRegisterDto>{
   Email?: string;
+  CountryCode?: string;
   Phone?: string;
-  Name?: string;
+  FirstName?: string;
+  LastName?: string;
   Password?: string;
 }
 
@@ -16,3 +18,4 @@ export class ClientWantsToAuthenticate extends BaseDto<ClientWantsToAuthenticate
 export class ClientWantsToAuthenticateWithJwt extends BaseDto<ClientWantsToAuthenticateWithJwt> {
   jwt?: string;
 }
+

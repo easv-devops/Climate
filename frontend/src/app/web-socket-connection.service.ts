@@ -2,7 +2,8 @@ import {Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
 import {WebsocketSuperclass} from "../models/websocketSuperclass";
 import {BaseDto} from "../models/baseDto";
-import {ServerAuthenticatesUserDto, User} from "../models/returnedObjectsFromBackend";
+import {ServerAuthenticatesUserDto, ServerRegisterUserDto, User} from "../models/returnedObjectsFromBackend";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
@@ -14,7 +15,11 @@ export class WebSocketConnectionService {
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
   AllRooms: number[] = [];
   AllDevices: number[] = [];
-  jwt: string | undefined;
+
+  //observable jwt
+  private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
+  jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
+
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
@@ -36,7 +41,13 @@ export class WebSocketConnectionService {
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
-    this.jwt = dto.Jwt;
+    this.jwtSubject.next(dto.Jwt);
   }
+
+  ServerRegisterUser(dto: ServerRegisterUserDto) {
+    this.jwtSubject.next(dto.Jwt);
+  }
+
+
 }
 
