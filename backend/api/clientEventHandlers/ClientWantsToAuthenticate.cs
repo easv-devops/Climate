@@ -56,7 +56,6 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         {
             Jwt = _tokenService.IssueJwt(user.Id)
         });
-        socket.SendDto(new ServerAuthenticatesUser { Jwt = _tokenService.IssueJwt(user.Id) });
         return Task.CompletedTask;
     }
 }

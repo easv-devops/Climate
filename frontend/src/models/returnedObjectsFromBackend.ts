@@ -1,7 +1,7 @@
 
 //Returned data types from backend
-export class ServerAuthenticatesUserDto {
-  Jwt!: string;
+export interface ServerAuthenticatesUserDto {
+  Jwt: string;
 }
 
 export class User {

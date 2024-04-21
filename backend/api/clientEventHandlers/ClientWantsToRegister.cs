@@ -7,6 +7,7 @@ using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
+using Newtonsoft.Json;
 using service.services;
 using service.services.notificationServices;
 
@@ -92,3 +93,4 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         return Task.CompletedTask;
     }
 }
+

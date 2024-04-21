@@ -34,8 +34,9 @@ export class LoginComponent {
     if (this.form.get('email') && this.form.get('password')) {
       //The ?? operator works like this:
       //const value = possiblyNullOrUndefinedValue ?? defaultValue;
-      const email: string = this.form.get('email')?.value ?? '';
-      const password: string = this.form.get('password')?.value ?? '';
+      //todo should not be null, at any time with the form control logic implemented.
+      const email: string = this.form.get('email')!.value ?? '';
+      const password: string = this.form.get('password')!.value ?? '';
       this.authService.loginUser(email, password);
     }
     //Handles if an error occurs

@@ -1,11 +1,10 @@
 ﻿using api.clientEventHandlers;
-using api.serverEventModels;
 using infrastructure.Models.serverEvents;
 using tests.WebSocket;
 
 namespace tests;
 
-public class ClientWantsToRegisterTests
+public class ClientWantsToResetPassword
 {
     [SetUp]
     public void Setup()
@@ -14,21 +13,16 @@ public class ClientWantsToRegisterTests
         Startup.Start(null);
     }
     
-    [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "+45", TestName = "Valid")]
-    [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "+44", TestName = "Invalid password")]
-    [TestCase("fewia.com", "156812333", "234567890", "John", "Doe", "+80", TestName = "invalid email")]
-    public async Task RegisterTest(string email, string password,  string phone, string firstName, string lastName, string countryCode)
+    [TestCase("user@example.com", TestName = "Valid")]
+    [TestCase("userDoesNotExist@example.com", TestName = "Invalid user")]
+    [TestCase("fewia.com", TestName = "invalid email")]
+    public async Task ResetPasswordTest(string email)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        await ws.DoAndAssert(new ClientWantsToRegisterDto
+        await ws.DoAndAssert(new ClientWantsToResetPasswordDto
         {
-            Email = email,
-            Password = password,
-            Phone = phone,
-            FirstName = firstName,
-            LastName = lastName,
-            CountryCode = countryCode
+            Email = email
         }, fromServer =>
         {
             return fromServer.Count(dto =>
@@ -38,8 +32,8 @@ public class ClientWantsToRegisterTests
                 switch (testName)
                 {
                     case "Valid":
-                        return dto.eventType == nameof(ServerAuthenticatesUser);
-                    case "Invalid password":
+                        return dto.eventType == nameof(ServerResetsPassword);
+                    case "Invalid user":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                     case "invalid email":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
@@ -49,4 +43,5 @@ public class ClientWantsToRegisterTests
             }) == 1;
         });
     }
+    
 }

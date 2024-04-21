@@ -10,6 +10,7 @@ export class WebSocketConnectionService {
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
   //TODO use records instead of lists
+  //todo should be objects instead of number, reference to the object (key= id. value = object)
   AllRooms: number[] = [];
   AllDevices: number[] = [];
   jwt: string | undefined;
