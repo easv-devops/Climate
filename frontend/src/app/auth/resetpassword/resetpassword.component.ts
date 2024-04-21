@@ -31,9 +31,8 @@ export class ResetpasswordComponent  implements OnInit {
     ).subscribe(isReset => {
       console.log(isReset)
       if (isReset) {
-        console.log("heey")
-        // JWT is received, performs redirection
-        this.router.navigate(['/home']);
+        //if password was successfully reset go to login.
+        this.router.navigate(['/login']);
       }
     });
   }

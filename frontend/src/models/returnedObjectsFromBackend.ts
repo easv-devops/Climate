@@ -17,3 +17,9 @@ export class ServerRegisterUserDto {
 export class ServerResetsPasswordDto {
   IsReset!: boolean;
 }
+
+
+export class ServerSendsErrorMessageToClient {
+  errorMessage!: string;
+  receivedMessage!: string
+}

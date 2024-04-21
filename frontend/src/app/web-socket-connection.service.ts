@@ -5,10 +5,12 @@ import {BaseDto} from "../models/baseDto";
 import {
   ServerAuthenticatesUserDto,
   ServerRegisterUserDto
-  , ServerResetsPasswordDto,
+  , ServerResetsPasswordDto, ServerSendsErrorMessageToClient,
   User
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
+import {ErrorHandlingService} from "./error-handling.service";
+
 
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
@@ -26,13 +28,14 @@ export class WebSocketConnectionService {
   private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
 
+  //used to reset password
   private isResetSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isReset: Observable<boolean | undefined> = this.isResetSubject.asObservable();
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
 
-  constructor() {
+  constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
     this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl);
     this.handleEvent();
@@ -50,6 +53,11 @@ export class WebSocketConnectionService {
   //These methods are triggered from the responses from the backend
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     this.jwtSubject.next(dto.Jwt);
+  }
+
+  ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
+    const errorMessage = 'sowwy there was an error:(  ' + dto.errorMessage;
+    this.errorHandlingService.handleError(errorMessage);
   }
 
   ServerRegisterUser(dto: ServerRegisterUserDto) {
