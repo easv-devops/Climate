@@ -15,8 +15,8 @@ export class AppComponent implements OnInit {
       label: 'Auth eksempel',
       icon: 'person-circle',
       subItems: [
-        {label: 'Login', routerLink: '/login'},
-        {label: 'Register', routerLink: '/register'}
+        {label: 'Login', routerLink: 'login'},
+        {label: 'Register', routerLink: 'register'}
       ]
     }
   ];
