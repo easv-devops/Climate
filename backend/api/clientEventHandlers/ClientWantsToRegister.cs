@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using service.services;
 using service.services.notificationServices;
 
-namespace api.clientEventHandlers;
+namespace api.clientEventHandlers;  
 
 public class ClientWantsToRegisterDto : BaseDto
 {

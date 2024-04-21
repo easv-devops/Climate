@@ -32,9 +32,7 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
         string newPassword = _authService.ResetPassword(dto.Email);
         
         var isReset = _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
-        
-                
-        socket.SendDto(new ServerResetsPassword { IsReset = isReset});
+        socket.SendDto(new ServerResetsPassword { IsReset= isReset});
         return Task.CompletedTask;
         
     }

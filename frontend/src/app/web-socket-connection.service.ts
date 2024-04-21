@@ -2,7 +2,12 @@ import {Injectable} from "@angular/core";
 import {environment} from "../environments/environment";
 import {WebsocketSuperclass} from "../models/websocketSuperclass";
 import {BaseDto} from "../models/baseDto";
-import {ServerAuthenticatesUserDto, ServerRegisterUserDto, User} from "../models/returnedObjectsFromBackend";
+import {
+  ServerAuthenticatesUserDto,
+  ServerRegisterUserDto
+  , ServerResetsPasswordDto,
+  User
+} from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 
 @Injectable({providedIn: 'root'})
@@ -15,11 +20,14 @@ export class WebSocketConnectionService {
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
   AllRooms: number[] = [];
   AllDevices: number[] = [];
+  //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
 
-  //observable jwt
+  //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
   private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
 
+  private isResetSubject = new BehaviorSubject<boolean | undefined>(undefined);
+  isReset: Observable<boolean | undefined> = this.isResetSubject.asObservable();
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
@@ -48,6 +56,9 @@ export class WebSocketConnectionService {
     this.jwtSubject.next(dto.Jwt);
   }
 
+  ServerResetsPassword(dto: ServerResetsPasswordDto) {
+    this.isResetSubject.next(dto.IsReset);
+  }
 
 }
 

@@ -44,11 +44,16 @@ export class RegisterComponent  implements OnInit {
     this.ws.jwt.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(jwt => {
-      if (jwt !== undefined) {
-        // JWT is received, perform redirection or other actions here
+      if (jwt) {
+        // JWT is received, performs redirection
         this.router.navigate(['/home']);
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   get firstName() {

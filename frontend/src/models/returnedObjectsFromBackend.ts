@@ -13,3 +13,7 @@ export class User {
 export class ServerRegisterUserDto {
   Jwt!: string;
 }
+
+export class ServerResetsPasswordDto {
+  IsReset!: boolean;
+}

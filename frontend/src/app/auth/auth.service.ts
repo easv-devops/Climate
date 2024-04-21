@@ -1,6 +1,10 @@
 import {inject, Inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
-import {ClientWantsToAuthenticate, ClientWantsToRegisterDto} from "../../models/clientRequests";
+import {
+  ClientWantsToAuthenticate,
+  ClientWantsToRegisterDto,
+  ClientWantsToResetPassword
+} from "../../models/clientRequests";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,6 @@ export class AuthService{
   }
 
 
-  //TODO fix the register
   registerUser(registerDto: ClientWantsToRegisterDto){
     this.ws.socketConnection.sendDto(registerDto)
   }
@@ -27,4 +30,13 @@ export class AuthService{
       })
     )
   }
+
+
+  resetPasswordWithEmail(clientWantsToResetPassword: ClientWantsToResetPassword){
+    this.ws.socketConnection.sendDto(clientWantsToResetPassword)
+  }
+
+
 }
+
+

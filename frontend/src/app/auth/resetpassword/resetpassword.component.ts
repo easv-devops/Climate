@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
+import {ClientWantsToRegisterDto, ClientWantsToResetPassword} from "../../../models/clientRequests";
+import {AuthService} from "../auth.service";
+import {Subject, takeUntil} from "rxjs";
+import {WebSocketConnectionService} from "../../web-socket-connection.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-resetpassword',
@@ -12,17 +17,41 @@ export class ResetpasswordComponent  implements OnInit {
     email: ['', [Validators.required, Validators.email]],
   });
 
+  private unsubscribe$ = new Subject<void>();
   constructor(
     private readonly fb: FormBuilder,
+    private authService: AuthService,
+    public ws: WebSocketConnectionService,
+    private router: Router
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.ws.isReset.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(isReset => {
+      console.log(isReset)
+      if (isReset) {
+        console.log("heey")
+        // JWT is received, performs redirection
+        this.router.navigate(['/home']);
+      }
+    });
+  }
+
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
   get email() {
     return this.form.controls.email;
   }
 
   resetPassword() {
-
+    let user = new ClientWantsToResetPassword({
+      Email: this.email.value!,
+    })
+    this.authService.resetPasswordWithEmail(user);
   }
 }

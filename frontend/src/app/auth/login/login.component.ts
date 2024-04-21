@@ -27,7 +27,7 @@ export class LoginComponent {
     this.ws.jwt.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(jwt => {
-      if (jwt !== null) {
+      if(jwt){
         // JWT is received, perform redirection or other actions here
         this.router.navigate(['/home']);
       }
