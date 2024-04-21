@@ -33,7 +33,6 @@ export class WebSocketConnectionService {
     }
   }
 
-
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
