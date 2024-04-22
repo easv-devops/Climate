@@ -24,3 +24,39 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+
+/* Tilpas baggrundsfarven */
+.toast-message {
+  color: #ff0000; /* Rød tekstfarve */
+  background-color: #bb1c1c; /* Baggrundsfarve */
+  border-radius: 20px; /* Mere afrundede hjørner */
+  padding: 15px; /* Øget polstring */
+  font-size: 1.2em; /* Større skriftstørrelse */
+}
+
+/* Tilpas skyggen for at få et løft */
+.toast-wrapper {
+  box-shadow: 0 10px 20px rgba(220, 19, 19, 0.5); /* Mere udtalt skygge */
+}
+
+/* Tilpas animation */
+.toast-wrapper {
+  animation: slideIn 1s ease-in-out; /* Langsommere indskydningsanimation */
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%); /* Startposition for animation */
+  }
+  to {
+    transform: translateY(0); /* Slutposition for animation */
+  }
+}
+
+/* Tilpas størrelsen af toasten på større skærme */
+@media (min-width: 768px) {
+  .toast-message {
+    font-size: 1.5em; /* Større skriftstørrelse på større skærme */
+  }
+}

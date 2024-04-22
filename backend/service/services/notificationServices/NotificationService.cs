@@ -57,7 +57,7 @@ public class NotificationService
                 throw new NotImplementedException("notification preference not implemented");
         }
 
-        return false;
+        return true;
     }
 
     private bool SendResetPasswordEmail(string newPassword, string email)
@@ -85,6 +85,7 @@ public class NotificationService
             htmlBody = mailBody,
             recipientEmail = user.Email
         };
+        
         return _smtpRepository.SendEmail(mail);
     }
 }

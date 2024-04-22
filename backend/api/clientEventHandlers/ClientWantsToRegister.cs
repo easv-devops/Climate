@@ -7,10 +7,11 @@ using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
+using Newtonsoft.Json;
 using service.services;
 using service.services.notificationServices;
 
-namespace api.clientEventHandlers;
+namespace api.clientEventHandlers;  
 
 public class ClientWantsToRegisterDto : BaseDto
 {
@@ -38,7 +39,6 @@ public class ClientWantsToRegisterDto : BaseDto
 [ValidateDataAnnotations]
 public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
 {
-    
     private readonly AuthService _authService;
 
     private readonly TokenService _tokenService;
@@ -53,6 +53,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         _tokenService = tokenService;
         _notificationService = notificationService;
     }
+
     public override Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
     {
         //check if the user already exists 
@@ -69,7 +70,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             FirstName = dto.FirstName,
             LastName = dto.LastName
         });
-        
+
         //issue token
         var token = _tokenService.IssueJwt(user.Id);
 
@@ -92,3 +93,4 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         return Task.CompletedTask;
     }
 }
+
