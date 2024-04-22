@@ -1,3 +1,73 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
+<!-- Mobile view  -->
+<ion-app *ngIf="isMobile">
+  <ion-menu menuId="main-menu" content-id="main">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title class="climate-color" style="font-weight: bold">Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list>
+        <ion-accordion-group>
+          <ion-accordion *ngFor="let menuItem of menuItems">
+            <ion-item slot="header">
+              <ion-icon class="climate-color" slot="start" [name]="menuItem.icon"></ion-icon>
+              <ion-label class="climate-color">{{ menuItem.label }}</ion-label>
+            </ion-item>
+            <ion-list slot="content">
+              <ion-menu-toggle>
+                <ion-item *ngFor="let subItem of menuItem.subItems" [routerLink]="subItem.routerLink">
+                  <ion-icon class="climate-color" slot="start" [name]="subItem.icon"></ion-icon>
+                  <ion-label class="climate-color">{{ subItem.label }}</ion-label>
+                </ion-item>
+              </ion-menu-toggle>
+            </ion-list>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <ion-content>
+    <ion-router-outlet id="main">
+    </ion-router-outlet>
+  </ion-content>
+</ion-app>
+
+<!-- Desktop view  -->
+<ion-app *ngIf="!isMobile">
+  <ion-split-pane contentId="desktopmenu">
+    <ion-menu side="start" menuId="main-menu" contentId="desktopmenu">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title class="climate-color" style="font-weight: bold;">Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content>
+        <ion-list>
+          <ion-accordion-group>
+            <ion-accordion *ngFor="let menuItem of menuItems">
+              <ion-item slot="header">
+                <ion-icon class="climate-color" slot="start" [name]="menuItem.icon"></ion-icon>
+                <ion-label class="climate-color">{{ menuItem.label }}</ion-label>
+              </ion-item>
+              <ion-list slot="content">
+                <ion-item *ngFor="let subItem of menuItem.subItems" [routerLink]="subItem.routerLink">
+                  <ion-icon class="climate-color" slot="start" [name]="subItem.icon"></ion-icon>
+                  <ion-label class="climate-color">{{ subItem.label }}</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-accordion>
+          </ion-accordion-group>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+
+    <ion-content id="desktopmenu" class="ion-page">
+      <ion-router-outlet>
+      </ion-router-outlet>
+    </ion-content>
+  </ion-split-pane>
 </ion-app>
