@@ -56,7 +56,7 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
-    const errorMessage = 'sowwy there was an error:(  ' + dto.errorMessage;
+    const errorMessage = 'Something went wrong. ' + dto.errorMessage;
     this.errorHandlingService.handleError(errorMessage);
   }
 

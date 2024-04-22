@@ -29,7 +29,6 @@ export class ResetpasswordComponent  implements OnInit {
     this.ws.isReset.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(isReset => {
-      console.log(isReset)
       if (isReset) {
         //if password was successfully reset go to login.
         this.router.navigate(['/login']);
