@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {ToastController} from "@ionic/angular";
+import {WebSocketConnectionService} from "../web-socket-connection.service";
 
 @Component({
   selector: 'app-auth',
@@ -7,8 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AuthComponent  implements OnInit {
 
-  constructor() { }
+  constructor(private toastController: ToastController) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
+
+  async presentToast(errorMessage: string) {
+    const toast = await this.toastController.create({
+      message: errorMessage,
+      duration: 4000,
+      position: 'bottom',
+      color: 'danger'
+    });
+    toast.present();
+  }
 
 }

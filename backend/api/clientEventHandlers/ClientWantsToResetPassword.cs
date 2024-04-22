@@ -1,4 +1,6 @@
-﻿using Fleck;
+﻿using System.ComponentModel.DataAnnotations;
+using api.helpers;
+using Fleck;
 using infrastructure.Models;
 using lib;
 using service.services;
@@ -29,8 +31,16 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
     {
         string newPassword = _authService.ResetPassword(dto.Email);
         
-        _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
+        var isReset = _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
+        socket.SendDto(new ServerResetsPassword { IsReset= isReset});
         return Task.CompletedTask;
         
     }
+}
+
+public class ServerResetsPassword : BaseDto
+{
+    [Required(ErrorMessage = "No status for reset of password")]
+    public bool IsReset { get; set; }
+    
 }
