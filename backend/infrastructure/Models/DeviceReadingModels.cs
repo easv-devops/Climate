@@ -1,9 +1,5 @@
 ﻿namespace infrastructure.Models;
 
-public class DeviceReadingModels
-{
-    
-}
 
 public class DeviceReadingsDto
 {
