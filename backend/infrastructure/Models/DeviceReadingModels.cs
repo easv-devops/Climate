@@ -9,32 +9,31 @@ public class DeviceReadingsDto
 
 public class Data
 {
-
-    public List<TemperatureData> Temperatures { get; set; }
-    public List<HumiditiesData> Humidities { get; set; }
-    public List<Particles25Data> Particles25 { get; set; }
-    public List<Particles100Data> Particles100 { get; set; }
+    public List<TemperatureDto> Temperatures { get; set; }
+    public List<HumidityDto> Humidities { get; set; }
+    public List<Particle25Dto> Particles25 { get; set; }
+    public List<Particle100Dto> Particles100 { get; set; }
 }
 
-public class TemperatureData
+public class TemperatureDto
 {
     public Double Temperature { get; set; }
     public DateTime TimeStamp { get; set; }
 }
 
-public class HumiditiesData
+public class HumidityDto
 {
     public Double Humidity { get; set; }
     public DateTime TimeStamp { get; set; }
 }
 
-public class Particles25Data
+public class Particle25Dto
 {
     public int Particle25 { get; set; }
     public DateTime TimeStamp { get; set; }
 }
 
-public class Particles100Data
+public class Particle100Dto
 {
     public int Particle100 { get; set; }
     public DateTime TimeStamp { get; set; }
