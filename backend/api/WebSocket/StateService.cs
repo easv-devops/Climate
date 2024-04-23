@@ -22,6 +22,9 @@ public static class StateService
     //holds the connections
     private static readonly Dictionary<Guid, WebSocketMetaData> _clients = new();
     
+    //todo 2 dictionaries (clientToRoom and RoomToClient)  see https://github.com/uldahlalex/MiniProjectSolution/blob/master/Api/State/WebSocketStateService.cs
+    //todo do the same for roomToDevice and DeviceToRoom
+    
     public static WebSocketMetaData GetClient(Guid clientId)
     {
         return _clients[clientId];
