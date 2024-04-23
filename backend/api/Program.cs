@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Authentication;
 using api.helpers;
+using api.mqttEventListeners;
 using api.security;
 using api.WebSocket;
 using Fleck;
@@ -35,6 +36,8 @@ public static class Startup
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
+
+        builder.Services.AddSingleton<MqttClientSubscriber>();
         
         // Add services to the container.
         
@@ -78,6 +81,7 @@ public static class Startup
                 }
             };
         });
+        app.Services.GetService<MqttClientSubscriber>().CommunicateWithBroker();
         return app;
     }
 }
