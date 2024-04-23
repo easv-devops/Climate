@@ -31,7 +31,7 @@ public class ClientWantsToGetDevicesFromRoom : BaseEventHandler<ClientWantsToGet
         //todo should first check if room is already loaded in state service (if loaded in state service it should just get the list from there)
         //todo if room id is not in state service, load them from repo/db
         var devices = _deviceService.GetDevicesByRoomId(fromRoomDto.RoomId);
-        
+        //todo if devices are loaded from db, update relevant dictionaries in state service 
         socket.SendDto(new ServerSendsDevicesFromRoom
         {
             RoomId = fromRoomDto.RoomId,
