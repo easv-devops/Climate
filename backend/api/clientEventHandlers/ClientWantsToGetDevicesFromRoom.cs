@@ -27,6 +27,9 @@ public class ClientWantsToGetDevicesFromRoom : BaseEventHandler<ClientWantsToGet
     }
     public override Task Handle(ClientWantsToGetDevicesFromRoomDto fromRoomDto, IWebSocketConnection socket)
     {
+        //todo check that user has access to room!!
+        //todo should first check if room is already loaded in state service (if loaded in state service it should just get the list from there)
+        //todo if room id is not in state service, load them from repo/db
         var devices = _deviceService.GetDevicesByRoomId(fromRoomDto.RoomId);
         
         socket.SendDto(new ServerSendsDevicesFromRoom
