@@ -1,4 +1,7 @@
+#include "WString.h"
+#include "HardwareSerial.h"
 #include "pms_functions.h"
+#include <ArduinoJson.h> // Include the ArduinoJson library
 
 /**
 * setup serial connection to sensor, and sets the datatype
@@ -7,7 +10,7 @@
 * rx = pin 25 on esp32E
 */
 void setupPMS5003Sensor(int tx, int rx){
-    Serial2.begin(9600, SERIAL_8N1, tx, rx); // Initialize Serial2 for PMS5003 (TX = GPIO26, RX = GPIO25)
+  Serial2.begin(9600, SERIAL_8N1, tx, rx); // Initialize Serial2 for PMS5003 (TX = GPIO26, RX = GPIO25)
   // Start PMS5003
   Serial2.write(0x42);
   Serial2.write(0x4D);
@@ -65,10 +68,47 @@ ParticleData readParticels() {
 
 // Method to print particle data implementation
 void ParticleData::printData() {
-    Serial.print("PM1.0: ");
-    Serial.println(pm10);
-    Serial.print("PM2.5: ");
-    Serial.println(pm25);
-    Serial.print("PM10: ");
+    Serial.print("\t\tPM1.0: ");
+    Serial.print(pm10);
+    Serial.print("\t\tPM2.5: ");
+    Serial.print(pm25);
+    Serial.print("\t\tPM10: ");
     Serial.println(pm100);
+}
+
+void HumidityData::printData(){
+  Serial.print("\t\tHumidity: ");
+  Serial.print(humidity);
+}
+
+String HumidityData::toJSON() {
+    // Create a JSON object with a capacity of 32
+    StaticJsonDocument<32> doc;
+
+    // Add humidity value to the JSON object, so it will look like this: humidity : value
+    doc["humidity"] = humidity;
+
+    // Serialize the JSON object to a String
+    String jsonString;
+    serializeJson(doc, jsonString);
+
+    return jsonString;
+}
+
+void TemperaturData::printData(){
+  Serial.print("\t\t\tTemperatur: ");
+  Serial.print(temperatur);
+}
+String TemperaturData::toJSON(){
+  // Create a JSON object with a capacity of 32
+    StaticJsonDocument<32> doc;
+
+    // Add temperatur value to the JSON object, so it will look like this: humidity : value
+    doc["temperatur"] = temperatur;
+
+    // Serialize the JSON object to a String
+    String jsonString;
+    serializeJson(doc, jsonString);
+
+    return jsonString;
 }
