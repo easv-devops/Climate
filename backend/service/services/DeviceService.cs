@@ -8,15 +8,20 @@ public class DeviceService
 {
 
     private readonly DeviceRepository _deviceRepository;
-    
-    
 
+    public DeviceService(DeviceRepository deviceRepository)
+    {
+        _deviceRepository = deviceRepository;
+    }
     public DeviceDto CreateDevice(DeviceDto deviceDto)
     {
         var device = _deviceRepository.Create(deviceDto);
 
         return deviceDto;
     }
-    
-    
+
+    public IEnumerable<DeviceFromRoomDto> GetDevicesByRoomId(int roomId)
+    {
+        return _deviceRepository.GetDevicesByRoomId(roomId);
+    }
 }

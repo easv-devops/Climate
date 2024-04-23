@@ -14,8 +14,7 @@ public class DeviceRepository
     {
         _connectionString = connectionString;
     }
-
-
+    
     public DeviceDto Create(DeviceDto deviceDto)
     {
         using var connection = new MySqlConnection(_connectionString);
@@ -39,6 +38,28 @@ public class DeviceRepository
         }
     }
 
+    /**
+     * Gets all devices from a specific room.
+     * Returns a list of devices - can be null if no devices in the room.
+     */
+    public IEnumerable<DeviceFromRoomDto> GetDevicesByRoomId(int roomId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
 
+            string getAllQuery = @"
+                SELECT Id, DeviceName
+                FROM Device 
+                WHERE RoomId = @RoomId;";
+            return connection.Query<DeviceFromRoomDto>(getAllQuery, new {RoomId = roomId});
+        }
+        catch (Exception e)
+        {
+            // Handle exceptions, maybe log them
+            throw new SqlTypeException("Failed to retrieve device(s) from room "+roomId, e);
+        }
+    }
 
 }
