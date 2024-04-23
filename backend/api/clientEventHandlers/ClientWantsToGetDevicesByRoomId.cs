@@ -8,7 +8,7 @@ using service.services;
 
 namespace api.clientEventHandlers;
 
-public class ClientWantsToGetDevicesFromRoomDto : BaseDto
+public class ClientWantsToGetDevicesByRoomIdDto : BaseDto
 {
     [Required(ErrorMessage = "Room Id is required.")]
     [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
@@ -17,24 +17,24 @@ public class ClientWantsToGetDevicesFromRoomDto : BaseDto
 
 [RequireAuthentication]
 [ValidateDataAnnotations]
-public class ClientWantsToGetDevicesFromRoom : BaseEventHandler<ClientWantsToGetDevicesFromRoomDto>
+public class ClientWantsToGetDevicesByRoomId : BaseEventHandler<ClientWantsToGetDevicesByRoomIdDto>
 {
     private readonly DeviceService _deviceService;
 
-    public ClientWantsToGetDevicesFromRoom(DeviceService deviceService)
+    public ClientWantsToGetDevicesByRoomId(DeviceService deviceService)
     {
         _deviceService = deviceService;
     }
-    public override Task Handle(ClientWantsToGetDevicesFromRoomDto fromRoomDto, IWebSocketConnection socket)
+    public override Task Handle(ClientWantsToGetDevicesByRoomIdDto dto, IWebSocketConnection socket)
     {
         //todo check that user has access to room!!
         //todo should first check if room is already loaded in state service (if loaded in state service it should just get the list from there)
         //todo if room id is not in state service, load them from repo/db
-        var devices = _deviceService.GetDevicesByRoomId(fromRoomDto.RoomId);
+        var devices = _deviceService.GetDevicesByRoomId(dto.RoomId);
         //todo if devices are loaded from db, update relevant dictionaries in state service 
-        socket.SendDto(new ServerSendsDevicesFromRoom
+        socket.SendDto(new ServerSendsDevicesByRoomId
         {
-            RoomId = fromRoomDto.RoomId,
+            RoomId = dto.RoomId,
             Devices = devices
         });
         

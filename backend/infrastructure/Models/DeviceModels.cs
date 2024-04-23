@@ -8,8 +8,15 @@ public class DeviceDto
     public required int RoomId { get; set; }
 }
 
-public class DeviceFromRoomDto
+public class DeviceByRoomIdDto
 {
     public required int Id { get; set; }
+    public required string DeviceName { get; set; }
+}
+
+public class DeviceFullDto
+{
+    public required int Id { get; set; }
+    public required int RoomId { get; set; }
     public required string DeviceName { get; set; }
 }

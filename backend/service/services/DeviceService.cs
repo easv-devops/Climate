@@ -20,8 +20,18 @@ public class DeviceService
         return deviceDto;
     }
 
-    public IEnumerable<DeviceFromRoomDto> GetDevicesByRoomId(int roomId)
+    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId)
     {
         return _deviceRepository.GetDevicesByRoomId(roomId);
+    }
+    
+    public IEnumerable<DeviceFullDto> GetDevicesByUserId(int userId)
+    {
+        return _deviceRepository.GetDevicesByUserId(userId);
+    }
+
+    public DeviceFullDto GetDeviceById(int deviceId)
+    {
+        return _deviceRepository.GetDeviceById(deviceId);
     }
 }
