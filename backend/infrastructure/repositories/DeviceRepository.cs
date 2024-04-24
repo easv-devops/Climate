@@ -24,7 +24,8 @@ public class DeviceRepository
             connection.Open();
 
             string createDeviceQuery = "INSERT INTO Device (DeviceName, RoomId) VALUES (@DeviceName, @RoomId);";
-            connection.Execute(createDeviceQuery, new { DebiceName = deviceDto.DeviceName });
+            
+            connection.Execute(createDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId });
 
             return new DeviceDto
             {

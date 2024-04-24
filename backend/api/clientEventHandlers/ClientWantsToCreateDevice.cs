@@ -1,4 +1,5 @@
-﻿using Fleck;
+﻿using api.helpers;
+using Fleck;
 using infrastructure.Models;
 using lib;
 using service.services;
@@ -31,7 +32,7 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                 DeviceName = dto.DeviceName,
                 RoomId = dto.RoomId
             });
-
+            socket.SendDto(dto);
             return Task.CompletedTask;
         }
 
