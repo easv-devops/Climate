@@ -10,7 +10,7 @@ public class DeviceDto
 
 //lav class med ID
 
-public class DeviceWithIdDto
+public class DeviceWithId
 {
     public required string DeviceName { get; set; }
     public required int RoomId { get; set; }

@@ -34,8 +34,8 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$)
     ).subscribe(deviceId => {
       if (deviceId) {
-        this.router.navigate(['http://localhost:4200/#/devices/' + deviceId]);
-        console.log(deviceId);
+        this.router.navigate(['/devices/' + deviceId]);
+        //console.log(deviceId);
       }
     });
   }

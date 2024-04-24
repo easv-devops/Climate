@@ -16,7 +16,7 @@ public class DeviceRepository
     }
 
 
-    public DeviceWithIdDto Create(DeviceDto deviceDto)
+    public DeviceWithId Create(DeviceDto deviceDto)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -30,11 +30,9 @@ public class DeviceRepository
             
             //Console.WriteLine("før conn.query");
 
-            var createdDevice = connection.QueryFirst<DeviceWithIdDto>(createDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId });
-
-            Console.WriteLine("deviceId: " + createdDevice.Id + ", " + createdDevice.DeviceName);
-            //Console.WriteLine("før return");
-            return new DeviceWithIdDto
+            var createdDevice = connection.QueryFirst<DeviceWithId>(createDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId });
+            
+            return new DeviceWithId
             {
                 DeviceName = createdDevice.DeviceName,
                 RoomId = createdDevice.RoomId,

@@ -7,8 +7,7 @@ import {
   ServerRegisterUserDto,
   ServerResetsPasswordDto,
   ServerSendsErrorMessageToClient,
-  ServerSendsCreatedDeviceDto,
-  User,
+  User, DeviceWithIdDto,
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
@@ -74,8 +73,9 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
-  ServerCreatesDevice(dto: ServerSendsCreatedDeviceDto){
-    this.deviceIdSubject.next(dto.deviceId);
+  ServerSendsDevice(dto: DeviceWithIdDto){
+
+    this.deviceIdSubject.next(dto.Id);
   }
 
 

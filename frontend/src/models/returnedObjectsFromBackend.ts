@@ -24,8 +24,8 @@ export class ServerSendsErrorMessageToClient {
   receivedMessage!: string
 }
 
-export class ServerSendsCreatedDeviceDto {
-  deviceName!: string;
-  roomId!: number;
-  deviceId!: number;
+export class DeviceWithIdDto {
+  DeviceName!: string;
+  RoomId!: number;
+  Id!: number;
 }

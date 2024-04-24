@@ -32,7 +32,13 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                 DeviceName = dto.DeviceName,
                 RoomId = dto.RoomId
             });
-            socket.SendDto(dto);
+            
+            socket.SendDto(new ServerSendsDevice
+            {
+                DeviceName = response.DeviceName,
+                RoomId = response.RoomId,
+                Id = response.Id
+            });
             return Task.CompletedTask;
         }
 
@@ -40,4 +46,12 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
         
 
     
+}
+
+
+public class ServerSendsDevice : BaseDto
+{
+    public required string DeviceName { get; set; }
+    public required int RoomId { get; set; }
+    public required int Id { get; set; }
 }
