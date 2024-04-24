@@ -35,7 +35,7 @@ export class DeviceComponent implements OnInit {
     this.deviceService.getDeviceById(this.idFromRoute)
   }
 
-  subscribeToDevice(): void {
+  subscribeToDevice() {
     this.deviceService.getDeviceObservable()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(d => {
