@@ -3,6 +3,10 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
 import {DeviceService} from "../device.service";
 import {ToastController} from "@ionic/angular";
+import {WebSocketConnectionService} from "../../web-socket-connection.service";
+import {Router} from "@angular/router";
+import {Subject, takeUntil} from "rxjs";
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-create-device',
@@ -17,11 +21,31 @@ export class CreateDeviceComponent {
     roomId: ['', Validators.required]
   });
 
+  private unsubscribe$ = new Subject<void>();
+
   constructor(
       private readonly fb: FormBuilder,
       private deviceService: DeviceService,
-      private toastController: ToastController // ToastController injected here
+      private toastController: ToastController,
+      public ws: WebSocketConnectionService,
+      private router: Router
   ) {
+  }
+
+  ngOnInit(){
+    this.ws.deviceId.pipe(
+        takeUntil(this.unsubscribe$)
+    ).subscribe(deviceId =>{
+      if(deviceId){
+        this.router.navigate(['http://localhost:4200/#/devices/' + deviceId]);
+        console.log(deviceId)
+      }
+    })
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
 
@@ -38,24 +62,6 @@ export class CreateDeviceComponent {
       DeviceName: this.deviceName.value!,
       RoomId: 1 // Hardcoded value for roomId
     });
-
-    try {
-      this.deviceService.createDevice(device);
-      const toast = await this.toastController.create({
-        message: 'Device successfully created',
-        duration: 2000, // Toast duration in milliseconds
-        position: 'bottom', // Toast position
-        color: "success"
-      });
-      await toast.present();
-    } catch (error) {
-      const toast = await this.toastController.create({
-        message: 'Failed to create device',
-        duration: 2000, // Toast duration in milliseconds
-        position: 'bottom', // Toast position
-        color: 'danger'
-      });
-      await toast.present();
-    }
+this.deviceService.createDevice(device);
   }
 }

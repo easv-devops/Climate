@@ -1,21 +1,20 @@
-import {inject, Inject, Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
+
 import {WebSocketConnectionService} from "../web-socket-connection.service";
-import {
-    ClientWantsToCreateDeviceDto
-} from "../../models/ClientWantsToCreateDeviceDto";
+import {ClientWantsToCreateDeviceDto} from "../../models/ClientWantsToCreateDeviceDto";
 
 @Injectable({
     providedIn: 'root'
 })
+export class DeviceService {
 
-export class DeviceService{
-    private ws: WebSocketConnectionService = inject(WebSocketConnectionService);
+    constructor(
+        public ws: WebSocketConnectionService
+    ){
 
-
-    constructor() {
     }
 
-    createDevice(createDeviceDto: ClientWantsToCreateDeviceDto){
+    createDevice(createDeviceDto: ClientWantsToCreateDeviceDto) {
         this.ws.socketConnection.sendDto(createDeviceDto)
     }
 }

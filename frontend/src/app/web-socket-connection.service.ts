@@ -4,12 +4,15 @@ import {WebsocketSuperclass} from "../models/websocketSuperclass";
 import {BaseDto} from "../models/baseDto";
 import {
   ServerAuthenticatesUserDto,
-  ServerRegisterUserDto
-  , ServerResetsPasswordDto, ServerSendsErrorMessageToClient,
-  User
+  ServerRegisterUserDto,
+  ServerResetsPasswordDto,
+  ServerSendsErrorMessageToClient,
+  ServerSendsCreatedDeviceDto,
+  User,
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
+import {ClientWantsToCreateDeviceDto} from "../models/ClientWantsToCreateDeviceDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -31,6 +34,9 @@ export class WebSocketConnectionService {
   //used to reset password
   private isResetSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isReset: Observable<boolean | undefined> = this.isResetSubject.asObservable();
+
+  private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
+  deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
@@ -67,6 +73,11 @@ export class WebSocketConnectionService {
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
   }
+
+  ServerCreatesDevice(dto: ServerSendsCreatedDeviceDto){
+    this.deviceIdSubject.next(dto.deviceId);
+  }
+
 
 }
 

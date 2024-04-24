@@ -14,11 +14,11 @@ public class DeviceService
         _deviceRepository = deviceRepository;
     }
 
-    public DeviceDto CreateDevice(DeviceDto deviceDto)
+    public DeviceWithIdDto CreateDevice(DeviceDto deviceDto)
     {
-        var device = _deviceRepository.Create(deviceDto);
+        var deviceWithId = _deviceRepository.Create(deviceDto);
 
-        return deviceDto;
+        return deviceWithId;
     }
     
     

@@ -27,7 +27,7 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
 
         public override Task Handle(ClientWantsToCreateDeviceDto dto, IWebSocketConnection socket)
         {
-            _deviceService.CreateDevice(new DeviceDto()
+            var response = _deviceService.CreateDevice(new DeviceDto()
             {
                 DeviceName = dto.DeviceName,
                 RoomId = dto.RoomId
