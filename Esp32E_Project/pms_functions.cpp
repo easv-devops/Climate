@@ -1,4 +1,7 @@
+#include "WString.h"
+#include "HardwareSerial.h"
 #include "pms_functions.h"
+#include <ArduinoJson.h>  // Include the ArduinoJson library
 
 /**
 * setup serial connection to sensor, and sets the datatype
@@ -6,69 +9,134 @@
 * tx = pin 26 on esp32E
 * rx = pin 25 on esp32E
 */
-void setupPMS5003Sensor(int tx, int rx){
-    Serial2.begin(9600, SERIAL_8N1, tx, rx); // Initialize Serial2 for PMS5003 (TX = GPIO26, RX = GPIO25)
+void setupPMS5003Sensor(int tx, int rx) {
+  Serial2.begin(9600, SERIAL_8N1, tx, rx);  // Initialize Serial2 for PMS5003 (TX = GPIO26, RX = GPIO25)
   // Start PMS5003
   Serial2.write(0x42);
   Serial2.write(0x4D);
 }
 
 ParticleData getAverageParticleData(int numReadings) {
-    int totalPM10 = 0;
-    int totalPM25 = 0;
-    int totalPM100 = 0;
+  int totalPM10 = 0;
+  int totalPM25 = 0;
+  int totalPM100 = 0;
 
-    // Read the particle data 'numReadings' times
-    for (int i = 0; i < numReadings; i++) {
-        ParticleData data = readParticels();
-        totalPM10 += data.getPM10();
-        totalPM25 += data.getPM25();
-        totalPM100 += data.getPM100();
-        delay(3000); // Delay between readings (adjust as needed)
-    }
+  // Read the particle data 'numReadings' times
+  for (int i = 0; i < numReadings; i++) {
+    ParticleData data = readParticels();
+    totalPM10 += data.getPM10();
+    totalPM25 += data.getPM25();
+    totalPM100 += data.getPM100();
+    delay(3000);  // Delay between readings (adjust as needed)
+  }
 
-    // Calculate the average values
-    int avgPM10 = totalPM10 / numReadings;
-    int avgPM25 = totalPM25 / numReadings;
-    int avgPM100 = totalPM100 / numReadings;
+  // Calculate the average values
+  int avgPM10 = totalPM10 / numReadings;
+  int avgPM25 = totalPM25 / numReadings;
+  int avgPM100 = totalPM100 / numReadings;
 
-    // Create a new ParticleData object with the average values
-    ParticleData avgData(avgPM10, avgPM25, avgPM100);
-    return avgData;
+  // Create a new ParticleData object with the average values
+  ParticleData avgData(avgPM10, avgPM25, avgPM100);
+  return avgData;
 }
 
 // Function to read particle data
 ParticleData readParticels() {
-    ParticleData particleData(0, 0, 0);
+  ParticleData particleData(0, 0, 0);
 
-    if (Serial2.available() >= 32) {
-        // Read data frame
-        unsigned char data[32];
-        for (int i = 0; i < 32; i++) {
-            data[i] = Serial2.read();
-        }
-
-        // Check if the data starts with the correct header bytes
-        if (data[0] == 0x42 && data[1] == 0x4D) {
-            // Calculate PM1.0, PM2.5, and PM10 values
-            int pm10 = (data[4] << 8) | data[5];
-            int pm25 = (data[6] << 8) | data[7];
-            int pm100 = (data[8] << 8) | data[9];
-
-            // Update particle data object
-            particleData = ParticleData(pm10, pm25, pm100);
-        }
+  if (Serial2.available() >= 32) {
+    // Read data frame
+    unsigned char data[32];
+    for (int i = 0; i < 32; i++) {
+      data[i] = Serial2.read();
     }
 
-    return particleData;
+    // Check if the data starts with the correct header bytes
+    if (data[0] == 0x42 && data[1] == 0x4D) {
+      // Calculate PM1.0, PM2.5, and PM10 values
+      int pm10 = (data[4] << 8) | data[5];
+      int pm25 = (data[6] << 8) | data[7];
+      int pm100 = (data[8] << 8) | data[9];
+
+      // Update particle data object
+      particleData = ParticleData(pm10, pm25, pm100);
+    }
+  }
+
+  return particleData;
 }
 
 // Method to print particle data implementation
 void ParticleData::printData() {
-    Serial.print("PM1.0: ");
-    Serial.println(pm10);
-    Serial.print("PM2.5: ");
-    Serial.println(pm25);
-    Serial.print("PM10: ");
-    Serial.println(pm100);
+  Serial.print("\t\tPM1.0: ");
+  Serial.print(pm10);
+  Serial.print("\t\tPM2.5: ");
+  Serial.print(pm25);
+  Serial.print("\t\tPM10: ");
+  Serial.println(pm100);
+}
+String ParticleData::toJSON25() {
+  // Create a JSON object with a capacity of 32
+  StaticJsonDocument<32> doc;
+
+  // Add humidity value to the JSON object, so it will look like this: humidity : value
+  doc["Particle25"] = pm25;
+
+  // Serialize the JSON object to a String
+  String jsonString;
+  serializeJson(doc, jsonString);
+
+  return jsonString;
+}
+
+String ParticleData::toJSON100() {
+  // Create a JSON object with a capacity of 32
+  StaticJsonDocument<32> doc;
+
+  // Add humidity value to the JSON object, so it will look like this: humidity : value
+  doc["Particle100"] = pm100;
+
+  // Serialize the JSON object to a String
+  String jsonString;
+  serializeJson(doc, jsonString);
+
+  return jsonString;
+}
+
+
+void HumidityData::printData() {
+  Serial.print("\t\tHumidity: ");
+  Serial.print(humidity);
+}
+
+String HumidityData::toJSON() {
+  // Create a JSON object with a capacity of 32
+  StaticJsonDocument<32> doc;
+
+  // Add humidity value to the JSON object, so it will look like this: humidity : value
+  doc["humidity"] = humidity;
+
+  // Serialize the JSON object to a String
+  String jsonString;
+  serializeJson(doc, jsonString);
+
+  return jsonString;
+}
+
+void TemperaturData::printData() {
+  Serial.print("\t\t\tTemperatur: ");
+  Serial.print(temperatur);
+}
+String TemperaturData::toJSON() {
+  // Create a JSON object with a capacity of 32
+  StaticJsonDocument<32> doc;
+
+  // Add temperatur value to the JSON object, so it will look like this: humidity : value
+  doc["temperatur"] = temperatur;
+
+  // Serialize the JSON object to a String
+  String jsonString;
+  serializeJson(doc, jsonString);
+
+  return jsonString;
 }
