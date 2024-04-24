@@ -1,20 +1,18 @@
-import {Component} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
-import {DeviceService} from "../device.service";
-import {ToastController} from "@ionic/angular";
-import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {Router} from "@angular/router";
-import {Subject, takeUntil} from "rxjs";
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { ClientWantsToCreateDeviceDto } from "../../../models/ClientWantsToCreateDeviceDto";
+import { DeviceService } from "../device.service";
+import { ToastController } from "@ionic/angular";
+import { WebSocketConnectionService } from "../../web-socket-connection.service";
+import { Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: 'app-create-device',
   templateUrl: './create-device.component.html',
   styleUrls: ['./create-device.component.scss'],
 })
-
-export class CreateDeviceComponent {
+export class CreateDeviceComponent implements OnInit, OnDestroy {
 
   readonly form = this.fb.group({
     deviceName: ['', Validators.required],
@@ -29,32 +27,30 @@ export class CreateDeviceComponent {
       private toastController: ToastController,
       public ws: WebSocketConnectionService,
       private router: Router
-  ) {
-  }
+  ) { }
 
-  ngOnInit(){
+  ngOnInit(): void {
     this.ws.deviceId.pipe(
         takeUntil(this.unsubscribe$)
-    ).subscribe(deviceId =>{
-      if(deviceId){
+    ).subscribe(deviceId => {
+      if (deviceId) {
         this.router.navigate(['http://localhost:4200/#/devices/' + deviceId]);
-        console.log(deviceId)
+        console.log(deviceId);
       }
-    })
+    });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
 
   get deviceName() {
     return this.form.controls.deviceName;
   }
 
   get roomId() {
-    return this.form.controls.roomId
+    return this.form.controls.roomId;
   }
 
   async createDevice() {
@@ -62,6 +58,6 @@ export class CreateDeviceComponent {
       DeviceName: this.deviceName.value!,
       RoomId: 1 // Hardcoded value for roomId
     });
-this.deviceService.createDevice(device);
+    this.deviceService.createDevice(device);
   }
 }
