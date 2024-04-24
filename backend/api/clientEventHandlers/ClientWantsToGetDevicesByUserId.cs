@@ -29,7 +29,7 @@ public class ClientWantsToGetDevicesByUserId : BaseEventHandler<ClientWantsToGet
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
         var devices = _deviceService.GetDevicesByUserId(userId);
         
-        socket.SendDto(new ServerSendsDevicesByUserId
+        socket.SendDto(new ServerSendsDevicesByUserIdDto
         {
             Devices = devices
         });

@@ -30,7 +30,7 @@ public class ClientWantsToGetDeviceById : BaseEventHandler<ClientWantsToGetDevic
     {
         var device = _deviceService.GetDeviceById(dto.DeviceId);
 
-        socket.SendDto(new ServerSendsDeviceById
+        socket.SendDto(new ServerSendsDeviceByIdDto
         {
             Device = device
         });
