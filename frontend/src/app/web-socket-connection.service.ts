@@ -10,6 +10,8 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
+import {Device} from "../models/Entities";
+import {ServerSendsDeviceByIdDto} from "../models/ServerSendsDeviceByIdDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -34,6 +36,10 @@ export class WebSocketConnectionService {
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
+  
+  private deviceSubject = new BehaviorSubject<Device | undefined>(undefined);
+  device: Observable<Device | undefined> = this.deviceSubject.asObservable();
+
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -68,5 +74,8 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
+  ServerSendsDeviceById(dto: ServerSendsDeviceByIdDto){
+    this.deviceSubject.next(dto.Device)
+  }
 }
 
