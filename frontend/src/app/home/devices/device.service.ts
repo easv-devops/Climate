@@ -10,7 +10,10 @@ export class DeviceService {
   constructor(private ws: WebSocketConnectionService) {
   }
 
-  getDeviceById(dto: ClientWantsToGetDeviceByIdDto){
+  getDeviceById(id: number){
+    var dto = new ClientWantsToGetDeviceByIdDto({
+      DeviceId: id
+    });
     this.ws.socketConnection.sendDto(dto)
   }
 

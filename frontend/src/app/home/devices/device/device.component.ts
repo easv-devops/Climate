@@ -32,10 +32,7 @@ export class DeviceComponent implements OnInit {
 
   getDeviceFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
-    var dto = new ClientWantsToGetDeviceByIdDto({
-      DeviceId: this.idFromRoute
-    });
-    this.deviceService.getDeviceById(dto)
+    this.deviceService.getDeviceById(this.idFromRoute)
   }
 
   subscribeToDevice(): void {
