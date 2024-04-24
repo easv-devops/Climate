@@ -4,6 +4,7 @@ import {WebSocketConnectionService} from "../../../web-socket-connection.service
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
 import {ClientWantsToGetDeviceByIdDto} from "../../../../models/ClientWantsToGetDeviceByIdDto";
+import {DeviceService} from "../device.service";
 
 @Component({
   selector: 'app-device',
@@ -16,21 +17,12 @@ export class DeviceComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
 
   constructor(private activatedRoute: ActivatedRoute,
-              private ws: WebSocketConnectionService) {
+              private deviceService: DeviceService) {
   }
 
   ngOnInit() {
-    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
-    this.getDevice(this.idFromRoute!);
-
-    // Subscribe to device observable
-    this.ws.device.pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe(d => {
-      if (d) {
-        this.device = d;
-      }
-    });
+    this.getDeviceFromRoute();
+    this.subscribeToDevice()
   }
 
   ngOnDestroy() {
@@ -38,11 +30,21 @@ export class DeviceComponent implements OnInit {
     this.unsubscribe$.complete();
   }
 
-  getDevice(id: number) {
+  getDeviceFromRoute() {
+    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
     var dto = new ClientWantsToGetDeviceByIdDto({
-      DeviceId: id
+      DeviceId: this.idFromRoute
     });
-    this.ws.socketConnection.sendDto(dto)
+    this.deviceService.getDeviceById(dto)
   }
 
+  subscribeToDevice(): void {
+    this.deviceService.getDeviceObservable()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(d => {
+        if (d) {
+          this.device = d;
+        }
+      });
+  }
 }
