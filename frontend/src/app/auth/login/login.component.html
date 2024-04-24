@@ -1,17 +1,13 @@
 <ion-content color="light">
-  <div style="display: flex; justify-content: center">
-    <ion-img
-      src="assets/icon/logo_light_no_bg.png"
-      style="width: 300px;"
-      class="ion-margin-top">
-    </ion-img>
-  </div>
+
   <div style="display: flex; justify-content: center; align-items: center;">
-    <ion-card class="ion-padding" style=" max-width: 500px; width: 90%;">
+    <ion-card class="ion-padding" id="register-card"
+              style="overflow: hidden; border-radius: 15px; max-width: 500px; width: 90%;">
       <ion-card-header class="ion-text-center">
         <h1>Sign in</h1>
       </ion-card-header>
 
+      <button (click)="submitTestUser()">login as testUser here</button>
 
       <form (ngSubmit)="submit()" [formGroup]="form">
         <ion-item>
@@ -23,7 +19,7 @@
 
         <ion-item>
           <ion-input formControlName="password" label="Password" labelPlacement="stacked" type="password"></ion-input>
-          <ion-button class="small-text" color="medium" fill="clear" size="small">Forgot password?</ion-button>
+          <ion-button class="small-text" color="medium" fill="clear" size="small" (click)="RedirectToForgotPassword()">Forgot password?</ion-button>
         </ion-item>
         <div *ngIf="password.touched && password.errors?.['required']" slot="label" style="margin-left: 2%;">
           <ion-text color="danger">Required</ion-text>
@@ -41,7 +37,7 @@
           </ion-button>
         </div>
 
-        <p class="ion-text-center">New to Climate? <a href="/register">Create an account</a></p>
+        <p class="ion-text-center">New to Climate? <a href="/#/register">Create an account</a></p>
       </form>
     </ion-card>
   </div>

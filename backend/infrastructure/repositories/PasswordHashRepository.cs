@@ -74,4 +74,37 @@ public class PasswordHashRepository
             return false; // Connection failed
         }
     }
+
+    public bool ReplacePassword(int userId, PasswordHash userPasswordInfo)
+    {
+        using (var connection = new MySqlConnection(_connectionString))
+        {
+            try
+            {
+                connection.Open();
+                // Define the SQL query to update the password hash information
+                string query = @"
+            UPDATE PasswordHash
+            SET Hash = @Hash, Salt = @Salt, Algorithm = @Algorithm
+            WHERE UserId = @UserId";
+
+                // Execute the query using Dapper to update the password information
+                int rowsAffected = connection.Execute(query, new
+                {
+                    Hash = userPasswordInfo.Hash,
+                    Salt = userPasswordInfo.Salt,
+                    Algorithm = userPasswordInfo.Algorithm,
+                    UserId = userId
+                });
+
+                // Return true if at least one row was affected, indicating successful update
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions, maybe log them
+                throw new SqlTypeException("Failed to replace password", ex);
+            }
+        }
+    }
 }

@@ -7,9 +7,11 @@ using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
+using Newtonsoft.Json;
 using service.services;
+using service.services.notificationServices;
 
-namespace api.clientEventHandlers;
+namespace api.clientEventHandlers;  
 
 public class ClientWantsToRegisterDto : BaseDto
 {
@@ -37,18 +39,21 @@ public class ClientWantsToRegisterDto : BaseDto
 [ValidateDataAnnotations]
 public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
 {
-    
     private readonly AuthService _authService;
 
     private readonly TokenService _tokenService;
+    private readonly NotificationService _notificationService;
     
     public ClientWantsToRegister(
         AuthService authService,
-        TokenService tokenService)
+        TokenService tokenService,
+        NotificationService notificationService)
     {
         _authService = authService;
         _tokenService = tokenService;
+        _notificationService = notificationService;
     }
+
     public override Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
     {
         //check if the user already exists 
@@ -65,16 +70,27 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             FirstName = dto.FirstName,
             LastName = dto.LastName
         });
-        
+
         //issue token
         var token = _tokenService.IssueJwt(user.Id);
 
         //add user information and validates user to state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
-        
+
         //return JWT to client 
         socket.SendDto(new ServerAuthenticatesUser { Jwt = token });
+        
+        //sets noti settings and sends welcome message
+        List<MessageType> selectedMessageTypes = new List<MessageType>();
+        selectedMessageTypes.Add(MessageType.EMAIL);
+        _notificationService.SendWelcomeMessage(selectedMessageTypes, new ShortUserDto
+        {
+            Id = user.Id,
+            Email = dto.Email,
+            Name = dto.FirstName
+        });
         return Task.CompletedTask;
     }
 }
+

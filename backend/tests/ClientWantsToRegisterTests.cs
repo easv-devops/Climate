@@ -10,6 +10,7 @@ public class ClientWantsToRegisterTests
     [SetUp]
     public void Setup()
     {
+        FlywayDbTestRebuilder.ExecuteMigrations();
         Startup.Start(null);
     }
     

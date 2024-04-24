@@ -13,7 +13,6 @@ using service.services;
 
 namespace api.clientEventHandlers;
 
-
 public class ClientWantsToSignInDto : BaseDto
 {
     [Required(ErrorMessage = "Email is required.")]
@@ -24,7 +23,6 @@ public class ClientWantsToSignInDto : BaseDto
     [MinLength(6, ErrorMessage = "Password is to short.")]
     public string password { get; set; }
 }
-
 [ValidateDataAnnotations]
 public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto>
 {
@@ -52,9 +50,12 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         //authenticates and sets user information in state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
-            
+
         //sends the JWT token to the client
-        socket.SendDto(new ServerAuthenticatesUser { Jwt = _tokenService.IssueJwt(user.Id) });
+        socket.SendDto(new ServerAuthenticatesUser
+        {
+            Jwt = _tokenService.IssueJwt(user.Id)
+        });
         return Task.CompletedTask;
     }
 }
