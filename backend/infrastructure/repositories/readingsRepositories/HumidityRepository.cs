@@ -23,6 +23,8 @@ public class HumidityRepository
             connection.Open();
             foreach (var humidity in dataHumidities)
             {
+                Console.WriteLine(humidity.Humidity);
+                Console.WriteLine(humidity.TimeStamp);
                 var sql = @"INSERT INTO ReadingHumidity (DeviceId, Timestamp, Humidity) 
                         VALUES (@DeviceId, @Timestamp, @Humidity)";
                 connection.Execute(sql, new
@@ -36,6 +38,7 @@ public class HumidityRepository
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Humidity readings", ex);
         }
         

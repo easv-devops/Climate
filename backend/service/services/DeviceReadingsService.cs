@@ -25,7 +25,6 @@ public class DeviceReadingsService
 
         if (deviceReadingsDto.Data.Humidities.Any())
         {
-            Console.WriteLine( deviceReadingsDto.Data.Humidities[0].Humidity);
             _humidityRepository.SaveHumidityList(deviceId, deviceReadingsDto.Data.Humidities);
         }
         else

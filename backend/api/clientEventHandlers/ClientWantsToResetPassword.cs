@@ -31,6 +31,5 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
         
         _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
         return Task.CompletedTask;
-        
     }
 }
