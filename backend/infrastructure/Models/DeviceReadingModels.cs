@@ -4,7 +4,7 @@
 public class DeviceReadingsDto
 {
     public int DeviceId { get; set; }
-    public object Data { get; set; }
+    public Data Data { get; set; }
 }
 
 public class Data

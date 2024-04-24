@@ -26,3 +26,4 @@ CREATE TABLE UserStatus (
     BanTimestamp                TIMESTAMP,
     FOREIGN KEY (UserId) REFERENCES User(Id)
 );
+

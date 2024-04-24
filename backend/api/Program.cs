@@ -8,6 +8,7 @@ using api.WebSocket;
 using Fleck;
 using infrastructure;
 using infrastructure.Models.serverEvents;
+using infrastructure.repositories.readingsRepositories;
 using lib;
 using service.services;
 using service.services.notificationServices;
@@ -33,15 +34,20 @@ public static class Startup
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
         
+
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
-
+        
+        builder.Services.AddSingleton<DeviceReadingsService>();
+        builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton<MqttClientSubscriber>();
         
         // Add services to the container.
-        
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
+        
         
         builder.WebHost.UseUrls("http://*:9999");
         
