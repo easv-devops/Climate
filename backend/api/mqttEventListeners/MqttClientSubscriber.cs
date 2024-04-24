@@ -1,14 +1,24 @@
 ﻿using System.Text.Json;
 using api.helpers;
 using Fleck;
+using infrastructure.Models;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
+using service.services;
 
 namespace api.mqttEventListeners;
 
 public class MqttClientSubscriber
 {
+    private DeviceReadingsService _readingsService;
+    
+    public MqttClientSubscriber(DeviceReadingsService readingsService)
+    {
+        _readingsService = readingsService;
+    }
+    
+    
     
     public async Task CommunicateWithBroker()
     {
@@ -35,14 +45,11 @@ public class MqttClientSubscriber
             try
             {
                 var message = e.ApplicationMessage.ConvertPayloadToString();
-                var messageObject = JsonSerializer.Deserialize<MqttClientWantsToSendMessageToRoom>(message);
-                var timestamp = DateTimeOffset.UtcNow;
+                var messageObject = JsonSerializer.Deserialize<DeviceReadingsDto>(message);
 
-                //todo save readings to db
+                _readingsService.CreateReadings(messageObject);
+                
                 //todo check for current listeners in state service and call relevant server to client handlers
-                
-                
-                
                 var pongMessage = new MqttApplicationMessageBuilder()
                     .WithTopic("response_topic")//todo do we want some confirm? 
                     .WithPayload("yes we received the message, thank you very much, " +
@@ -60,8 +67,3 @@ public class MqttClientSubscriber
     }
 }
 
-public class MqttClientWantsToSendMessageToRoom
-{
-    public int DeviceId { get; set; }
-    public Object DataObject { get; set; } //should be 
-}
