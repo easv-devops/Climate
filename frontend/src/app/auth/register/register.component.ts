@@ -1,13 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import {AbstractControl, FormBuilder, ValidationErrors, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
-import {ToastController} from "@ionic/angular";
 import {AuthService} from "../auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToRegisterDto} from "../../../models/clientRequests";
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-register',
