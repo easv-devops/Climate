@@ -10,9 +10,10 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device} from "../models/Entities";
+import {Device, DeviceInRoom} from "../models/Entities";
 import {ServerSendsDeviceByIdDto} from "../models/ServerSendsDeviceByIdDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
+import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -43,6 +44,9 @@ export class WebSocketConnectionService {
 
   private allDevicesSubject = new BehaviorSubject<Device[] | undefined>(undefined);
   allDevices: Observable<Device[] | undefined> = this.allDevicesSubject.asObservable();
+
+  private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
+  roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -83,6 +87,10 @@ export class WebSocketConnectionService {
 
   ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto){
     this.allDevicesSubject.next(dto.Devices)
+  }
+
+  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
+    this.roomDevicesSubject.next(dto.Devices)
   }
 }
 
