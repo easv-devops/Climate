@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
-import {ClientWantsToGetDeviceByIdDto} from "../../../../models/ClientWantsToGetDeviceByIdDto";
 import {DeviceService} from "../device.service";
 
 @Component({
