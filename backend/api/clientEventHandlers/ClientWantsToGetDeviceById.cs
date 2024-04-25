@@ -2,6 +2,7 @@
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using lib;
 using service.services;
@@ -28,7 +29,8 @@ public class ClientWantsToGetDeviceById : BaseEventHandler<ClientWantsToGetDevic
 
     public override Task Handle(ClientWantsToGetDeviceByIdDto dto, IWebSocketConnection socket)
     {
-        var device = _deviceService.GetDeviceById(dto.DeviceId);
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+        var device = _deviceService.GetDeviceById(dto.DeviceId, userId);
 
         socket.SendDto(new ServerSendsDeviceById
         {

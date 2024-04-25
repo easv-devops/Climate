@@ -2,6 +2,7 @@
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using lib;
 using service.services;
@@ -27,11 +28,14 @@ public class ClientWantsToGetDevicesByRoomId : BaseEventHandler<ClientWantsToGet
     }
     public override Task Handle(ClientWantsToGetDevicesByRoomIdDto dto, IWebSocketConnection socket)
     {
-        //todo check that user has access to room!!
         //todo should first check if room is already loaded in state service (if loaded in state service it should just get the list from there)
         //todo if room id is not in state service, load them from repo/db
-        var devices = _deviceService.GetDevicesByRoomId(dto.RoomId);
+        
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
+        var devices = _deviceService.GetDevicesByRoomId(dto.RoomId, userId);
+        
         //todo if devices are loaded from db, update relevant dictionaries in state service 
+        
         socket.SendDto(new ServerSendsDevicesByRoomId
         {
             RoomId = dto.RoomId,

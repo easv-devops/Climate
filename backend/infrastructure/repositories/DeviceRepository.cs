@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlTypes;
+using System.Security.Authentication;
 using Dapper;
 using infrastructure.Models;
 using MySqlConnector;
@@ -111,4 +112,48 @@ public class DeviceRepository
         }
     }
 
+    public bool IsItUsersRoom(int roomId, int userId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+
+            string getAllQuery = @"
+                SELECT Id
+                FROM Room 
+                WHERE Id = @RoomId
+                AND UserId = @UserId;";
+            
+            return connection.QuerySingleOrDefault(getAllQuery, new {UserId = userId, RoomId = roomId}) != null;
+        }
+        catch (Exception e)
+        {
+            // Handle exceptions, maybe log them
+            throw new Exception(e.Message, e);
+        }
+    }
+    
+    public bool IsItUsersDevice(int deviceId, int userId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+
+            string getAllQuery = @"
+                SELECT d.Id
+                FROM Device AS d
+                INNER JOIN Room AS r ON d.RoomId = r.Id
+                WHERE d.Id = @DeviceId
+                AND r.UserId = @UserId;";
+            
+            return connection.QuerySingleOrDefault(getAllQuery, new {UserId = userId, DeviceId = deviceId}) != null;
+        }
+        catch (Exception e)
+        {
+            // Handle exceptions, maybe log them
+            throw new Exception(e.Message, e);
+        }
+    }
 }

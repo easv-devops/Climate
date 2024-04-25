@@ -1,4 +1,5 @@
-﻿using infrastructure;
+﻿using System.Security.Authentication;
+using infrastructure;
 using infrastructure.Models;
 
 namespace service.services;
@@ -20,8 +21,12 @@ public class DeviceService
         return deviceDto;
     }
 
-    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId)
+    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId, int userId)
     {
+        if(!_deviceRepository.IsItUsersRoom(roomId, userId)) 
+            throw new AuthenticationException
+                ("Only the owner of room #"+roomId+" has access to this information");
+        
         return _deviceRepository.GetDevicesByRoomId(roomId);
     }
     
@@ -30,8 +35,12 @@ public class DeviceService
         return _deviceRepository.GetDevicesByUserId(userId);
     }
 
-    public DeviceFullDto GetDeviceById(int deviceId)
+    public DeviceFullDto GetDeviceById(int deviceId, int userId)
     {
+        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
+            throw new AuthenticationException
+                ("Only the owner of device #"+deviceId+" has access to this information");
+        
         return _deviceRepository.GetDeviceById(deviceId);
     }
 }
