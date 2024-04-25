@@ -1,0 +1,26 @@
+.imgCarde {
+  max-width: 15vw;
+}
+
+.responsive-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.flexbox {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.flexboxcenter {
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+* {
+  //border: 1px solid red;
+}

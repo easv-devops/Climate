@@ -1,3 +1,8 @@
-<p>
-  all rooms works!
-</p>
+
+<div class="flexbox">
+  <div style="width: 100vw; height: 30vh; margin: 20px;">
+    <p>Space for the cool card</p>
+  </div>
+  <app-room-card *ngFor="let roomname of rooms.reverse()" [roomname]="roomname"></app-room-card>
+
+</div>
