@@ -1,28 +1,31 @@
-#include "response_dto.h"
 #include "pms_functions.h"
 #include "mock_data_generator.h" // inkluder mock data generator header filen skal slettes når alt kører
-
+#include <WiFi.h>
 #include "mqtt_handler.h"
 
+
+#include <WiFi.h>
 #include <Arduino.h>
 #include <PubSubClient.h>
 #include <iostream>
 #include <chrono>
 #include <ctime>
 #include <vector> // inkluder vector biblioteket
-#include "response_dto.h" // Inkluderer response_dto.h her
+
+struct DeviceReadingsDto {
+    std::vector<TemperatureDto> Temperatures;
+    std::vector<HumidityDto> Humidities;
+    std::vector<Particle25Dto> Particles25;
+    std::vector<Particle100Dto> Particles100;
+};
 
 //todo should be loaded from eeprom later
-const char* ssid = "Jep"; 
-const char* password = "damkier1"; 
+const char* ssid = "Ane"; 
+const char* password = "qwertyuiop"; 
 const char* mqttServer = "mqtt.flespi.io"; 
 const int mqttPort = 1883; 
 const char* mqttUser = "FlespiToken iNAXKnfDnzPMgOqTfJkgYGOiYFdBDxhSdvH67RZK7r488rKRNG3EdqgFX9NYSW4T"; 
 const char* mqttPassword = ""; 
-
-const int diviceId = 1; //should be set by the api in some way??
-DeviceReadingsDto readings; // Opret et globalt DeviceReadingsDto objekt
-
 
 //handler for creating wifi and mqtt connection + sending objects
 MqttHandler mqttHandler(ssid, password, mqttServer, mqttPort, mqttUser, mqttPassword);
@@ -38,6 +41,8 @@ unsigned long humiNextReadingTime = 0;
 unsigned long airNextReadingTime = 0;
 unsigned long partiNextReadingTime = 0;
 unsigned long mqttNextSendingTime = 0;
+
+DeviceReadingsDto readings; // Opret et globalt DeviceReadingsDto objekt
 
 // Funktion til at indstille timeren til deep sleep
 void setupTimerForSleep(unsigned long sleepSeconds) {
@@ -86,8 +91,7 @@ void loop() {
 
   if (now > mqttNextSendingTime) {
     // Send DeviceReadingsDto object to server
-       mqttHandler.sendDataToBroker("Climate/test", readings);
-      
+    mqttHandler.sendDataToBroker("Climate/test", readings);
     
     // Clear old data from lists
     readings.Temperatures.clear();
@@ -109,8 +113,6 @@ void loop() {
     setupTimerForSleep(sleepSeconds);
   }
 }
-
-
 
 
 /**

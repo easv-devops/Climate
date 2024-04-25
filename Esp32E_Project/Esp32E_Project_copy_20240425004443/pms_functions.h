@@ -8,6 +8,8 @@ class ParticleData {
 public:
     ParticleData(int pm10, int pm25, int pm100) : pm10(pm10), pm25(pm25), pm100(pm100) {}
     void printData(); // Method declaration inside the class
+    String toJSON25();
+    String toJSON100();
 
     int getPM10() const { return pm10; }
     int getPM25() const { return pm25; }

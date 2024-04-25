@@ -1,6 +1,7 @@
 #include "WString.h"
 #include "HardwareSerial.h"
 #include "pms_functions.h"
+#include <ArduinoJson.h>  // Include the ArduinoJson library
 
 /**
 * setup serial connection to sensor, and sets the datatype
