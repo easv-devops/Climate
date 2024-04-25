@@ -3,7 +3,7 @@ using lib;
 
 namespace api.serverEventModels;
 
-public class ServerSendsDevicesByUserIdDto : BaseDto
+public class ServerSendsDevicesByUserId : BaseDto
 {
     public IEnumerable<DeviceFullDto>? Devices { get; set; }
 }

@@ -3,7 +3,7 @@ using lib;
 
 namespace api.serverEventModels;
 
-public class ServerSendsDeviceByIdDto : BaseDto
+public class ServerSendsDeviceById : BaseDto
 {
     public required DeviceFullDto Device { get; set; }
 }

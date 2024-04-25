@@ -1,5 +1,5 @@
 ﻿using api.clientEventHandlers;
-using infrastructure.Models.serverEvents;
+using api.serverEventModels;
 using tests.WebSocket;
 
 namespace tests;

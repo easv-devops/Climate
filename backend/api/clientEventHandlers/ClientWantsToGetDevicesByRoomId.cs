@@ -32,7 +32,7 @@ public class ClientWantsToGetDevicesByRoomId : BaseEventHandler<ClientWantsToGet
         //todo if room id is not in state service, load them from repo/db
         var devices = _deviceService.GetDevicesByRoomId(dto.RoomId);
         //todo if devices are loaded from db, update relevant dictionaries in state service 
-        socket.SendDto(new ServerSendsDevicesByRoomIdDto
+        socket.SendDto(new ServerSendsDevicesByRoomId
         {
             RoomId = dto.RoomId,
             Devices = devices
