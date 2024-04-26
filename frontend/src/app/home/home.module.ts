@@ -19,7 +19,8 @@ import {GraphComponent} from "./graph/graph.component";
     HomePageRoutingModule
   ],
   exports: [
-    GraphComponent
+    GraphComponent,
+    TopbarComponent
   ],
   declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent]
 })
