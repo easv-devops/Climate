@@ -45,7 +45,7 @@ export class RegisterComponent  implements OnInit {
     ).subscribe(jwt => {
       if (jwt) {
         // JWT is received, performs redirection
-        this.router.navigate(['/home']);
+        this.router.navigate(['']);
       }
     });
   }

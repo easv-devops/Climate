@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
   deviceMenuItem?: MenuItem;
   menuItems?: MenuItem[];
 
+
   constructor(private breakpointObserver: BreakpointObserver,
               private ws: WebSocketConnectionService) {
     this.breakpointObserver.observe([
@@ -77,8 +78,8 @@ export class AppComponent implements OnInit {
       label: 'Auth eksempel',
       icon: 'person-circle',
       subItems: [
-        {label: 'Login', routerLink: 'login', icon: 'log-in'},
-        {label: 'Register', routerLink: 'register', icon: 'person-add'}
+        {label: 'Login', routerLink: 'auth/login', icon: 'log-in'},
+        {label: 'Register', routerLink: 'auth/register', icon: 'person-add'}
       ]
     }
 
