@@ -87,9 +87,9 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       - flyway migrate
-          -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
-          -user="$DB_USER"
-          -password="$DB_PASSWORD"
+          -url="jdbc:mariadb://74.234.8.67:3306/climate"
+          -user="aladeen"
+          -password="xAladeen4life"
           -locations=filesystem:./db/sql
     depends_on:
       - trigger update
