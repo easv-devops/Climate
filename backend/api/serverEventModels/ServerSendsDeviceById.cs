@@ -5,5 +5,5 @@ namespace api.serverEventModels;
 
 public class ServerSendsDeviceById : BaseDto
 {
-    public required DeviceFullDto Device { get; set; }
+    public required DeviceWithIdDto Device { get; set; }
 }

@@ -67,7 +67,7 @@ public class DeviceRepository
      * Gets all devices for logged in user.
      * Returns a list of devices - can be null if user has no devices.
      */
-    public IEnumerable<DeviceFullDto> GetDevicesByUserId(int userId)
+    public IEnumerable<DeviceWithIdDto> GetDevicesByUserId(int userId)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -79,7 +79,7 @@ public class DeviceRepository
                 FROM Device 
                 JOIN Room ON Device.RoomId = Room.Id
                 WHERE Room.UserId = @UserId;";
-            return connection.Query<DeviceFullDto>(getAllQuery, new {UserId = userId});
+            return connection.Query<DeviceWithIdDto>(getAllQuery, new {UserId = userId});
         }
         catch (Exception e)
         {
@@ -92,7 +92,7 @@ public class DeviceRepository
      * Gets device from device id.
      * Returns a device.
      */
-    public DeviceFullDto GetDeviceById(int deviceId)
+    public DeviceWithIdDto GetDeviceById(int deviceId)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -103,7 +103,7 @@ public class DeviceRepository
                 SELECT *
                 FROM Device 
                 WHERE Id = @DeviceId;";
-            return connection.QueryFirstOrDefault<DeviceFullDto>(getDeviceByIdQuery, new {DeviceId = deviceId}) ?? throw new InvalidOperationException();
+            return connection.QueryFirstOrDefault<DeviceWithIdDto>(getDeviceByIdQuery, new {DeviceId = deviceId}) ?? throw new InvalidOperationException();
         }
         catch (Exception e)
         {

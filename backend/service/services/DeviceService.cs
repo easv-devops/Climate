@@ -30,12 +30,12 @@ public class DeviceService
         return _deviceRepository.GetDevicesByRoomId(roomId);
     }
     
-    public IEnumerable<DeviceFullDto> GetDevicesByUserId(int userId)
+    public IEnumerable<DeviceWithIdDto> GetDevicesByUserId(int userId)
     {
         return _deviceRepository.GetDevicesByUserId(userId);
     }
 
-    public DeviceFullDto GetDeviceById(int deviceId, int userId)
+    public DeviceWithIdDto GetDeviceById(int deviceId, int userId)
     {
         if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
             throw new AuthenticationException

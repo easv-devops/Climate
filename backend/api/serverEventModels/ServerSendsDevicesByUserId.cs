@@ -5,5 +5,5 @@ namespace api.serverEventModels;
 
 public class ServerSendsDevicesByUserId : BaseDto
 {
-    public IEnumerable<DeviceFullDto>? Devices { get; set; }
+    public IEnumerable<DeviceWithIdDto>? Devices { get; set; }
 }
