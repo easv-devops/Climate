@@ -1,4 +1,6 @@
-﻿using api.helpers;
+﻿using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
+using api.helpers;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -8,15 +10,19 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToCreateDeviceDto : BaseDto
 {
+    [Required(ErrorMessage = "Device Name is required")]
+    [MaxLength(50, ErrorMessage = "Device Name is too long")]
     public string DeviceName { get; set; }
+    [Required(ErrorMessage = "Room Id is required.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
     public int RoomId { get; set; }
 }
 
 
-
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDeviceDto>
     {
-
         private readonly DeviceService _deviceService;
         
         public ClientWantsToCreateDevice(DeviceService deviceService)
