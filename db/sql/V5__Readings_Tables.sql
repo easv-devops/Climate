@@ -16,12 +16,20 @@ CREATE TABLE ReadingHumidity (
     FOREIGN KEY (DeviceId) REFERENCES Device(Id)
 );
 
--- Create particle readings table
-CREATE TABLE ReadingParticle (
+-- Create particle 2,5 readings table
+CREATE TABLE ReadingParticle2_5 (
     ReadingId           INT PRIMARY KEY AUTO_INCREMENT,
     DeviceId            INT,
     Timestamp           TIMESTAMP,
     P2_5                INT,
+    FOREIGN KEY (DeviceId) REFERENCES Device(Id)
+);
+
+-- Create particle 10 readings table
+CREATE TABLE ReadingParticle10 (
+    ReadingId           INT PRIMARY KEY AUTO_INCREMENT,
+    DeviceId            INT,
+    Timestamp           TIMESTAMP,
     P10                 INT,
     FOREIGN KEY (DeviceId) REFERENCES Device(Id)
 );
