@@ -56,5 +56,3 @@ steps:
           -user="aladeen"
           -password="xAladeen4life"
           -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
