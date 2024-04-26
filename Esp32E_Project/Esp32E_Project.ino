@@ -25,8 +25,10 @@ TimeManager timeManager(ssid, password);
 DeviceReadingsDto readings;
 
 const int deviceId = 1;
+
 const int minDeepSleepTime = 60;
-unsigned long readingInterval = 15;
+unsigned long readingInterval = 15;//todo should have for each sensor
+
 unsigned long tempNextReadingTime = 0;
 unsigned long humiNextReadingTime = 0;
 unsigned long airNextReadingTime = 0;
@@ -85,7 +87,6 @@ if (now > partiNextReadingTime) {
     // Opret et DeviceData-objekt
     DeviceData deviceData(deviceId, readings);
     std::string jsonString = deviceData.toJsonString();
-
     sendDataToBroker("Climate", jsonString.c_str());
 
 

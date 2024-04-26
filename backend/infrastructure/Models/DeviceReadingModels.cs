@@ -1,40 +1,22 @@
 ﻿namespace infrastructure.Models;
 
 
+public class SensorDto
+{
+    public double Value { get; set; }
+    public string TimeStamp { get; set; }
+}
+
 public class DeviceReadingsDto
 {
+    public List<SensorDto> Temperatures { get; set; }
+    public List<SensorDto> Humidities { get; set; }
+    public List<SensorDto> Particles25 { get; set; }
+    public List<SensorDto> Particles100 { get; set; }
+}
+
+public class DeviceData
+{
     public int DeviceId { get; set; }
-    public Data Data { get; set; }
-}
-
-public class Data
-{
-    public List<TemperatureDto> Temperatures { get; set; }
-    public List<HumidityDto> Humidities { get; set; }
-    public List<Particle25Dto> Particles25 { get; set; }
-    public List<Particle100Dto> Particles100 { get; set; }
-}
-
-public class TemperatureDto
-{
-    public Double Temperature { get; set; }
-    public DateTime TimeStamp { get; set; }
-}
-
-public class HumidityDto
-{
-    public Double Humidity { get; set; }
-    public DateTime TimeStamp { get; set; }
-}
-
-public class Particle25Dto
-{
-    public int Particle25 { get; set; }
-    public DateTime TimeStamp { get; set; }
-}
-
-public class Particle100Dto
-{
-    public int Particle100 { get; set; }
-    public DateTime TimeStamp { get; set; }
+    public DeviceReadingsDto Data { get; set; }
 }

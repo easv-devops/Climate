@@ -21,34 +21,45 @@ class DeviceData {
 public:
     DeviceData(int deviceId, const DeviceReadingsDto& data) : deviceId(deviceId), data(data) {}
 
-    std::string toJsonString() const {
+     std::string toJsonString() const {
         std::stringstream ss;
-        ss << "{\"DeviceId\":" << deviceId << ",";
-        ss << "\"Data\":{";
-        ss << "\"Temperatures\":[";
+        ss << "{\n";
+        ss << "  \"DeviceId\": " << deviceId << ",\n";
+        ss << "  \"Data\": {\n";
+        ss << "    \"Temperatures\": [\n";
         serializeSensorArray(ss, data.Temperatures);
-        ss << "],\"Humidities\":[";
+        ss << "    ],\n";
+        ss << "    \"Humidities\": [\n";
         serializeSensorArray(ss, data.Humidities);
-        ss << "],\"Particles25\":[";
+        ss << "    ],\n";
+        ss << "    \"Particles25\": [\n";
         serializeSensorArray(ss, data.Particles25);
-        ss << "],\"Particles100\":[";
+        ss << "    ],\n";
+        ss << "    \"Particles100\": [\n";
         serializeSensorArray(ss, data.Particles100);
-        ss << "]}";
+        ss << "    ]\n";
+        ss << "  }\n";
+        ss << "}\n";
         return ss.str();
     }
 
 private:
     int deviceId;
     DeviceReadingsDto data;
-    void serializeSensorArray(std::stringstream& ss, const std::vector<SensorDto>& sensors) const {
+void serializeSensorArray(std::stringstream& ss, const std::vector<SensorDto>& sensors) const {
         bool isFirst = true;
         for (const auto& sensor : sensors) {
             if (!isFirst) {
-                ss << ",";
+                ss << ",\n";
             }
             isFirst = false;
-            ss << "{\"Value\":" << sensor.Value << ",\"TimeStamp\":\"" << sensor.TimeStamp << "\"}";
+            ss << "      {\n";
+            ss << "        \"Value\": " << sensor.Value << ",\n";
+            ss << "        \"TimeStamp\": \"" << sensor.TimeStamp << "\"\n";
+            ss << "      }";
         }
+        ss << "\n";
+        
     }
 };
 

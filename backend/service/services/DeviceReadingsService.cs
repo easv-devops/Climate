@@ -19,14 +19,12 @@ public class DeviceReadingsService
         _particlesRepository = particlesRepository;
     }
     
-    public void CreateReadings(DeviceReadingsDto deviceReadingsDto)
+    public void CreateReadings(DeviceData deviceReadingsDto)
     {
         var deviceId = deviceReadingsDto.DeviceId;
 
         if (deviceReadingsDto.Data.Humidities.Any())
-        {
             _humidityRepository.SaveHumidityList(deviceId, deviceReadingsDto.Data.Humidities);
-        }
         else
             throw new NullReferenceException("there is no humidity readings in dataset");
 

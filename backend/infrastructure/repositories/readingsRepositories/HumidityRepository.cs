@@ -15,7 +15,7 @@ public class HumidityRepository
         _connectionString = connectionString;
     }
     
-    public bool SaveHumidityList(int deviceId, List<HumidityDto> dataHumidities)
+    public bool SaveHumidityList(int deviceId, List<SensorDto> dataHumidities)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -23,7 +23,7 @@ public class HumidityRepository
             connection.Open();
             foreach (var humidity in dataHumidities)
             {
-                Console.WriteLine(humidity.Humidity);
+                Console.WriteLine(humidity.Value);
                 Console.WriteLine(humidity.TimeStamp);
                 var sql = @"INSERT INTO ReadingHumidity (DeviceId, Timestamp, Humidity) 
                         VALUES (@DeviceId, @Timestamp, @Humidity)";
@@ -31,7 +31,7 @@ public class HumidityRepository
                 {
                     DeviceId = deviceId,
                     Timestamp = humidity.TimeStamp,
-                    Humidity = humidity.Humidity
+                    Humidity = humidity.Value
                 });
             }
             return true;

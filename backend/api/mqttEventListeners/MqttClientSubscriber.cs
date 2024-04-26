@@ -44,13 +44,10 @@ public class MqttClientSubscriber
         {
             try
             {
-                Console.Write("fewnfkwejfbnwekfwe");
-
                 var message = e.ApplicationMessage.ConvertPayloadToString();
-                var messageObject = JsonSerializer.Deserialize<DeviceReadingsDto>(message);
-                Console.Write(messageObject.Data.Humidities);
-            
-                
+           
+                var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
+
                 _readingsService.CreateReadings(messageObject);
                 
                 //todo check for current listeners in state service and call relevant server to client handlers
@@ -69,5 +66,8 @@ public class MqttClientSubscriber
             }
         };
     }
+    
+    
 }
+
 

@@ -17,7 +17,7 @@ public class TemperatureRepository
         
     }
     
-    public bool SaveTemperatureList(int deviceId, List<TemperatureDto> tempList)
+    public bool SaveTemperatureList(int deviceId, List<SensorDto> tempList)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -32,7 +32,7 @@ public class TemperatureRepository
                 {
                     DeviceId = deviceId,
                     Timestamp = temperature.TimeStamp,
-                    Temperature = temperature.Temperature
+                    Temperature = temperature.Value
                 });
             }
 
