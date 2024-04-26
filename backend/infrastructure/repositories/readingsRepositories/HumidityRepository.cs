@@ -23,8 +23,6 @@ public class HumidityRepository
             connection.Open();
             foreach (var humidity in dataHumidities)
             {
-                Console.WriteLine(humidity.Value);
-                Console.WriteLine(humidity.TimeStamp);
                 var sql = @"INSERT INTO ReadingHumidity (DeviceId, Timestamp, Humidity) 
                         VALUES (@DeviceId, @Timestamp, @Humidity)";
                 connection.Execute(sql, new

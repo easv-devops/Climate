@@ -21,7 +21,6 @@ PubSubClient client(espClient);
 
 TimeManager timeManager(ssid, password);
 
-
 DeviceReadingsDto readings;
 
 const int deviceId = 1;
