@@ -3,9 +3,9 @@
 #include "mock_data_generator.h"
 #include <Arduino.h>
 
-TemperatureDto generateMockTemperature();
-HumidityDto generateMockHumidity();
-Particle25Dto generateMockParticle25();
-Particle100Dto generateMockParticle100();
+SensorDto generateMockTemperature();
+SensorDto generateMockHumidity();
+SensorDto generateMockParticle25();
+SensorDto generateMockParticle100();
 
 #endif

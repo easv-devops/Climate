@@ -1,119 +1,55 @@
 #ifndef RESPONSE_DTO_H
 #define RESPONSE_DTO_H
-
-#include <Arduino_JSON.h> // Inkluder Arduino_JSON headerfilen
+#include <Arduino.h>
+#include "response_dto.h"
+#include <string>
 #include <vector>
+#include <sstream>
 
-struct TemperatureDto {
-    double Temperature;
-    unsigned long TimeStamp; // Using unsigned long for timestamp (milliseconds)
+struct SensorDto {
+    double Value;
+    std::string TimeStamp;  
 };
-
-struct HumidityDto {
-    double Humidity;
-    unsigned long TimeStamp; // Using unsigned long for timestamp (milliseconds)
-};
-
-struct Particle25Dto {
-    int Particle25;
-    unsigned long TimeStamp; // Using unsigned long for timestamp (milliseconds)
-};
-
-struct Particle100Dto {
-    int Particle100;
-    unsigned long TimeStamp; // Using unsigned long for timestamp (milliseconds)
-};
-
 struct DeviceReadingsDto {
-    std::vector<TemperatureDto> Temperatures;
-    std::vector<HumidityDto> Humidities;
-    std::vector<Particle25Dto> Particles25;
-    std::vector<Particle100Dto> Particles100;
-
-   void serializeJson(JSONVar& jsonData) const {
-    // Serialize Temperatures
-    JSONVar temperaturesArray;
-    for(const auto& temperature : Temperatures) {
-        JSONVar tempObj;
-        tempObj["Temperature"] = temperature.Temperature;
-        tempObj["TimeStamp"] = temperature.TimeStamp;
-        temperaturesArray[temperaturesArray.length()] = tempObj;
-    }
-
-    jsonData["Temperatures"] = temperaturesArray;
-
-    // Serialize Humidities
-    JSONVar humiditiesArray;
-    for(const auto& humidity : Humidities) {
-        JSONVar humObj;
-        humObj["Humidity"] = humidity.Humidity;
-        humObj["TimeStamp"] = humidity.TimeStamp;
-        humiditiesArray[humiditiesArray.length()] = humObj;
-    }
-
-    jsonData["Humidities"] = humiditiesArray;
-
-    // Serialize Particles25
-    JSONVar particles25Array;
-    for(const auto& particle : Particles25) {
-        JSONVar particleObj;
-        particleObj["Particle25"] = particle.Particle25;
-        particleObj["TimeStamp"] = particle.TimeStamp;
-        particles25Array[particles25Array.length()] = particleObj;
-    }
-
-    jsonData["Particles25"] = particles25Array;
-
-    // Serialize Particles100
-    JSONVar particles100Array;
-    for(const auto& particle : Particles100) {
-        JSONVar particleObj;
-        particleObj["Particle100"] = particle.Particle100;
-        particleObj["TimeStamp"] = particle.TimeStamp;
-        particles100Array[particles100Array.length()] = particleObj;
-    }
-
-    jsonData["Particles100"] = particles100Array;
-}
-
+    std::vector<SensorDto> Temperatures;
+    std::vector<SensorDto> Humidities;
+    std::vector<SensorDto> Particles25;
+    std::vector<SensorDto> Particles100;
 };
 
 class DeviceData {
 public:
     DeviceData(int deviceId, const DeviceReadingsDto& data) : deviceId(deviceId), data(data) {}
 
-    int getDeviceId() const {
-        return deviceId;
-    }
-
-    const DeviceReadingsDto& getData() const {
-        return data;
-    }
-
-    void setDeviceId(int newDeviceId) {
-        deviceId = newDeviceId;
-    }
-
-    void setData(const DeviceReadingsDto& newData) {
-        data = newData;
-    }
-
-    void serializeJson(JSONVar& jsonData) const {
-        // Set DeviceId
-        jsonData["DeviceId"] = deviceId;
-
-        // Serialize Data
-        JSONVar dataObj;
-        data.serializeJson(dataObj);
-
-        jsonData["Data"] = dataObj;
+    std::string toJsonString() const {
+        std::stringstream ss;
+        ss << "{\"DeviceId\":" << deviceId << ",";
+        ss << "\"Data\":{";
+        ss << "\"Temperatures\":[";
+        serializeSensorArray(ss, data.Temperatures);
+        ss << "],\"Humidities\":[";
+        serializeSensorArray(ss, data.Humidities);
+        ss << "],\"Particles25\":[";
+        serializeSensorArray(ss, data.Particles25);
+        ss << "],\"Particles100\":[";
+        serializeSensorArray(ss, data.Particles100);
+        ss << "]}";
+        return ss.str();
     }
 
 private:
     int deviceId;
     DeviceReadingsDto data;
+    void serializeSensorArray(std::stringstream& ss, const std::vector<SensorDto>& sensors) const {
+        bool isFirst = true;
+        for (const auto& sensor : sensors) {
+            if (!isFirst) {
+                ss << ",";
+            }
+            isFirst = false;
+            ss << "{\"Value\":" << sensor.Value << ",\"TimeStamp\":\"" << sensor.TimeStamp << "\"}";
+        }
+    }
 };
 
 #endif
-
-

@@ -87,7 +87,7 @@ public static class Startup
                 }
             };
         });
-        app.Services.GetService<MqttClientSubscriber>().CommunicateWithBroker();
+        app.Services.GetService<MqttClientSubscriber>()?.CommunicateWithBroker();
         return app;
     }
 }

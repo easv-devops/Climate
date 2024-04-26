@@ -29,13 +29,13 @@ public class MqttClientSubscriber
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
             .WithProtocolVersion(MqttProtocolVersion.V500)
-            .WithCredentials(Environment.GetEnvironmentVariable(EnvVarKeys.MqttToken.ToString()), "") // todo should be a secret
+            .WithCredentials("FlespiToken iNAXKnfDnzPMgOqTfJkgYGOiYFdBDxhSdvH67RZK7r488rKRNG3EdqgFX9NYSW4T", "") // todo should be a secret
             .Build();
 
         await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
 
         var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
-            .WithTopicFilter(f => f.WithTopic("Climate"))
+            .WithTopicFilter(f => f.WithTopic("Climate/#"))
             .Build();
 
         await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
@@ -44,9 +44,13 @@ public class MqttClientSubscriber
         {
             try
             {
+                Console.Write("fewnfkwejfbnwekfwe");
+
                 var message = e.ApplicationMessage.ConvertPayloadToString();
                 var messageObject = JsonSerializer.Deserialize<DeviceReadingsDto>(message);
-
+                Console.Write(messageObject.Data.Humidities);
+            
+                
                 _readingsService.CreateReadings(messageObject);
                 
                 //todo check for current listeners in state service and call relevant server to client handlers

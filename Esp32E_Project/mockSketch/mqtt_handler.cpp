@@ -1,32 +1,45 @@
 #include "mqtt_handler.h"
 #include "response_dto.h"
-#include <Arduino_JSON.h> // Inkluder Arduino_JSON headerfilen
+#include <ArduinoJson.h>
 
 MqttHandler::MqttHandler(const char* ssid, const char* password, const char* mqttServer, int mqttPort, const char* mqttUser, const char* mqttPassword)
     : ssid(ssid), password(password), mqttServer(mqttServer), mqttPort(mqttPort), mqttUser(mqttUser), mqttPassword(mqttPassword), client(espClient) {}
 
 void MqttHandler::connectToWifi() {
+    Serial.println("Connecting to WiFi...");
+    Serial.print("SSID: ");
+    Serial.println(ssid);
+    Serial.print("Password: ");
+    Serial.println(password);
+
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
-        Serial.println("Connecting to WiFi..");
+        Serial.print(".");
     }
     Serial.println("Connected to the WiFi network");
 }
 
 void MqttHandler::connectToBroker() {
-    while (!client.connected()) {
-        Serial.println("Connecting to MQTT...");
+    Serial.println("Connecting to MQTT...");
+    Serial.print("MQTT Server: ");
+    Serial.println(mqttServer);
+    Serial.print("MQTT Port: ");
+    Serial.println(mqttPort);
+    Serial.print("MQTT User: ");
+    Serial.println(mqttUser);
+    // Serial.print("MQTT Password: ");  // Omitting printing password for security reasons
 
-        if (client.connect("ESP32Client", mqttUser, mqttPassword)) {
-            Serial.println("connected");
+    while (!client.connected()) {
+        if (client.connect("ESP32Client", mqttUser, "")) {
+            Serial.println("Connected to MQTT");
         } else {
-            Serial.print("failed with state ");
-            Serial.print(client.state());
+            Serial.print("Failed to connect to MQTT with state ");
+            Serial.println(client.state());
             delay(2000);
         }
     }
-    client.publish("Climate/Startmesage", "ESP32 is up and running"); //todo should be deleted when live
+    client.publish("Climate", "ESP32 is up and running"); //todo should be deleted when live
 }
 
 bool MqttHandler::sendDataToBroker(const char* topic, const DeviceReadingsDto& data) {
