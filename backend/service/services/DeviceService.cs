@@ -21,6 +21,11 @@ public class DeviceService
 
         return deviceWithId;
     }
+
+    public bool DeleteDevice(int Id)
+    {
+        return _deviceRepository.DeleteDevice(Id);
+    }
     
     public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId, int userId)
     {

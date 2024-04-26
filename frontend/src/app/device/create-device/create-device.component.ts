@@ -56,6 +56,7 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
   async createDevice() {
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
+      //TODO Read real RoomId value from room
       RoomId: 1 // Hardcoded value for roomId
     });
     this.deviceService.createDevice(device);

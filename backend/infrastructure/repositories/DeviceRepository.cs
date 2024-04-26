@@ -46,6 +46,32 @@ public class DeviceRepository
         }
     }
 
+    public bool DeleteDevice(int Id)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+
+            string deleteDeviceQuery = @"
+                    DELETE Device, ReadingHumidity, ReadingParticle2_5, ReadingParticle10, ReadingTemperature
+                    FROM Device
+                    LEFT JOIN ReadingHumidity ON Device.Id = ReadingHumidity.DeviceId
+                    LEFT JOIN ReadingParticle2_5 ON Device.Id = ReadingParticle2_5.DeviceId
+                    LEFT JOIN ReadingParticle10 ON Device.Id = ReadingParticle10.DeviceId
+                    LEFT JOIN ReadingTemperature ON Device.Id = ReadingTemperature.DeviceId
+                    WHERE Device.Id = @Id;";
+
+            return connection.Execute(deleteDeviceQuery, new { Id = Id}) == 1;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw new SqlTypeException("Could not delete device", ex);
+        }
+    }
+    
+    
     /**
      * Gets all devices from a specific room.
      * Returns a list of devices - can be null if no devices in the room.
