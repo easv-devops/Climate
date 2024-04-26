@@ -8,11 +8,9 @@ public class DeviceDto
     public required int RoomId { get; set; }
 }
 
-//lav class med ID
-
-public class DeviceWithId
+public class DeviceWithIdDto
 {
+    public required int Id { get; set; }
     public required string DeviceName { get; set; }
     public required int RoomId { get; set; }
-    public required int Id { get; set; }
 }

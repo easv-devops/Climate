@@ -51,7 +51,7 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
 
 public class ServerSendsDevice : BaseDto
 {
+    public required int Id { get; set; }
     public required string DeviceName { get; set; }
     public required int RoomId { get; set; }
-    public required int Id { get; set; }
 }

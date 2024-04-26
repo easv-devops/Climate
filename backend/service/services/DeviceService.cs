@@ -14,7 +14,7 @@ public class DeviceService
         _deviceRepository = deviceRepository;
     }
 
-    public DeviceWithId CreateDevice(DeviceDto deviceDto)
+    public DeviceWithIdDto CreateDevice(DeviceDto deviceDto)
     {
         var deviceWithId = _deviceRepository.Create(deviceDto);
 
