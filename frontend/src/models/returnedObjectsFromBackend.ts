@@ -23,3 +23,9 @@ export class ServerSendsErrorMessageToClient {
   errorMessage!: string;
   receivedMessage!: string
 }
+
+export class DeviceWithIdDto {
+  DeviceName!: string;
+  RoomId!: number;
+  Id!: number;
+}

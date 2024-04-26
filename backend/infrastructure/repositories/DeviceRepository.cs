@@ -15,23 +15,30 @@ public class DeviceRepository
     {
         _connectionString = connectionString;
     }
-    
-    public DeviceDto Create(DeviceDto deviceDto)
+
+
+    public DeviceWithIdDto Create(DeviceDto deviceDto)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
 
-            string createDeviceQuery = "INSERT INTO Device (DeviceName, RoomId) VALUES (@DeviceName, @RoomId);";
-            connection.Execute(createDeviceQuery, new { DebiceName = deviceDto.DeviceName });
+            string createDeviceQuery = @"
+                INSERT INTO Device (DeviceName, RoomId) 
+                VALUES (@DeviceName, @RoomId)
+                RETURNING *;";
+            
+            //Console.WriteLine("før conn.query");
 
-            return new DeviceDto
+            var createdDevice = connection.QueryFirst<DeviceWithIdDto>(createDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId });
+            
+            return new DeviceWithIdDto
             {
-                DeviceName = deviceDto.DeviceName,
-                RoomId = deviceDto.RoomId
+                DeviceName = createdDevice.DeviceName,
+                RoomId = createdDevice.RoomId,
+                Id = createdDevice.Id
             };
-
         }
         catch (Exception ex)
         {

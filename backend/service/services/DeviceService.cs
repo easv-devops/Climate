@@ -1,4 +1,4 @@
-﻿using System.Security.Authentication;
+using System.Security.Authentication;
 using infrastructure;
 using infrastructure.Models;
 
@@ -14,13 +14,14 @@ public class DeviceService
     {
         _deviceRepository = deviceRepository;
     }
-    public DeviceDto CreateDevice(DeviceDto deviceDto)
+
+    public DeviceWithIdDto CreateDevice(DeviceDto deviceDto)
     {
-        var device = _deviceRepository.Create(deviceDto);
+        var deviceWithId = _deviceRepository.Create(deviceDto);
 
-        return deviceDto;
+        return deviceWithId;
     }
-
+    
     public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId, int userId)
     {
         if(!_deviceRepository.IsItUsersRoom(roomId, userId)) 
