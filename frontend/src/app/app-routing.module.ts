@@ -10,6 +10,10 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   },
+  {
+    path: 'device',
+    loadChildren: () => import('./device/device.module').then(m => m.DeviceModule)
+  }
 ];
 
 @NgModule({

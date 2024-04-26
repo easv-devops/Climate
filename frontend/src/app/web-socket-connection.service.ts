@@ -4,12 +4,17 @@ import {WebsocketSuperclass} from "../models/websocketSuperclass";
 import {BaseDto} from "../models/baseDto";
 import {
   ServerAuthenticatesUserDto,
-  ServerRegisterUserDto
-  , ServerResetsPasswordDto, ServerSendsErrorMessageToClient,
-  User
+  ServerRegisterUserDto,
+  ServerResetsPasswordDto,
+  ServerSendsErrorMessageToClient,
+  DeviceWithIdDto
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
+import {Device, DeviceInRoom} from "../models/Entities";
+import {ServerSendsDeviceByIdDto} from "../models/ServerSendsDeviceByIdDto";
+import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
+import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -34,6 +39,18 @@ export class WebSocketConnectionService {
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
+
+  private deviceSubject = new BehaviorSubject<Device | undefined>(undefined);
+  device: Observable<Device | undefined> = this.deviceSubject.asObservable();
+
+  private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
+  deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
+
+  private allDevicesSubject = new BehaviorSubject<Device[] | undefined>(undefined);
+  allDevices: Observable<Device[] | undefined> = this.allDevicesSubject.asObservable();
+
+  private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
+  roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -68,5 +85,20 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
+  ServerSendsDeviceById(dto: ServerSendsDeviceByIdDto){
+    this.deviceSubject.next(dto.Device)
+  }
+
+  ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto){
+    this.allDevicesSubject.next(dto.Devices)
+  }
+
+  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
+    this.roomDevicesSubject.next(dto.Devices)
+  }
+
+  ServerSendsDevice(dto: DeviceWithIdDto){
+    this.deviceIdSubject.next(dto.Id);
+  }
 }
 

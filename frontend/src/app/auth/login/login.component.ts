@@ -4,6 +4,7 @@ import {AuthService} from "../auth.service";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {Router} from "@angular/router";
+import {ClientWantsToGetDevicesByUserIdDto} from "../../../models/ClientWantsToGetDevicesByUserIdDto";
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent {
       if(jwt){
         // JWT is received, perform redirection or other actions here
         this.router.navigate(['/home']);
+        this.loadUserInfo()
       }
     });
   }
@@ -68,5 +70,10 @@ export class LoginComponent {
 
   RedirectToForgotPassword() {
     this.router.navigate(['/resetpassword']);
+  }
+
+  private loadUserInfo() {
+    // Load logged in user's devices in sidebar
+    this.ws.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 }

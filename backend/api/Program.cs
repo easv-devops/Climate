@@ -3,10 +3,10 @@ using System.Reflection;
 using System.Security.Authentication;
 using api.helpers;
 using api.security;
+using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
-using infrastructure.Models.serverEvents;
 using lib;
 using service.services;
 using service.services.notificationServices;
@@ -31,10 +31,12 @@ public static class Startup
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new DeviceRepository(provider.GetRequiredService<string>()));
         
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
+        builder.Services.AddSingleton<DeviceService>();
         
         // Add services to the container.
         

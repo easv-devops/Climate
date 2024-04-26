@@ -1,3 +1,11 @@
-<p>
-  device {{this.deviceId}} works!
-</p>
+<ion-content>
+  <!-- Header section -->
+  <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
+    <h1 class="climate-color" style="font-size: 48px">Device: {{ this.device?.DeviceName }}</h1>
+    <ion-button fill="clear" color="dark" shape="round" class="ion-padding">
+      <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
+    </ion-button>
+  </div>
+
+  <app-graph></app-graph>
+</ion-content>
