@@ -14,6 +14,7 @@ import {ErrorHandlingService} from "./error-handling.service";
 import {Device, DeviceInRoom} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
+import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -103,5 +104,30 @@ export class WebSocketConnectionService {
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
     this.isDeviceEditedSubject.next(dto.IsEdit)
   }
+
+  ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
+
+    this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
+
+      if (!allDevicesRecord) {
+        allDevicesRecord = {};
+      }
+
+      dto.Devices!.forEach(device => {
+        // Tilføj eller opdater enheden i record
+        allDevicesRecord![device.Id] = device;
+      });
+
+      // Opdater allDevicesSubject med den opdaterede record
+      this.allDevicesSubject.next(allDevicesRecord);
+    });
+  }
+
+  //used to set when the client has handled edit
+  setIsDeviceEdited(value: boolean) {
+    this.isDeviceEditedSubject.next(value);
+  }
+
+
 }
 

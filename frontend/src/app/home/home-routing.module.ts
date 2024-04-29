@@ -4,7 +4,6 @@ import { HomePage } from './home.page';
 
 import {Page1Component} from "./page1/page1.component";
 import {Page2Component} from "./page2/page2.component";
-import {RoomsComponent} from "./rooms/rooms.component";
 
 const routes: Routes = [
   {

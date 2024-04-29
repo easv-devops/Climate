@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToGetDeviceByIdDto} from "../../../models/ClientWantsToGetDeviceByIdDto";
 import {ClientWantsToGetDevicesByRoomIdDto} from "../../../models/ClientWantsToGetDevicesByRoomIdDto";
 import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
 import {ClientWantsToEditDeviceDto} from "../../../models/ClientWantsToEditDeviceDto";

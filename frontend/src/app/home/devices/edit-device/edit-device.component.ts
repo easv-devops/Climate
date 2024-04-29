@@ -76,10 +76,10 @@ export class EditDeviceComponent  implements OnInit {
     this.deviceService.isDeviceEdited()
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(isEdited => {
-        if (isEdited) {
+        if (isEdited === true) {
           this.deviceService.updateDevice(this.device!)
           this.router.navigate(['/devices/' + this.idFromRoute]);
-          this.isEdited = false;
+          this.ws.setIsDeviceEdited(false);
         }
       });
   }
