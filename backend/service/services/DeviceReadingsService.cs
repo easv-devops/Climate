@@ -1,4 +1,5 @@
-﻿using infrastructure.Models;
+﻿using System.Data.SqlTypes;
+using infrastructure.Models;
 using infrastructure.repositories.readingsRepositories;
 
 namespace service.services;
@@ -46,10 +47,21 @@ public class DeviceReadingsService
 
     public bool DeleteAllReadings(int deviceId)
     {
-        _humidityRepository.DeleteHumidityReadings(deviceId);
-        _temperatureRepository.DeleteTemperatureReadings(deviceId);
-        _particlesRepository.DeleteParticle25(deviceId);
-        _particlesRepository.DeleteParticle100(deviceId);
+        var wasHumidityDeleted = _humidityRepository.DeleteHumidityReadings(deviceId);
+        if (!wasHumidityDeleted)
+            throw new SqlTypeException("Failed to delete humidity readings");
+
+        var wasTemperatureDeleted = _temperatureRepository.DeleteTemperatureReadings(deviceId);
+        if (!wasTemperatureDeleted)
+            throw new SqlTypeException("Failed to delete temperature readings");
+
+        var wasParticle25Deleted = _particlesRepository.DeleteParticle25(deviceId);
+        if (!wasParticle25Deleted)
+            throw new SqlTypeException("Failed to delete particle 2.5 readings");
+
+        var wasParticle100Deleted = _particlesRepository.DeleteParticle100(deviceId);
+        if (!wasParticle100Deleted)
+            throw new SqlTypeException("Failed to delete particle 10.0 readings");
         
         return true;
     }
