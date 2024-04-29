@@ -8,7 +8,6 @@ using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
-using infrastructure.Models.serverEvents;
 using infrastructure.repositories.readingsRepositories;
 using lib;
 using service.services;
