@@ -3,7 +3,6 @@ import {Device} from "../../models/Entities";
 import {Subject, takeUntil} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
-import {B} from "@angular/cdk/keycodes";
 
 @Component({
   selector: 'app-home',
