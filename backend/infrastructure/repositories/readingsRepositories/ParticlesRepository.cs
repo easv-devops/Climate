@@ -60,9 +60,6 @@ public class ParticlesRepository
             throw new SqlTypeException("Failed to delete Particle25 readings", ex);
         }
     }
-
-
-
     
     public bool SaveParticle100List(int deviceId, List<SensorDto> particles100List)
     {
@@ -89,7 +86,6 @@ public class ParticlesRepository
             throw new SqlTypeException("Failed to save Particle100 readings", ex);
         }
     }
-
     
     public bool DeleteParticle100(int deviceId)
     {
@@ -111,6 +107,4 @@ public class ParticlesRepository
             throw new SqlTypeException("Failed to delete Particle100 readings", ex);
         }
     }
-
-    
 }

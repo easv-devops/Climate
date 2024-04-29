@@ -7,13 +7,10 @@ using service.services;
 
 namespace api.clientEventHandlers;
 
-
-
 public class ClientWantsToDeleteDeviceDto : BaseDto
-{
+{ 
     public int Id { get; set; }
 }
-
 
 [RequireAuthentication]
 [ValidateDataAnnotations]
@@ -30,17 +27,15 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
     { 
-        _deviceReadingsService.DeleteAllReadings(dto.Id);
+       _deviceReadingsService.DeleteAllReadings(dto.Id);
        _deviceService.DeleteDevice(dto.Id);
        socket.SendDto(new ServerDeletesDevice { IsDeleted = true});
        return Task.CompletedTask;
     }
-    
 }
 
 public class ServerDeletesDevice: BaseDto
 {
     //[Required(ErrorMessage = "No status for reset of password")]
     public bool IsDeleted { get; set; }
-    
 }

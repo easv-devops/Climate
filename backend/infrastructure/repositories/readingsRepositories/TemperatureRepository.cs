@@ -64,7 +64,4 @@ public class TemperatureRepository
             throw new SqlTypeException("Failed to delete Temperature readings", ex);
         }
     }
-    
-    
-
 }

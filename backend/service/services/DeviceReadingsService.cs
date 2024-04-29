@@ -52,7 +52,5 @@ public class DeviceReadingsService
         _particlesRepository.DeleteParticle100(deviceId);
         
         return true;
-      
     }
-
 }

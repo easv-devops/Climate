@@ -8,14 +8,12 @@ namespace infrastructure;
 
 public class DeviceRepository
 {
-    
     private readonly string _connectionString;
 
     public DeviceRepository(string connectionString)
     {
         _connectionString = connectionString;
     }
-
 
     public DeviceWithIdDto Create(DeviceDto deviceDto)
     {
