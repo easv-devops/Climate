@@ -43,4 +43,16 @@ public class DeviceReadingsService
         else
             throw new NullReferenceException("there is no 10 particles readings in dataset");
     }
+
+    public bool DeleteAllReadings(int deviceId)
+    {
+        _humidityRepository.DeleteHumidityReadings(deviceId);
+        _temperatureRepository.DeleteTemperatureReadings(deviceId);
+        _particlesRepository.DeleteParticle25(deviceId);
+        _particlesRepository.DeleteParticle100(deviceId);
+        
+        return true;
+      
+    }
+
 }

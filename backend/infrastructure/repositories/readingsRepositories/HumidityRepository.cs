@@ -39,7 +39,28 @@ public class HumidityRepository
             Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Humidity readings", ex);
         }
-        
     }
+    
+    public bool DeleteHumidityReadings(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"DELETE FROM ReadingHumidity 
+                    WHERE DeviceId = @DeviceId";
+            connection.Execute(sql, new
+            {
+                DeviceId = deviceId
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw new SqlTypeException("Failed to delete Humidity readings", ex);
+        }
+    }
+
 }
 

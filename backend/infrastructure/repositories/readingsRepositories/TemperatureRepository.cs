@@ -43,4 +43,28 @@ public class TemperatureRepository
             throw new SqlTypeException("Failed to save Temperature readings", ex);
         }
     }
+    
+    public bool DeleteTemperatureReadings(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"DELETE FROM ReadingTemperature 
+                    WHERE DeviceId = @DeviceId";
+            connection.Execute(sql, new
+            {
+                DeviceId = deviceId
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw new SqlTypeException("Failed to delete Temperature readings", ex);
+        }
+    }
+    
+    
+
 }

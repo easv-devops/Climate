@@ -9,10 +9,12 @@ public class DeviceService
 {
 
     private readonly DeviceRepository _deviceRepository;
+    
 
     public DeviceService(DeviceRepository deviceRepository)
     {
         _deviceRepository = deviceRepository;
+        
     }
 
     public DeviceWithIdDto CreateDevice(DeviceDto deviceDto)
@@ -24,7 +26,9 @@ public class DeviceService
 
     public bool DeleteDevice(int Id)
     {
+        
         return _deviceRepository.DeleteDevice(Id);
+        
     }
     
     public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId, int userId)
