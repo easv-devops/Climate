@@ -36,8 +36,14 @@ ParticleData getAverageParticleData(int numReadings) {
 
   // Create a new ParticleData object with the average values
   ParticleData avgData(avgPM10, avgPM25, avgPM100);
+
+  // Send kommando til at slukke for sensoren
+  Serial2.write(0x42);
+  Serial2.write(0x4D);
+
   return avgData;
 }
+
 
 // Function to read particle data
 ParticleData readParticels() {

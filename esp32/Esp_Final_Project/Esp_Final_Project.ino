@@ -46,33 +46,27 @@ void setupTimerForSleep(unsigned long sleepSeconds) {
   esp_deep_sleep_start();
 }
 
-// Denne funktion kaldes, når ESP32 vågner fra dyb søvn
-void IRAM_ATTR esp32_wake_up() {
-  Serial.println("Waking up, And running setup");
 
-   Serial.begin(115200);
-  timeManager.begin();
-
-
-  if (!bme.begin(0x76)) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
-  }else{
-     Serial.println("started BME280 sensor");
-  }
-}
-
-void setup() {
+void setupESP() {
   Serial.begin(115200);
   timeManager.begin();
 
-
   if (!bme.begin(0x76)) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     while (1);
-  }else{
-     Serial.println("started BME280 sensor");
+  } else {
+    Serial.println("started BME280 sensor");
   }
+}
+
+// Denne funktion kaldes, når ESP32 vågner fra dyb søvn
+void IRAM_ATTR esp32_wake_up() {
+  Serial.println("Waking up, And running setup");
+  setupESP();
+}
+
+void setup() {
+  setupESP();
 }
 
 void loop() {
@@ -116,45 +110,43 @@ if (now > airNextReadingTime) {
   setupPMS5003Sensor(25, 26); // Start PMS5003-sensoren
   delay(5000); // Vent i 5 sekunder for at lade sensoren stabilisere
 
-  ParticleData avgData = getAverageParticleData(10); // Tag 10 aflæsninger og beregn gennemsnittet
-// Gem partikelmålinger
-SensorDto particle25Reading;
-particle25Reading.Value = avgData.getPM25();
-particle25Reading.TimeStamp = currentTime;
-readings.Particles25.push_back(particle25Reading);
+  ParticleData avgData = getAverageParticleData(10); // Tag 10 aflæsninger og beregn gennemsnittet samt slukker sensor
+  // Gem partikelmålinger
+  SensorDto particle25Reading;
+  particle25Reading.Value = avgData.getPM25();
+  particle25Reading.TimeStamp = currentTime;
+  readings.Particles25.push_back(particle25Reading);
 
-SensorDto particle100Reading;
-particle100Reading.Value = avgData.getPM100();
-particle100Reading.TimeStamp = currentTime;
-readings.Particles100.push_back(particle100Reading);
+  SensorDto particle100Reading;
+  particle100Reading.Value = avgData.getPM100();
+  particle100Reading.TimeStamp = currentTime;
+  readings.Particles100.push_back(particle100Reading);
 
-airNextReadingTime = now + readingInterval;
+  airNextReadingTime = now + readingInterval;
 
-Serial.println("End reading Particles");
-
+  Serial.println("End reading Particles");
 }
 
+if (now > mqttNextSendingTime) {
 
-  if (now > mqttNextSendingTime) {
+  // Opret et DeviceData-objekt
+  DeviceData deviceData(deviceId, readings);
+  std::string jsonString = deviceData.toJsonString();
+  sendDataToBroker("Climate", jsonString.c_str());
 
-    // Opret et DeviceData-objekt
-    DeviceData deviceData(deviceId, readings);
-    std::string jsonString = deviceData.toJsonString();
-    sendDataToBroker("Climate", jsonString.c_str());
+  readings.Temperatures.clear();
+  readings.Humidities.clear();
+  readings.Particles25.clear();
+  readings.Particles100.clear();
+  mqttNextSendingTime = now + readingInterval;
+}
 
-    readings.Temperatures.clear();
-    readings.Humidities.clear();
-    readings.Particles25.clear();
-    readings.Particles100.clear();
-    mqttNextSendingTime = now + readingInterval;
-  }
+unsigned long nextReadingTime = min(tempNextReadingTime, min(humiNextReadingTime, airNextReadingTime));
+unsigned long sleepSeconds = nextReadingTime - now;
 
-  unsigned long nextReadingTime = min(tempNextReadingTime, min(humiNextReadingTime, airNextReadingTime));
-  unsigned long sleepSeconds = nextReadingTime - now;
-
-  if (sleepSeconds > minDeepSleepTime || (mqttNextSendingTime - now) > minDeepSleepTime) {
-    setupTimerForSleep(sleepSeconds);
-  }
+if (sleepSeconds > minDeepSleepTime || (mqttNextSendingTime - now) > minDeepSleepTime) {
+  setupTimerForSleep(sleepSeconds);
+}
 }
 
 // Funktion til at oprette forbindelse til Wi-Fi
