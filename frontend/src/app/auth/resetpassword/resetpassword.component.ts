@@ -31,7 +31,7 @@ export class ResetpasswordComponent  implements OnInit {
     ).subscribe(isReset => {
       if (isReset) {
         //if password was successfully reset go to login.
-        this.router.navigate(['/login']);
+        this.router.navigate(['auth/login']);
       }
     });
   }

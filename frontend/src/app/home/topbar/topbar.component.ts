@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
-  styleUrls: ['../../app.component.scss'],
+  styleUrls: ['../home.page.scss'],
 })
 export class TopbarComponent {
 
