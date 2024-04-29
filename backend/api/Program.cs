@@ -70,6 +70,7 @@ public static class Startup
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     //error handler
                     //todo should have a logger that logs the error so we can se it when deployed 
                     if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))

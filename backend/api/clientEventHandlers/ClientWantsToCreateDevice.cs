@@ -47,12 +47,7 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
             });
             return Task.CompletedTask;
         }
-
-
-        
-
-    
-}
+    }
 
 
 public class ServerSendsDevice : BaseDto
