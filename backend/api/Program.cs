@@ -2,11 +2,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Authentication;
 using api.helpers;
+using api.mqttEventListeners;
 using api.security;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
+using infrastructure.Models.serverEvents;
+using infrastructure.repositories.readingsRepositories;
 using lib;
 using service.services;
 using service.services.notificationServices;
@@ -38,9 +41,15 @@ public static class Startup
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<DeviceService>();
         
-        // Add services to the container.
+        builder.Services.AddSingleton<DeviceReadingsService>();
+        builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton<MqttClientSubscriber>();
         
+        // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
+        
         
         builder.WebHost.UseUrls("http://*:9999");
         
@@ -80,6 +89,7 @@ public static class Startup
                 }
             };
         });
+        app.Services.GetService<MqttClientSubscriber>()?.CommunicateWithBroker();
         return app;
     }
 }
