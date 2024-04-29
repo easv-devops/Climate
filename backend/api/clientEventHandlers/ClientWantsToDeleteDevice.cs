@@ -28,6 +28,8 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
         _deviceReadingsService = deviceReadingsService;
     }
     
+    
+    //todo skal tjekke om du er tilkoblet device først!!
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
     { 
        _deviceReadingsService.DeleteAllReadings(dto.Id);

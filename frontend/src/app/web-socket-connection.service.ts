@@ -133,7 +133,7 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(value);
   }
 
-  
+
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     this.isDeletedSubject.next(dto.IsDeleted);
   }
