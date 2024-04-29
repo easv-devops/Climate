@@ -1,4 +1,6 @@
 import {Component} from '@angular/core';
+import {Router} from "@angular/router";
+import {WebSocketConnectionService} from "../../web-socket-connection.service";
 
 @Component({
   selector: 'app-topbar',
@@ -7,6 +9,12 @@ import {Component} from '@angular/core';
 })
 export class TopbarComponent {
 
-  constructor() { }
+  constructor(private router: Router,
+              private ws: WebSocketConnectionService) {
+  }
 
+  signOut() {
+    this.router.navigateByUrl("/auth/login");
+    this.ws.clearDataOnLogout();
+  }
 }

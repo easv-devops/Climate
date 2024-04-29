@@ -31,7 +31,6 @@ export class LoginComponent {
       if (jwt && jwt != '') {
         // JWT is received, perform redirection or other actions here
         this.router.navigate(['']);
-        this.loadUserInfo();
       }
     });
   }

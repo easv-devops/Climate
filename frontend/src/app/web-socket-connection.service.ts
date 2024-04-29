@@ -16,6 +16,7 @@ import {Device, DeviceInRoom} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
+import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -71,6 +72,7 @@ export class WebSocketConnectionService {
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
+    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
@@ -81,6 +83,7 @@ export class WebSocketConnectionService {
   ServerRegisterUser(dto: ServerRegisterUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
+    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
@@ -143,6 +146,20 @@ export class WebSocketConnectionService {
       this.allDevicesSubject.next(devices);
     }
   }
+
+
+  clearDataOnLogout() {
+    localStorage.setItem("jwt", ""); // Nulstil JWT i local storage
+    this.jwtSubject.next(undefined); // Nulstil JWT-subjektet
+    this.isResetSubject.next(undefined); // Nulstil isReset-subjektet
+    this.isDeletedSubject.next(undefined); // Nulstil isDeleted-subjektet
+    this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
+    this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
+    this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
+    this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
+  }
+
+
 }
 
 

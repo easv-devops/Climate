@@ -27,7 +27,6 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
 
   private handleOpen() {
     let jwt = localStorage.getItem('jwt');
-    localStorage.setItem("jwt", "");
     //If there is a token, we want to login with it
     if (jwt && jwt != '')
       this.sendDto(new ClientWantsToAuthenticateWithJwt({jwt: jwt}));

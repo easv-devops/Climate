@@ -53,20 +53,29 @@ public static class StateService
      */
     public static void RemoveClient(Guid clientId)
     {
-        if (_userToDevice.ContainsKey(clientId))
+        // Create a copy of client keys to avoid modifying the collection during iteration
+        var clientKeys = _clients.Keys.ToList();
+
+        foreach (var key in clientKeys)
         {
-            // Remove all devices associated with the disconnected user.
-            var devices = _userToDevice[clientId];
-            foreach (var deviceId in devices)
+            if (key == clientId)
             {
-                RemoveUserFromDevice(deviceId, clientId);
+                if (_userToDevice.ContainsKey(clientId))
+                {
+                    // Remove all devices associated with the disconnected user.
+                    var devices = _userToDevice[clientId].ToList(); // Create a copy of devices to avoid modifying the collection during iteration
+                    foreach (var deviceId in devices)
+                    {
+                        RemoveUserFromDevice(deviceId, clientId);
+                    }
+                    // Removes the user from user to device list
+                    _userToDevice.Remove(clientId);
+                }
+                // Remove the client from the clients collection
+                _clients.Remove(clientId);
             }
-            //removes the user from user to device list
-            _userToDevice.Remove(clientId);
         }
-        _clients.Remove(clientId);
     }
-    
     
     public static List<Guid> GetUsersForDevice(int deviceId)
     {
