@@ -28,6 +28,9 @@ public static class StateService
     //holds the device and the users that wants updates on that device
     private static readonly Dictionary<int, List<Guid>> _deviceToUser = new();
     
+    //used for getting all devices a user is subscribed to (used to empty _deviceToUser dictionary when client disconnect)
+    private static readonly Dictionary<Guid, List<int>> _userToDevice = new();
+    
     
 
     public static WebSocketMetaData GetClient(Guid clientId)
@@ -47,10 +50,20 @@ public static class StateService
     
     /**
      * removes the client and all current subscribes to rooms and devises
-     * todo Should remove all dependencies for the user 
      */
     public static void RemoveClient(Guid clientId)
     {
+        if (_userToDevice.ContainsKey(clientId))
+        {
+            // Remove all devices associated with the disconnected user.
+            var devices = _userToDevice[clientId];
+            foreach (var deviceId in devices)
+            {
+                RemoveUserFromDevice(deviceId, clientId);
+            }
+            //removes the user from user to device list
+            _userToDevice.Remove(clientId);
+        }
         _clients.Remove(clientId);
     }
     
@@ -69,7 +82,6 @@ public static class StateService
 
     public static void AddUserToDevice(int deviceId, Guid userId)
     {
-        Console.WriteLine("userid: " + userId + "  DeviceId: " + deviceId);
         if (_deviceToUser.ContainsKey(deviceId))
         {
             _deviceToUser[deviceId].Add(userId);
@@ -77,6 +89,16 @@ public static class StateService
         else
         {
             _deviceToUser[deviceId] = new List<Guid> { userId };
+        }
+        
+        // Add the device to the user's list of subscribed devices.
+        if (_userToDevice.ContainsKey(userId))
+        {
+            _userToDevice[userId].Add(deviceId);
+        }
+        else
+        {
+            _userToDevice[userId] = new List<int> { deviceId };
         }
     }
 
@@ -87,10 +109,18 @@ public static class StateService
             _deviceToUser[deviceId].Remove(userId);
             if (_deviceToUser[deviceId].Count == 0)
             {
-                _deviceToUser.Remove(deviceId); 
+                _deviceToUser.Remove(deviceId);
+            }
+            
+            // Remove the device from the user's list of subscribed devices.
+            if (_userToDevice.ContainsKey(userId))
+            {
+                _userToDevice[userId].Remove(deviceId);
+                if (_userToDevice[userId].Count == 0)
+                {
+                    _userToDevice.Remove(userId);
+                }
             }
         }
     }
-    
-
 }

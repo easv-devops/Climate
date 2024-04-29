@@ -21,8 +21,6 @@ export class WebSocketConnectionService {
 
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
-  //todo should be objects instead of number, reference to the object (key= id. value = object)
-  //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
   AllRooms: number[] = [];
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
@@ -105,7 +103,5 @@ export class WebSocketConnectionService {
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
     this.isDeviceEditedSubject.next(dto.IsEdit)
   }
-
-
 }
 
