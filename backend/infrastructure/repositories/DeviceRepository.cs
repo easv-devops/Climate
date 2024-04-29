@@ -8,14 +8,12 @@ namespace infrastructure;
 
 public class DeviceRepository
 {
-    
     private readonly string _connectionString;
 
     public DeviceRepository(string connectionString)
     {
         _connectionString = connectionString;
     }
-
 
     public DeviceWithIdDto Create(DeviceDto deviceDto)
     {
@@ -54,15 +52,10 @@ public class DeviceRepository
             connection.Open();
 
             string deleteDeviceQuery = @"
-                    DELETE Device, ReadingHumidity, ReadingParticle2_5, ReadingParticle10, ReadingTemperature
-                    FROM Device
-                    LEFT JOIN ReadingHumidity ON Device.Id = ReadingHumidity.DeviceId
-                    LEFT JOIN ReadingParticle2_5 ON Device.Id = ReadingParticle2_5.DeviceId
-                    LEFT JOIN ReadingParticle10 ON Device.Id = ReadingParticle10.DeviceId
-                    LEFT JOIN ReadingTemperature ON Device.Id = ReadingTemperature.DeviceId
-                    WHERE Device.Id = @Id;";
+                DELETE FROM Device
+                WHERE Id = @Id;";
 
-            return connection.Execute(deleteDeviceQuery, new { Id = Id}) == 1;
+            return connection.Execute(deleteDeviceQuery, new { Id = Id }) == 1;
         }
         catch (Exception ex)
         {

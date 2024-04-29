@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ClientWantsToCreateDeviceDto } from "../../../models/ClientWantsToCreateDeviceDto";
+import { ClientWantsToCreateDeviceDto } from "../../../../models/ClientWantsToCreateDeviceDto";
 import { DeviceService } from "../device.service";
 import { ToastController } from "@ionic/angular";
-import { WebSocketConnectionService } from "../../web-socket-connection.service";
+import { WebSocketConnectionService } from "../../../web-socket-connection.service";
 import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
