@@ -8,6 +8,7 @@ namespace api.WebSocket;
  */
 public class WebSocketMetaData
 {
+    
     public IWebSocketConnection Connection { get; set; }
     public bool IsAuthenticated { get; set; } = false;
     public EndUser? User { get; set; }
@@ -16,6 +17,8 @@ public class WebSocketMetaData
     {
         Connection = connection;
     }
+    
+    
 }
 public static class StateService
 {
@@ -27,11 +30,14 @@ public static class StateService
     
     
 
-
-
     public static WebSocketMetaData GetClient(Guid clientId)
     {
-        return _clients[clientId];
+        if (_clients.ContainsKey(clientId))
+        {
+            return _clients[clientId];
+        }
+
+        return null;
     }
 
     public static void AddClient(Guid clientId, IWebSocketConnection connection)
@@ -81,7 +87,7 @@ public static class StateService
             _deviceToUser[deviceId].Remove(userId);
             if (_deviceToUser[deviceId].Count == 0)
             {
-                _deviceToUser.Remove(deviceId); // Hvis der ikke er flere brugere til enheden, fjern den fra dictionar
+                _deviceToUser.Remove(deviceId); 
             }
         }
     }

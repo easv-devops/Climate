@@ -117,8 +117,14 @@ export class WebSocketConnectionService {
     this.roomDevicesSubject.next(dto.Devices)
   }
 
-  ServerSendsDevice(dto: DeviceWithIdDto){
-    this.deviceIdSubject.next(dto.Id);
+  ServerSendsDevice(dto: DeviceWithIdDto) {
+    this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
+      if (allDevicesRecord !== undefined) {
+        allDevicesRecord[dto.Id] = dto;
+        // Opdater allDevicesSubject med den opdaterede liste over enheder
+        this.allDevicesSubject.next(allDevicesRecord);
+      }
+    });
   }
 
   ServerEditsDevice(dto: ServerEditsDeviceDto) {

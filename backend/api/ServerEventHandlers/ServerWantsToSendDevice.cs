@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using api.clientEventHandlers;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -12,13 +13,19 @@ public class ServerWantsToSendDevice
     {
         var subscribedUserList = StateService.GetUsersForDevice(device.Id);
 
+
         foreach (var user in subscribedUserList)
         {
             var connection = StateService.GetClient(user);
-            connection.Connection.SendDto(  new ServerSendsDeviceById
+            if (!ReferenceEquals(connection, null))
             {
-                Device = device
-            });
+                connection.Connection.SendDto(new ServerSendsDevice
+                {
+                    Id = device.Id,
+                    DeviceName = device.DeviceName,
+                    RoomId = device.RoomId
+                });
+            }
         }
         return true;
     }

@@ -68,6 +68,7 @@ public static class Startup
             socket.OnClose = () => StateService.RemoveClient(socket.ConnectionInfo.Id);
             socket.OnMessage = async message =>
             {
+                Console.WriteLine(socket.ConnectionInfo.Id);
                 try
                 {
                     await app.InvokeClientEventHandler(services, socket, message);
