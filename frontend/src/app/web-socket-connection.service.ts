@@ -135,7 +135,11 @@ export class WebSocketConnectionService {
 
 
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
-    this.isDeletedSubject.next(dto.IsDeleted);
+    if (dto.IsDeleted && this.allDevicesSubject.value) {
+      const devices = { ...this.allDevicesSubject.value };
+      delete devices[dto.Id];
+      this.allDevicesSubject.next(devices);
+    }
   }
 }
 

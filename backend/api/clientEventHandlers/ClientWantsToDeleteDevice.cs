@@ -2,6 +2,7 @@
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using lib;
 using service.services;
@@ -29,12 +30,23 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     }
     
     
-    //todo skal tjekke om du er tilkoblet device først!!
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
-    { 
-       _deviceReadingsService.DeleteAllReadings(dto.Id);
-       _deviceService.DeleteDevice(dto.Id);
-       socket.SendDto(new ServerSendsDeviceDeletionStatus { IsDeleted = true});
-       return Task.CompletedTask;
+    {
+        //checks if the user has permission before deleting
+        if (!_deviceService.IsItUsersDevice(dto.Id, StateService.GetClient(socket.ConnectionInfo.Id).User.Id))
+        {
+            throw new AccessViolationException("Ypu do not have permission to delete this device");
+        }
+        //removes the device from stateService
+        StateService.RemoveUserFromDevice(dto.Id, socket.ConnectionInfo.Id);
+        
+        //return the is deleted bool
+        socket.SendDto(new ServerSendsDeviceDeletionStatus
+        {
+            IsDeleted = _deviceService.DeleteDevice(dto.Id),
+            Id = dto.Id
+        });
+        
+        return Task.CompletedTask;
     }
 }

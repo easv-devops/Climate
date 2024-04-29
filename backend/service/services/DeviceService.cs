@@ -53,4 +53,9 @@ public class DeviceService
         //todo should change room id if it is present in the dto 
         return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
     }
+
+    public bool IsItUsersDevice(int deviceId, int userId)
+    {
+        return _deviceRepository.IsItUsersDevice(deviceId, userId);
+    }
 }

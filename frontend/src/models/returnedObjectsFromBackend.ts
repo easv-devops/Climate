@@ -30,4 +30,5 @@ export class DeviceWithIdDto {
 
 export class ServerSendsDeviceDeletionStatusDto {
   IsDeleted!: boolean;
+  Id!: number;
 }
