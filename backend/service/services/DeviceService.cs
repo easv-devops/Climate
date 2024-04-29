@@ -49,4 +49,11 @@ public class DeviceService
         
         return _deviceRepository.GetDeviceById(deviceId);
     }
+
+
+    public bool EditDevice(int dtoId, DeviceDto deviceDto)
+    {
+        //todo should change room id if it is present in the dto 
+        return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
+    }
 }

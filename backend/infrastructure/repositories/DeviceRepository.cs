@@ -189,4 +189,25 @@ public class DeviceRepository
             throw new Exception(e.Message, e);
         }
     }
+
+    public bool EditDevice(int dtoId, string deviceDtoDeviceName)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+
+            string editDeviceQuery = @"
+            UPDATE Device
+            SET DeviceName = @DeviceName
+            WHERE Id = @DeviceId;";
+
+            return connection.Execute(editDeviceQuery, new { DeviceName = deviceDtoDeviceName, DeviceId = dtoId }) > 0;
+        }
+        catch (Exception e)
+        {
+            // Handle exceptions, maybe log them
+            throw new Exception(e.Message, e);
+        }
+    }
 }
