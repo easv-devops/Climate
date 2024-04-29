@@ -65,5 +65,4 @@ export class DeviceComponent implements OnInit {
       console.error('Room ID not found for the device');
     }
   }
-
 }
