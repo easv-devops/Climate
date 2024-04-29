@@ -9,12 +9,13 @@ import {
   ServerSendsErrorMessageToClient,
   DeviceWithIdDto
 } from "../models/returnedObjectsFromBackend";
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
 import {Device, DeviceInRoom} from "../models/Entities";
 import {ServerSendsDeviceByIdDto} from "../models/ServerSendsDeviceByIdDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
+import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -46,11 +47,14 @@ export class WebSocketConnectionService {
   private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
   deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
-  private allDevicesSubject = new BehaviorSubject<Device[] | undefined>(undefined);
-  allDevices: Observable<Device[] | undefined> = this.allDevicesSubject.asObservable();
+  private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
+  allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
 
   private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
   roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
+
+  private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
+  isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -89,9 +93,17 @@ export class WebSocketConnectionService {
     this.deviceSubject.next(dto.Device)
   }
 
-  ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto){
-    this.allDevicesSubject.next(dto.Devices)
+  ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
+    if (dto.Devices) {
+      this.allDevicesSubject.next(dto.Devices.reduce((record, device) => {
+        record[device.Id] = device;
+        return record;
+      }, {} as Record<number, Device>));
+    } else {
+      console.error('Received empty Devices list from server');
+    }
   }
+
 
   ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
     this.roomDevicesSubject.next(dto.Devices)
@@ -99,6 +111,10 @@ export class WebSocketConnectionService {
 
   ServerSendsDevice(dto: DeviceWithIdDto){
     this.deviceIdSubject.next(dto.Id);
+  }
+
+  ServerEditsDevice(dto: ServerEditsDeviceDto) {
+    this.isDeviceEditedSubject.next(dto.IsEdit)
   }
 }
 

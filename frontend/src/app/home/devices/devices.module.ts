@@ -8,10 +8,11 @@ import {IonicModule} from "@ionic/angular";
 import {DeviceComponent} from "./device/device.component";
 import {CreateDeviceComponent} from "./create-device/create-device.component";
 import {ReactiveFormsModule} from "@angular/forms";
+import {EditDeviceComponent} from "./edit-device/edit-device.component";
 
 
 @NgModule({
-  declarations: [DevicesComponent, DeviceComponent, CreateDeviceComponent],
+  declarations: [DevicesComponent, DeviceComponent, CreateDeviceComponent, EditDeviceComponent],
   imports: [
     CommonModule,
     DevicesRoutingModule,

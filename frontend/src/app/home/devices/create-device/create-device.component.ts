@@ -53,7 +53,7 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
     return this.form.controls.roomId;
   }
 
-  async createDevice() {
+  createDevice() {
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
       //TODO Read real RoomId value from room
