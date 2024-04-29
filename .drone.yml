@@ -4,6 +4,7 @@ name: integration
 
 trigger: 
   branch:
+    - drone_setup
     - master
   event:
     exclude:
@@ -33,6 +34,7 @@ type: docker
 name: deliver
 trigger:
   branch:
+    - drone_setup
     - master
   event:
     exclude:
