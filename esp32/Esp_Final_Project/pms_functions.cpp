@@ -26,7 +26,7 @@ ParticleData getAverageParticleData(int numReadings) {
     totalPM10 += data.getPM10();
     totalPM25 += data.getPM25();
     totalPM100 += data.getPM100();
-    delay(3000);  // Delay between readings (adjust as needed)
+    delay(1000);  // Delay between readings (adjust as needed)
   }
 
   // Calculate the average values
