@@ -1,12 +1,11 @@
 ﻿using api.clientEventHandlers;
 using api.serverEventModels;
 using tests.WebSocket;
-namespace tests;
 
-public class ClientWantsToCreateDevice
+namespace tests;
+public class ClientWantsToEdit
 {
-    
-    
+        
     [SetUp]
     public void Setup()
     {
@@ -15,9 +14,9 @@ public class ClientWantsToCreateDevice
     }
     
 
-    [TestCase("user@example.com", "12345678","navnpådevice", "1", TestName = "ValidRoomId")]
-    [TestCase("user@example.com", "12345678","navnpådevice", "-1", TestName = "InvalidRoomId")]
-    public async Task CreateDeviceTest(string email, string password, string deviceName, int roomId)
+    [TestCase(1, "user@example.com", "12345678","navnpådevice", "1", TestName = "ValidRoomId")]
+    [TestCase(-1, "user@example.com", "12345678","jfiewfwe", "1", TestName = "InvalidDeviceId")]
+    public async Task EditDeviceTest(int id, string email, string password, string deviceName, int roomId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
@@ -27,8 +26,15 @@ public class ClientWantsToCreateDevice
             password = password
         });
         
-        await ws.DoAndAssert(new ClientWantsToCreateDeviceDto
+        ws.Send(new ClientWantsToCreateDeviceDto
         {
+            DeviceName = deviceName,
+            RoomId = roomId
+        });
+        
+        await ws.DoAndAssert(new ClientWantsToEditDeviceDto
+        {
+            Id = id,
             DeviceName = deviceName,
             RoomId = roomId
         }, fromServer =>
@@ -36,16 +42,17 @@ public class ClientWantsToCreateDevice
             return fromServer.Count(dto =>
             {
                 Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                    serverEvent => serverEvent.eventType == nameof(ServerSendsDevice)));
+                    serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {
                     case "ValidRoomId":
                         Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                            serverEvent => serverEvent.eventType == nameof(ServerSendsDevice)));
+                            serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
+                        
                         return dto.eventType == nameof(ServerSendsDevice); // Replace "ValidEventType" with the expected eventType for Valid test.
                 
-                    case "InvalidRoomId":
+                    case "InvalidDeviceId":
                         Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                             serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
@@ -56,5 +63,4 @@ public class ClientWantsToCreateDevice
             }) == 1; // You can adjust this condition based on your requirements.
         });
     }
-
 }
