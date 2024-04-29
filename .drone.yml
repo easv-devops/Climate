@@ -41,41 +41,6 @@ depends_on:
   - integration
 
 steps:
-  - name: publish api
-    image: plugins/docker
-    settings:
-      username:
-        from_secret: DockerUsername
-      password:
-        from_secret: DockerPassword
-      dockerfile: Dockerfile
-      repo: midr/climate-backend
-      tags:
-        - staging
-          
-  - name: publish web
-    image: plugins/docker
-    settings:
-      username:
-        from_secret: DockerUsername
-      password:
-        from_secret: DockerPassword
-      dockerfile: frontend/Dockerfile
-      repo: midr/climate-frontend
-      tags:
-        - staging
-
-  - name: trigger update
-    image: curlimages/curl
-    commands:
-      - exit 0
-      # Must match the token defined in docker-compose.yml
-      - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
-      - sleep 10
-    depends_on:
-      - publish api
-      - publish web
-
   - name: update database
     image: flyway/flyway
     environment:
@@ -87,9 +52,7 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       - flyway migrate
-          -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
-          -user="$DB_USER"
-          -password="$DB_PASSWORD"
+          -url="jdbc:mariadb://74.234.8.67:3306/climate"
+          -user="aladeen"
+          -password="xAladeen4life"
           -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
