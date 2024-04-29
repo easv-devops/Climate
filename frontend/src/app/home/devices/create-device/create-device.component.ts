@@ -30,14 +30,7 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.ws.deviceId.pipe(
-        takeUntil(this.unsubscribe$)
-    ).subscribe(deviceId => {
-      if (deviceId) {
-        this.router.navigate(['/devices/' + deviceId]);
-        //console.log(deviceId);
-      }
-    });
+
   }
 
   ngOnDestroy(): void {
@@ -54,6 +47,16 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
   }
 
   createDevice() {
+
+    //subscribe to the new id
+    this.ws.deviceId.pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(deviceId => {
+      if (deviceId) {
+        this.router.navigate(['/devices/' + deviceId]);
+      }
+    });
+
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
       //TODO Read real RoomId value from room

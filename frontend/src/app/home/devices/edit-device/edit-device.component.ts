@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCreateDeviceDto";
 import {FormBuilder, Validators} from "@angular/forms";
 import {DeviceService} from "../device.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ClientWantsToEditDeviceDto} from "../../../../models/ClientWantsToEditDeviceDto";
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 
 @Component({
   selector: 'app-edit-device',
@@ -26,6 +26,7 @@ export class EditDeviceComponent  implements OnInit {
   constructor(private readonly fb: FormBuilder,
               private readonly deviceService: DeviceService,
               private readonly activatedRoute: ActivatedRoute,
+              public ws: WebSocketConnectionService,
               private readonly router: Router) { }
 
   ngOnInit() {
@@ -50,7 +51,6 @@ export class EditDeviceComponent  implements OnInit {
 
   getDeviceFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
-    this.deviceService.getDeviceById(this.idFromRoute)
   }
 
   editDevice() {
@@ -63,11 +63,11 @@ export class EditDeviceComponent  implements OnInit {
   }
 
   subscribeToDevice() {
-    this.deviceService.getDeviceObservable()
+    this.ws.allDevices
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(d => {
-        if (d) {
-          this.device = d;
+      .subscribe(allDevices => {
+        if (allDevices) {
+          this.device = allDevices[this.idFromRoute!]
         }
       });
   }

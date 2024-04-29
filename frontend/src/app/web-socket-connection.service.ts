@@ -12,8 +12,6 @@ import {
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
 import {Device, DeviceInRoom} from "../models/Entities";
-import {ServerSendsDeviceByIdDto} from "../models/ServerSendsDeviceByIdDto";
-import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 
@@ -21,17 +19,12 @@ import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
 
-
-
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
-  //TODO use records instead of lists
   //todo should be objects instead of number, reference to the object (key= id. value = object)
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
-  AllRooms: number[] = [];
-
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
-
+  AllRooms: number[] = [];
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
   private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
@@ -43,9 +36,7 @@ export class WebSocketConnectionService {
   //Socket connection
   public socketConnection: WebsocketSuperclass;
 
-  private deviceSubject = new BehaviorSubject<Device | undefined>(undefined);
-  device: Observable<Device | undefined> = this.deviceSubject.asObservable();
-
+  //used for creating a new device (waits for the new returned device id)
   private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
   deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
@@ -91,28 +82,6 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
-  ServerSendsDeviceById(dto: ServerSendsDeviceByIdDto){
-    this.deviceSubject.next(dto.Device)
-  }
-
-  ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
-
-    this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
-
-      if (!allDevicesRecord) {
-        allDevicesRecord = {};
-      }
-
-      dto.Devices!.forEach(device => {
-        // Tilføj eller opdater enheden i record
-        allDevicesRecord![device.Id] = device;
-      });
-
-      // Opdater allDevicesSubject med den opdaterede record
-      this.allDevicesSubject.next(allDevicesRecord);
-    });
-  }
-
   ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
     this.roomDevicesSubject.next(dto.Devices)
   }
@@ -120,6 +89,11 @@ export class WebSocketConnectionService {
   ServerSendsDevice(dto: DeviceWithIdDto) {
     this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
       if (allDevicesRecord !== undefined) {
+
+        if (!allDevicesRecord.hasOwnProperty(dto.Id)) {
+          this.deviceIdSubject.next(dto.Id);//if it is a new device the device id is set so create can find it
+        }
+
         allDevicesRecord[dto.Id] = dto;
         // Opdater allDevicesSubject med den opdaterede liste over enheder
         this.allDevicesSubject.next(allDevicesRecord);
@@ -127,8 +101,11 @@ export class WebSocketConnectionService {
     });
   }
 
+  //todo could maybe just check if the new values has been changed on the alldevice list just maybe..
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
     this.isDeviceEditedSubject.next(dto.IsEdit)
   }
+
+
 }
 

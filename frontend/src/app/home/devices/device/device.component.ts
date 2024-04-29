@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 
 @Component({
   selector: 'app-device',
@@ -15,6 +16,7 @@ export class DeviceComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
 
   constructor(private activatedRoute: ActivatedRoute,
+              public ws: WebSocketConnectionService,
               private deviceService: DeviceService) {
   }
 
@@ -30,15 +32,14 @@ export class DeviceComponent implements OnInit {
 
   getDeviceFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
-    this.deviceService.getDeviceById(this.idFromRoute)
   }
 
   subscribeToDevice() {
-    this.deviceService.getDeviceObservable()
+    this.ws.allDevices
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(d => {
-        if (d) {
-          this.device = d;
+      .subscribe(allDevices => {
+        if (allDevices) {
+          this.device = allDevices[this.idFromRoute!]
         }
       });
   }

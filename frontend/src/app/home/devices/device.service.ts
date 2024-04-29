@@ -16,16 +16,6 @@ export class DeviceService {
     this.ws.socketConnection.sendDto(createDeviceDto)
   }
 
-  getDeviceById(id: number){
-    var dto = new ClientWantsToGetDeviceByIdDto({
-      DeviceId: id
-    });
-    this.ws.socketConnection.sendDto(dto)
-  }
-
-  getDeviceObservable() {
-    return this.ws.device;
-  }
 
   getDevicesByRoomId(id: number){
     var dto = new ClientWantsToGetDevicesByRoomIdDto({
