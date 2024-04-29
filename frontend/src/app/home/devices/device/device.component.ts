@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
@@ -15,7 +15,8 @@ export class DeviceComponent implements OnInit {
   device?: Device;
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private activatedRoute: ActivatedRoute,
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
               private deviceService: DeviceService) {
   }
 
@@ -49,9 +50,20 @@ export class DeviceComponent implements OnInit {
   }
 
   deleteDevice() {
-    let devieToDelete = new ClientWantsToDeleteDevice({
-      Id: this.deviceId
+    const deviceIdToDelete = this.deviceId;
+
+    let deviceToDelete = new ClientWantsToDeleteDevice({
+      Id: deviceIdToDelete,
     });
-    this.deviceService.deleteDevice(devieToDelete);
+
+    this.deviceService.deleteDevice(deviceToDelete);
+
+    const roomId = this.device?.RoomId;
+    if (roomId) {
+      this.router.navigate(['/rooms', roomId]);
+    } else {
+      console.error('Room ID not found for the device');
+    }
   }
+
 }
