@@ -27,7 +27,7 @@ export class WebSocketConnectionService {
   //todo should be objects instead of number, reference to the object (key= id. value = object)
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
   AllRooms: number[] = [];
-  AllDevices: number[] = [];
+
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
 
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
@@ -94,15 +94,23 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
-    if (dto.Devices) {
-      this.allDevicesSubject.next(dto.Devices.reduce((record, device) => {
-        record[device.Id] = device;
-        return record;
-      }, {} as Record<number, Device>));
-    } else {
-      console.error('Received empty Devices list from server');
-    }
+
+    this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
+
+      if (!allDevicesRecord) {
+        allDevicesRecord = {};
+      }
+
+      dto.Devices!.forEach(device => {
+        // Tilføj eller opdater enheden i record
+        allDevicesRecord![device.Id] = device;
+      });
+
+      // Opdater allDevicesSubject med den opdaterede record
+      this.allDevicesSubject.next(allDevicesRecord);
+    });
   }
+
 
 
   ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
