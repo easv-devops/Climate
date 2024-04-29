@@ -69,6 +69,7 @@ export class WebSocketConnectionService {
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
+    localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
   }
 
@@ -78,6 +79,7 @@ export class WebSocketConnectionService {
   }
 
   ServerRegisterUser(dto: ServerRegisterUserDto) {
+    localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
   }
 

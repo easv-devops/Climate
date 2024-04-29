@@ -1,12 +1,11 @@
 ﻿using System.Security.Authentication;
 using api.helpers;
-using infrastructure.Models;
 using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
 using Newtonsoft.Json;
 
-namespace api.security;
+namespace service.services;
 
 public class TokenService
 {
@@ -20,7 +19,13 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(userId, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+                
+            var payload = new Dictionary<string, object>
+            {
+                { "userId", userId }
+            };
+
+            return encoder.Encode(payload, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
         }
         catch (Exception e)
         {
@@ -39,7 +44,9 @@ public class TokenService
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, new HMACSHA512Algorithm());
             var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
+            
         }
         catch (Exception e)
         {

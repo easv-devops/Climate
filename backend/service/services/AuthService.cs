@@ -117,4 +117,10 @@ public class AuthService
     {
         return _passwordHashRepository.TestConnection();
     }
+
+    public EndUser GetUserById(int userId)
+    {
+        return _userRepository.GetUserById(userId);
+        
+    }
 }
