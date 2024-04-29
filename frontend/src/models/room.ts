@@ -5,3 +5,9 @@ export interface Room{
   currentTemperature?: number;
   currentHumidity?: number;
 }
+export interface RoomRating{
+  room: Room;
+  currentTemperature: string;
+  currentHumidity: string;
+  score: number;
+}

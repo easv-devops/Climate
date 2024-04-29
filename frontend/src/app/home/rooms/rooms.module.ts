@@ -8,16 +8,23 @@ import {RoomComponent} from "./room/room.component";
 import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {HomePageModule} from "../home.module";
 import {RoomCardComponent} from "./room-card/room-card.component";
+import {FormsModule} from "@angular/forms";
+import {AuthService} from "../../auth/auth.service";
+import {RoomService} from "./room.service";
 
 
 @NgModule({
+  providers:[
+    RoomService
+  ],
   declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent],
-  imports: [
-    CommonModule,
-    IonicModule,
-    RoomsRoutingModule,
-    HomePageModule
-  ]
+    imports: [
+        CommonModule,
+        IonicModule,
+        RoomsRoutingModule,
+        HomePageModule,
+        FormsModule
+    ]
 })
 export class RoomsModule {
 }

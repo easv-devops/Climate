@@ -16,12 +16,10 @@ export class AuthService{
   constructor() {
   }
 
-
   registerUser(registerDto: ClientWantsToRegisterDto){
     this.ws.socketConnection.sendDto(registerDto)
   }
 
-  //todo
   loginUser(email: string, password: string){
     this.ws.socketConnection.sendDto(
       new ClientWantsToAuthenticate({
@@ -31,11 +29,9 @@ export class AuthService{
     )
   }
 
-
   resetPasswordWithEmail(clientWantsToResetPassword: ClientWantsToResetPassword){
     this.ws.socketConnection.sendDto(clientWantsToResetPassword)
   }
-
 
 }
 
