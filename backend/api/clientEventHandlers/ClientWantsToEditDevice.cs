@@ -11,12 +11,14 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToEditDeviceDto : BaseDto
 {
+    [Required(ErrorMessage = "Device Id is required.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Device Id is not a valid number")]
     public int Id { get; set; }
     
     [MaxLength(50, ErrorMessage = "Device Name is too long")]
     public string? DeviceName { get; set; }
     [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
-    public int? RoomId { get; set; }
+    public int RoomId { get; set; }
 }
 
 [RequireAuthentication]
@@ -33,6 +35,7 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
     
     public override Task Handle(ClientWantsToEditDeviceDto dto, IWebSocketConnection socket)
     {
+        
         //todo should check if you have access to the device 
         bool wasEdit = _deviceService.EditDevice(dto.Id, new DeviceDto
         {

@@ -10,6 +10,8 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToDeleteDeviceDto : BaseDto
 { 
+    [Required(ErrorMessage = "Device Id is required.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Device Id is not a valid number")]
     public int Id { get; set; }
 }
 
