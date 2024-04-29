@@ -4,6 +4,7 @@ using System.Security.Authentication;
 using api.helpers;
 using api.mqttEventListeners;
 using api.security;
+using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
@@ -45,6 +46,9 @@ public static class Startup
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton<MqttClientSubscriber>();
+        
+        //todo lav en metode der finder dem her af sig selv..
+        builder.Services.AddSingleton<ServerWantsToSendDevice>();
         
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());

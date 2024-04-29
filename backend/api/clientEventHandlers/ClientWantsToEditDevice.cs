@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.ServerEventHandlers;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -16,7 +17,7 @@ public class ClientWantsToEditDeviceDto : BaseDto
     [MaxLength(50, ErrorMessage = "Device Name is too long")]
     public string? DeviceName { get; set; }
     [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
-    public int? RoomId { get; set; }
+    public int RoomId { get; set; }
 }
 
 [RequireAuthentication]
@@ -25,11 +26,14 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
 {
     
     private readonly DeviceService _deviceService;
+    private readonly ServerWantsToSendDevice _serverWantsToSendDevice;
 
-    public ClientWantsToEditDevice(DeviceService deviceService)
+    public ClientWantsToEditDevice(DeviceService deviceService, ServerWantsToSendDevice serverWantsToSendDevice)
     {
         _deviceService = deviceService;
+        _serverWantsToSendDevice = serverWantsToSendDevice;
     }
+
     
     public override Task Handle(ClientWantsToEditDeviceDto dto, IWebSocketConnection socket)
     {
@@ -42,6 +46,14 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
         socket.SendDto(new ServerEditsDeviceDto
         {
             IsEdit = wasEdit
+        });
+        
+        //trigger server to client update, that updates device on all subscribing clients
+        _serverWantsToSendDevice.SendDeviceToClient(new DeviceWithIdDto
+        {
+            Id = dto.Id,
+            DeviceName = dto.DeviceName,
+            RoomId = dto.RoomId
         });
         return Task.CompletedTask;
     }

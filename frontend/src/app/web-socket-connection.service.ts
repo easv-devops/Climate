@@ -21,6 +21,8 @@ import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
 
+
+
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
   //TODO use records instead of lists
@@ -110,8 +112,6 @@ export class WebSocketConnectionService {
       this.allDevicesSubject.next(allDevicesRecord);
     });
   }
-
-
 
   ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
     this.roomDevicesSubject.next(dto.Devices)

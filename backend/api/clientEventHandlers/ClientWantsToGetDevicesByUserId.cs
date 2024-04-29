@@ -34,6 +34,11 @@ public class ClientWantsToGetDevicesByUserId : BaseEventHandler<ClientWantsToGet
             Devices = devices
         });
         
+        foreach (var device in devices)
+        {
+            StateService.AddUserToDevice(device.Id, socket.ConnectionInfo.Id);
+        }
+        
         return Task.CompletedTask;
     }
 }

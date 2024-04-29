@@ -22,9 +22,13 @@ public static class StateService
     //holds the connections
     private static readonly Dictionary<Guid, WebSocketMetaData> _clients = new();
     
-    //todo 2 dictionaries (clientToRoom and RoomToClient)  see https://github.com/uldahlalex/MiniProjectSolution/blob/master/Api/State/WebSocketStateService.cs
-    //todo do the same for roomToDevice and DeviceToRoom
+    //holds the device and the users that wants updates on that device
+    private static readonly Dictionary<int, List<Guid>> _deviceToUser = new();
     
+    
+
+
+
     public static WebSocketMetaData GetClient(Guid clientId)
     {
         return _clients[clientId];
@@ -43,4 +47,44 @@ public static class StateService
     {
         _clients.Remove(clientId);
     }
+    
+    
+    public static List<Guid> GetUsersForDevice(int deviceId)
+    {
+        if (_deviceToUser.ContainsKey(deviceId))
+        {
+            return _deviceToUser[deviceId];
+        }
+        else
+        {
+            return new List<Guid>(); // Return en tom liste hvis der ikke er nogen brugere for enheden endnu
+        }
+    }
+
+    public static void AddUserToDevice(int deviceId, Guid userId)
+    {
+        Console.WriteLine("userid: " + userId + "  DeviceId: " + deviceId);
+        if (_deviceToUser.ContainsKey(deviceId))
+        {
+            _deviceToUser[deviceId].Add(userId);
+        }
+        else
+        {
+            _deviceToUser[deviceId] = new List<Guid> { userId };
+        }
+    }
+
+    public static void RemoveUserFromDevice(int deviceId, Guid userId)
+    {
+        if (_deviceToUser.ContainsKey(deviceId))
+        {
+            _deviceToUser[deviceId].Remove(userId);
+            if (_deviceToUser[deviceId].Count == 0)
+            {
+                _deviceToUser.Remove(deviceId); // Hvis der ikke er flere brugere til enheden, fjern den fra dictionar
+            }
+        }
+    }
+    
+
 }
