@@ -3,6 +3,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 import {Device} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
+import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
 
 @Component({
   selector: 'app-device',
@@ -41,5 +42,16 @@ export class DeviceComponent implements OnInit {
           this.device = d;
         }
       });
+  }
+
+  get deviceId() {
+    return this.device?.Id;
+  }
+
+  deleteDevice() {
+    let devieToDelete = new ClientWantsToDeleteDevice({
+      Id: this.deviceId
+    });
+    this.deviceService.deleteDevice(devieToDelete);
   }
 }

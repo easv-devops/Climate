@@ -3,11 +3,12 @@ import {environment} from "../environments/environment";
 import {WebsocketSuperclass} from "../models/websocketSuperclass";
 import {BaseDto} from "../models/baseDto";
 import {
+  DeviceWithIdDto,
   ServerAuthenticatesUserDto,
   ServerRegisterUserDto,
   ServerResetsPasswordDto,
-  ServerSendsErrorMessageToClient,
-  DeviceWithIdDto
+  ServerSendsDeviceDeletionStatusDto,
+  ServerSendsErrorMessageToClient
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
@@ -36,6 +37,9 @@ export class WebSocketConnectionService {
   //used to reset password
   private isResetSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isReset: Observable<boolean | undefined> = this.isResetSubject.asObservable();
+
+  private isDeletedSubject = new BehaviorSubject<boolean | undefined>(undefined);
+  isDeleted: Observable<boolean | undefined> = this.isDeletedSubject.asObservable();
 
   //Socket connection
   public socketConnection: WebsocketSuperclass;
@@ -100,5 +104,10 @@ export class WebSocketConnectionService {
   ServerSendsDevice(dto: DeviceWithIdDto){
     this.deviceIdSubject.next(dto.Id);
   }
+
+  ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
+    this.isDeletedSubject.next(dto.IsDeleted);
+  }
 }
+
 

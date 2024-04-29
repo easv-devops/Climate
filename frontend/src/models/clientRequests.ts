@@ -22,3 +22,7 @@ export class ClientWantsToAuthenticateWithJwt extends BaseDto<ClientWantsToAuthe
 export class ClientWantsToResetPassword extends BaseDto<ClientWantsToResetPassword> {
   Email?: string;
 }
+
+export class ClientWantsToDeleteDevice extends BaseDto<ClientWantsToDeleteDevice> {
+  Id?: number;
+}
