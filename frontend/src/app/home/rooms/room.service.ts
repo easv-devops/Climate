@@ -1,6 +1,7 @@
 import {inject, Inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToCreateRoom} from "../../../models/clientRequests";
+import {Room} from "../../../models/room";
 
 @Injectable({
   providedIn: 'root'

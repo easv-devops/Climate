@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 
 @Component({
-  selector: 'app-device',
+  selector: 'app-device.ts',
   templateUrl: './device.component.html',
   styleUrls: ['./device.component.scss'],
 })

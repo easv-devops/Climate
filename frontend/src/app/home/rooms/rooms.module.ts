@@ -8,9 +8,11 @@ import {RoomComponent} from "./room/room.component";
 import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {HomePageModule} from "../home.module";
 import {RoomCardComponent} from "./room-card/room-card.component";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthService} from "../../auth/auth.service";
 import {RoomService} from "./room.service";
+import {DevicesModule} from "../devices/devices.module";
+import {DeviceCardComponent} from "../devices/device-card/device-card.component";
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import {RoomService} from "./room.service";
         IonicModule,
         RoomsRoutingModule,
         HomePageModule,
-        FormsModule
+        FormsModule,
+        DevicesModule,
+        ReactiveFormsModule
     ]
 })
 export class RoomsModule {

@@ -10,8 +10,9 @@ export class RoomCardComponent  implements OnInit {
 
   constructor() {
   }
-  @Input() roomname!: Room;
+  @Input() room!: Room;
 
   ngOnInit() {
   }
+
 }

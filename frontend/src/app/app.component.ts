@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
       subItems: []
     }
 
-    //TODO: Load logged in user's device (max amount?)
+    //TODO: Load logged in user's device.ts (max amount?)
     for (var d of this.allDevices) {
       this.addSubItem('Device '+d, 'devices/'+d, item)
     }

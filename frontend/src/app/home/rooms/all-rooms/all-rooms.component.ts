@@ -2,8 +2,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Room} from "../../../../models/room";
 import {OverlayEventDetail} from "@ionic/core/components";
 import {IonModal} from "@ionic/angular";
-import {AuthService} from "../../../auth/auth.service";
 import {RoomService} from "../room.service";
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-all-rooms',
@@ -20,7 +20,10 @@ export class AllRoomsComponent implements OnInit {
   roomname!: string;
   n: number = 4;
 
-  constructor(private roomService: RoomService) {}
+  form = this.fb.group({
+    roomName: ['', [Validators.required, Validators.minLength(2)]]
+  });
+  constructor(private roomService: RoomService, private readonly fb: FormBuilder) {}
 
   ngOnInit() {}
 
@@ -32,13 +35,17 @@ export class AllRoomsComponent implements OnInit {
   confirm() {
     this.n++;
     this.rooms.push({roomname: this.roomname, roomId: this.n, image: "https://static.vecteezy.com/system/resources/thumbnails/006/689/880/small/bathroom-icon-illustration-free-vector.jpg", currentHumidity: 15, currentTemperature: 23})
-    this.roomService.createRoom(this.roomname)
+    this.roomService.createRoom(this.roomname);
     this.modal.dismiss(this.roomname, 'confirm');
   }
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirm') {
+
     }
   }
 
+  get roomName() {
+    return this.form.controls.roomName;
+  }
 }

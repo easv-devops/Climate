@@ -1,14 +1,14 @@
 
-<ion-card class="flexboxcenter">
+<ion-card class="flexboxcenter" routerLink="/rooms/{{room.roomId}}">
   <div class="flexbox">
-    <img class="imgCarde" alt="Silhouette of Toilet" src="{{roomname.image}}"/>
+    <img class="imgCarde" alt="Silhouette of Toilet" src="{{room.image}}"/>
     <ion-card-content>
-      <p>Temperature: {{ roomname.currentTemperature }}</p>
-      <p>Humidity: {{roomname.currentHumidity}}%</p>
+      <p>Temperature: {{ room.currentTemperature }}</p>
+      <p>Humidity: {{room.currentHumidity}}%</p>
       <p>Quality: 90%</p>
     </ion-card-content>
   </div>
   <ion-card-header>
-    <ion-card-title style="text-align: center">{{roomname.roomname}}</ion-card-title>
+    <ion-card-title style="text-align: center">{{room.roomname}}</ion-card-title>
   </ion-card-header>
 </ion-card>
