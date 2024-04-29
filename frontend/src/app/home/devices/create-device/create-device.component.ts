@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { ClientWantsToCreateDeviceDto } from "../../../../models/ClientWantsToCreateDeviceDto";
-import { DeviceService } from "../device.service";
-import { ToastController } from "@ionic/angular";
-import { WebSocketConnectionService } from "../../../web-socket-connection.service";
-import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, Validators} from '@angular/forms';
+import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCreateDeviceDto";
+import {DeviceService} from "../device.service";
+import {ToastController} from "@ionic/angular";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
+import {Router} from "@angular/router";
+import {Subject, takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-create-device',
@@ -24,13 +24,11 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
   constructor(
       private readonly fb: FormBuilder,
       private deviceService: DeviceService,
-      private toastController: ToastController,
       public ws: WebSocketConnectionService,
       private router: Router
   ) { }
 
   ngOnInit(): void {
-
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.serverEventModels;
 using Fleck;
 using lib;
 using service.services;
@@ -9,6 +10,8 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToDeleteDeviceDto : BaseDto
 { 
+    [Required(ErrorMessage = "Device Id is required.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Device Id is not a valid number")]
     public int Id { get; set; }
 }
 
@@ -29,13 +32,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     { 
        _deviceReadingsService.DeleteAllReadings(dto.Id);
        _deviceService.DeleteDevice(dto.Id);
-       socket.SendDto(new ServerDeletesDevice { IsDeleted = true});
+       socket.SendDto(new ServerSendsDeviceDeletionStatus { IsDeleted = true});
        return Task.CompletedTask;
     }
-}
-
-public class ServerDeletesDevice: BaseDto
-{
-    //[Required(ErrorMessage = "No status for reset of password")]
-    public bool IsDeleted { get; set; }
 }
