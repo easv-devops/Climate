@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {Room} from "../../../../models/room";
 import {Device} from "../../../../models/device";
 
 @Component({
@@ -12,14 +11,29 @@ export class RoomComponent  implements OnInit {
   roomId: number | undefined;
   devices: Device[] = [{deviceId: 1},{deviceId: 2},{deviceId: 3}];
   deviceName?: string;
+  roomName?: string;
 
-  @Input() room!: Room;
+  public alertButtons = [
+    {
+      text: 'Cancel',
+      role: 'cancel',
+      handler: () => {
+        console.log('Alert canceled');
+      },
+    },
+    {
+      text: 'OK',
+      role: 'confirm',
+      handler: () => {
+        console.log('Alert confirmed');
+      },
+    },
+  ];
 
   constructor(private activatedRoute: ActivatedRoute) { }
 
   ngOnInit() {
     this.roomId = this.activatedRoute.snapshot.params['id'];
-    console.log(this.room.roomname)
   }
 
 

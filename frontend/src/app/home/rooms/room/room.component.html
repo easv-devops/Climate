@@ -5,29 +5,59 @@
 <div class="flexbox">
   <div style="width: 100vw; height: 30vh; margin: 20px;">
     <p>Space for the cool Room-value-cards</p>
-    <p>Current temperatur {{room.currentTemperature}}</p>
 
   </div>
   <!--app-device-card *ngFor="let device of devices.reverse()">
   </app-device-card-->
 </div>
-<p>Current humidity {{room.currentHumidity}}</p>
-<p>The scorer is now: 90%</p>
 
-<ion-fab id="create_room" slot="fixed" vertical="bottom" horizontal="end">
+<ion-fab id="create_device" slot="fixed" vertical="bottom" horizontal="end">
   <ion-fab-button>
     <ion-icon name="pencil-outline"></ion-icon>
   </ion-fab-button>
 </ion-fab>
 
-<ion-modal trigger="create_room" (willDismiss)="onWillDismiss($event)">
+<ion-fab id="settings" slot="fixed" vertical="top" horizontal="end">
+  <ion-fab-button>
+    <ion-icon name="settings-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+<ion-modal trigger="create_device" (willDismiss)="onWillDismiss($event)">
   <ng-template>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button (click)="cancel()">Cancel</ion-button>
         </ion-buttons>
-        <ion-title>Welcome</ion-title>
+        <ion-title>Create a new device</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-item>
+        <ion-input
+          label="Device name"
+          labelPlacement="stacked"
+          type="text"
+          placeholder="ex. Bathroom-Window"
+          [(ngModel)]="deviceName"
+        ></ion-input>
+      </ion-item>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal trigger="settings" (willDismiss)="onWillDismiss($event)">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="cancel()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-title>Room Settings</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
         </ion-buttons>
@@ -39,10 +69,21 @@
           label="Room name"
           labelPlacement="stacked"
           type="text"
-          placeholder="ex. Bathroom"
-          [(ngModel)]="deviceName"
+          placeholder="{{roomName}}"
+          [(ngModel)]="roomName"
         ></ion-input>
       </ion-item>
+      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+        <ion-fab-button id="present-alert" style="--background: var(--ion-color-danger);">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </ion-content>
   </ng-template>
 </ion-modal>
+
+<ion-alert
+  trigger="present-alert"
+  header="Alert!"
+  [buttons]="alertButtons"
+></ion-alert>

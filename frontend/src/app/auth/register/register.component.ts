@@ -97,5 +97,4 @@ export class RegisterComponent  implements OnInit {
     const repeatPassword = this.form.get('repeatPassword')!.value;
     this.isPasswordSame = password === repeatPassword;
   }
-
 }
