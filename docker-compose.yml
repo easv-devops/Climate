@@ -20,6 +20,9 @@ services:
       - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
+    environment:
+      dbconn: ${dbconn}
+      JwtKey: ${JwtKey}
 
   mariadb:
     image: mariadb:latest
