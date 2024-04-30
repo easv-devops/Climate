@@ -1,37 +1,37 @@
-﻿#kind: pipeline
-#type: docker
-#name: integration
+﻿kind: pipeline
+type: docker
+name: integration
 
-#trigger: 
-#  branch:
-#    - drone_setup
-#    - master
-#  event:
-#    exclude:
-#      - pull_request
-#steps:
-#  - name: code-analysis
-#    image: boulundeasv/dotnet-sdk-with-java
-#    environment:
-#      SONARSECRET:
-#        from_secret: SonarQubeSecret
-#      dbconn:
-#        from_secret: dbconn
-#      JwtKey:
-#        from_secret: JwtKey
-#    commands:
-#      - exit 0
-#      - dotnet sonarscanner begin 
-#          /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
-#          /d:sonar.host.url="http://sonar.setgo.dk:9000" 
-#          /d:sonar.token="$SONARSECRET"
-#          /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-#          /d:sonar.qualitygate.wait=true
-#      - dotnet build backend/api/api.csproj --no-incremental
-#      - dotnet-coverage collect "dotnet test backend/tests/tests.csproj" -f xml -o "coverage.xml"
-#      - dotnet sonarscanner end /d:sonar.token="$SONARSECRET"
+trigger: 
+  branch:
+    - drone_setup
+    - master
+  event:
+    exclude:
+      - pull_request
+steps:
+  - name: code-analysis
+    image: boulundeasv/dotnet-sdk-with-java
+    environment:
+      SONARSECRET:
+        from_secret: SonarQubeSecret
+      dbconn:
+        from_secret: dbconn
+      JwtKey:
+        from_secret: JwtKey
+    commands:
+      - exit 0
+      - dotnet sonarscanner begin 
+          /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
+          /d:sonar.host.url="http://sonar.setgo.dk:9000" 
+          /d:sonar.token="$SONARSECRET"
+          /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          /d:sonar.qualitygate.wait=true
+      - dotnet build backend/api/api.csproj --no-incremental
+      - dotnet-coverage collect "dotnet test backend/tests/tests.csproj" -f xml -o "coverage.xml"
+      - dotnet sonarscanner end /d:sonar.token="$SONARSECRET"
 
-#---
+---
 
 kind: pipeline
 type: docker
@@ -43,8 +43,8 @@ trigger:
   event:
     exclude:
       - pull_request
-#depends_on:
-#  - integration
+depends_on:
+  - integration
 
 steps:
   - name: publish backend
@@ -74,13 +74,12 @@ steps:
   - name: trigger update
     image: curlimages/curl
     commands:
-      - exit 0 #TODO fjern når back- + frontend kører på server
       # Must match the token defined in docker-compose.yml
       - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
       - sleep 10
     depends_on:
       - publish backend
-#      - publish frontend
+      - publish frontend
     
   - name: update database
     image: flyway/flyway
