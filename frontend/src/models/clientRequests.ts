@@ -12,14 +12,7 @@ export class ClientWantsToRegisterDto extends BaseDto<ClientWantsToRegisterDto>{
 export class ClientWantsToAuthenticate extends BaseDto<ClientWantsToAuthenticate> {
   Email?: string;
   Password?: string;
-
-  constructor(email: string, password: string) {
-    super('ClientWantsToAuthenticate');
-    this.Email = email;
-    this.Password = password;
-  }
 }
-
 //todo make when time not something we need but could be nice
 //should call endpoint for just logging a user in, if token is not expired in backend.
 export class ClientWantsToAuthenticateWithJwt extends BaseDto<ClientWantsToAuthenticateWithJwt> {

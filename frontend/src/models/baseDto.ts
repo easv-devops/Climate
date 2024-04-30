@@ -1,8 +1,8 @@
 export class BaseDto<T> {
   eventType: string;
 
-  constructor(eventType: string, init?: Partial<T>) {
-    this.eventType = eventType;
+  constructor(init?: Partial<T>) {
+    this.eventType = this.constructor.name;
     Object.assign(this, init);
   }
 }
