@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -38,6 +39,8 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                 DeviceName = dto.DeviceName,
                 RoomId = dto.RoomId
             });
+            
+            StateService.AddUserToDevice(response.Id, socket.ConnectionInfo.Id);
             
             socket.SendDto(new ServerSendsDevice
             {

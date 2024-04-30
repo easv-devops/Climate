@@ -60,7 +60,6 @@ public class TemperatureRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to delete Temperature readings", ex);
         }
     }

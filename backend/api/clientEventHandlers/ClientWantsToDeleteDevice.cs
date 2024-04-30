@@ -35,7 +35,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
         //checks if the user has permission before deleting
         if (!_deviceService.IsItUsersDevice(dto.Id, StateService.GetClient(socket.ConnectionInfo.Id).User.Id))
         {
-            throw new AccessViolationException("Ypu do not have permission to delete this device");
+            throw new AccessViolationException("You do not have permission to delete this device");
         }
         //removes the device from stateService
         StateService.RemoveUserFromDevice(dto.Id, socket.ConnectionInfo.Id);

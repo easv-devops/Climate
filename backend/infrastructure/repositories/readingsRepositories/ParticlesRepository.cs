@@ -35,7 +35,6 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Particle25 readings", ex);
         }
     }
@@ -56,7 +55,6 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to delete Particle25 readings", ex);
         }
     }
@@ -82,7 +80,6 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Particle100 readings", ex);
         }
     }
@@ -103,7 +100,6 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to delete Particle100 readings", ex);
         }
     }

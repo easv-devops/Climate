@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
 using api.ServerEventHandlers;
+using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -39,7 +41,11 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
     
     public override Task Handle(ClientWantsToEditDeviceDto dto, IWebSocketConnection socket)
     {
-        
+        var users = StateService.GetUsersForDevice(dto.Id);
+        if (!StateService.GetUsersForDevice(dto.Id).Any())
+        {
+            throw new AuthenticationException("You do not have access to edit this device");
+        }
         //todo should check if you have access to the device 
         bool wasEdit = _deviceService.EditDevice(dto.Id, new DeviceDto
         {

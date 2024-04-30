@@ -16,6 +16,7 @@ public class ClientWantsToGetDeviceByIdDto : BaseDto
     public int DeviceId { get; set; }
 }
 
+//TODO: Pretty sure this is no longer in use after StateService implementation. Remove it?
 [RequireAuthentication]
 [ValidateDataAnnotations]
 public class ClientWantsToGetDeviceById : BaseEventHandler<ClientWantsToGetDeviceByIdDto>

@@ -35,7 +35,6 @@ public class HumidityRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Humidity readings", ex);
         }
     }
@@ -56,7 +55,6 @@ public class HumidityRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to delete Humidity readings", ex);
         }
     }

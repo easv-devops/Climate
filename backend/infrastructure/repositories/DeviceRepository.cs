@@ -27,8 +27,6 @@ public class DeviceRepository
                 VALUES (@DeviceName, @RoomId)
                 RETURNING *;";
             
-            //Console.WriteLine("før conn.query");
-
             var createdDevice = connection.QueryFirst<DeviceWithIdDto>(createDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId });
             
             return new DeviceWithIdDto
