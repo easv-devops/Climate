@@ -28,27 +28,14 @@ public static class Startup
         
         builder.Services.AddSingleton<SmtpRepository>();
         
-        try
+        if (ReferenceEquals(connectionString, ""))
         {
             connectionString = KeyVaultService.GetDbConn();
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                // Azure Key Vault is not accessible or returned an empty string, use a default connection string
-                connectionString = Utilities.MySqlConnectionString;
-            }
-
-            // Register the retrieved or default connection string as a singleton service
             builder.Services.AddSingleton(provider => connectionString);
         }
-        catch (Exception ex)
+        else
         {
-            // Log the exception or handle it as per your application's error handling strategy
-            Console.WriteLine($"Error occurred while retrieving connection string from Azure Key Vault: {ex.Message}");
-
-            // Use a default connection string as a fallback
-            connectionString = Utilities.MySqlConnectionString;
-
-            // Register the default connection string as a singleton service
+            // Gets connection string for local testing
             builder.Services.AddSingleton(provider => connectionString);
         }
         
