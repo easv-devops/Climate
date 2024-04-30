@@ -10,8 +10,7 @@ public class ClientWantsToResetPassword
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
-    }
+        Startup.Start(null, "dbtestconn");    }
     
     [TestCase("user@example.com", TestName = "Valid")]
     [TestCase("userDoesNotExist@example.com", TestName = "Invalid user")]

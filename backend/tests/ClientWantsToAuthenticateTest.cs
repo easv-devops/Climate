@@ -11,7 +11,7 @@ public class ClientWantsToAuthenticateTest
     public void Setup()
     {
        FlywayDbTestRebuilder.ExecuteMigrations();
-       Startup.Start(null);
+       Startup.Start(null, "dbtestconn");
     }
 
     [TestCase("user@example.com", "12345678", TestName = "Valid")]

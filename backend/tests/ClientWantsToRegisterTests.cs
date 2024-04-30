@@ -11,8 +11,7 @@ public class ClientWantsToRegisterTests
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
-    }
+        Startup.Start(null, "dbtestconn");    }
     
     [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "+45", TestName = "Valid")]
     [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "+44", TestName = "Invalid password")]

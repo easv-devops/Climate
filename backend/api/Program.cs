@@ -17,11 +17,11 @@ public static class Startup
 {
     public static void Main(string[] args)
     {
-        var app = Start(args);
+        var app = Start(args, "");
         app.Run();
     }
 
-    public static WebApplication Start(string[] args)
+    public static WebApplication Start(string[] args, string? connectionString)
     {
         var builder = WebApplication.CreateBuilder(args);
         
@@ -29,7 +29,18 @@ public static class Startup
         
         //saves connection string
         //gets connection string to db
-        builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
+
+        if (ReferenceEquals(connectionString, ""))
+        {
+            builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString); 
+
+        }
+        else
+        {
+            builder.Services.AddSingleton(provider => connectionString);
+        }
+
+        
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
