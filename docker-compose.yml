@@ -3,10 +3,10 @@ services:
     image: mariadb:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${TestDBPasswordSecret}
-      MYSQL_DATABASE: ${TestDBNameSecret}
-      MYSQL_USER: ${TestDBUserSecret}
-      MYSQL_PASSWORD: ${TestDBPasswordSecret}
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
     ports:
       - "3307:3306"
         
