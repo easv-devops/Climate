@@ -52,9 +52,11 @@ public static class KeyVaultService
     public static string GetDbConn()
     {
         var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
+        Console.WriteLine("connectionString from Env: " + connectionString);
         if (string.IsNullOrEmpty(connectionString))
         {
             connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
+            Console.WriteLine("connectionString from KeyVault: " + connectionString);
         }
 
         return connectionString;

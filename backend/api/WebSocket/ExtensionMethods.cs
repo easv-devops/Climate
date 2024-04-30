@@ -25,6 +25,7 @@ public static class ExtensionMethods
                 clientEventHandlers.Add(type);
             }
 
+        Console.WriteLine("ClientEventHandlers count: " + clientEventHandlers.Count);
         return clientEventHandlers;
     }
 
