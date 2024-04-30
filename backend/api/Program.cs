@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Security.Authentication;
 using api.helpers;
 using api.mqttEventListeners;
-using api.security;
 using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -47,8 +46,8 @@ public static class Startup
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<DeviceService>();
-        
         builder.Services.AddSingleton<DeviceReadingsService>();
+        
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));

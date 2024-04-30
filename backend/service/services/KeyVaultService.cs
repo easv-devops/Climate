@@ -39,10 +39,10 @@ public static class KeyVaultService
 
     public static string GetToken()
     {
-        string JwtKey = GetSecret(EnvVarKeys.JwtKey.ToString());
+        string JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
         if (string.IsNullOrEmpty(JwtKey))
         {
-            JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
+            JwtKey = GetSecret(EnvVarKeys.JwtKey.ToString());
         }
 
         return JwtKey;
@@ -51,10 +51,10 @@ public static class KeyVaultService
     
     public static string GetDbConn()
     {
-        var connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
+        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
         if (string.IsNullOrEmpty(connectionString))
         {
-            connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
+            connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
         }
 
         return connectionString;
