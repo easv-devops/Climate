@@ -50,18 +50,18 @@ steps:
   - name: database for tests
     image: flyway/flyway
     environment:
-      DB_NAME:
+      TEST_DB_NAME:
         from_secret: TestDBNameSecret
-      DB_USER:
+      TEST_DB_USER:
         from_secret: TestDBUserSecret
-      DB_PASSWORD:
+      TEST_DB_PASSWORD:
         from_secret: TestDBPasswordSecret
     commands:
       - flyway migrate
         -configFiles=./db/flyway_test.conf
-        -url="jdbc:mariadb://74.234.8.67:3307/$DB_NAME"
-        -user="$DB_USER"
-        -password="$DB_PASSWORD"
+        -url="jdbc:mariadb://74.234.8.67:3307/$TEST_DB_NAME"
+        -user="$TEST_DB_USER"
+        -password="$TEST_DB_PASSWORD"
         -locations=filesystem:./db/test_sql
       
   - name: publish backend

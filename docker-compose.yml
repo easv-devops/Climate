@@ -9,6 +9,8 @@ services:
       MYSQL_PASSWORD: ${TestDBPasswordSecret}
     ports:
       - "3307:3306"
+    volumes:
+      - testdb:/var/lib/mysql
         
   climate-frontend:
     build: 
@@ -63,3 +65,4 @@ services:
 
 volumes:
   mariadb:
+  testdb:
