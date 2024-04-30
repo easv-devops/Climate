@@ -47,6 +47,23 @@ depends_on:
   - integration
 
 steps:
+  - name: database for tests
+    image: flyway/flyway
+    environment:
+      DB_NAME:
+        from_secret: TestDBNameSecret
+      DB_USER:
+        from_secret: TestDBUserSecret
+      DB_PASSWORD:
+        from_secret: TestDBPasswordSecret
+    commands:
+      - flyway migrate
+        -configFile="./db/flyway_test.conf"
+        -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
+        -user="$DB_USER"
+        -password="$DB_PASSWORD"
+        -locations=filesystem:./db/test_sql
+      
   - name: publish backend
     image: plugins/docker
     settings:
@@ -96,24 +113,5 @@ steps:
           -user="$DB_USER"
           -password="$DB_PASSWORD"
           -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
-
-  - name: database for tests
-    image: flyway/flyway
-    environment:
-      DB_NAME:
-        from_secret: TestDBNameSecret
-      DB_USER:
-        from_secret: TestDBUserSecret
-      DB_PASSWORD:
-        from_secret: TestDBPasswordSecret
-    commands:
-      - flyway migrate
-        -configFile=./db/flyway_test.conf
-        -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
-        -user="$DB_USER"
-        -password="$DB_PASSWORD"
-        -locations=filesystem:./db/test_sql
     depends_on:
       - trigger update
