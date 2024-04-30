@@ -59,17 +59,17 @@ steps:
       tags:
         - staging
 
-#  - name: publish frontend
-#    image: plugins/docker
-#    settings:
-#      username:
-#        from_secret: DockerUsername
-#      password:
-#        from_secret: DockerPassword
-#      dockerfile: frontend/Dockerfile
-#      repo: midr/climate-frontend
-#      tags:
-#        - staging
+  - name: publish frontend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: frontend/Dockerfile
+      repo: midr/climate-frontend
+      tags:
+        - staging
 
   - name: trigger update
     image: curlimages/curl
