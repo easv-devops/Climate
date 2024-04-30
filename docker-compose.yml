@@ -1,4 +1,17 @@
 services:
+  testdb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${TestDBPasswordSecret}
+      MYSQL_DATABASE: ${TestDBNameSecret}
+      MYSQL_USER: ${TestDBUserSecret}
+      MYSQL_PASSWORD: ${TestDBPasswordSecret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb:/var/lib/mysql
+        
   climate-frontend:
     build: 
       context: .
