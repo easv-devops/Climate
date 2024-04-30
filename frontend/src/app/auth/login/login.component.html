@@ -29,15 +29,13 @@
           <ion-text color="danger">Minimum 7 Chars</ion-text>
         </div>
 
-        <ion-checkbox class="ion-padding" labelPlacement="end">Remember me</ion-checkbox>
-
         <div class="ion-padding" style="display: flex; justify-content: center;">
           <ion-button (click)="submit()" [disabled]="form.invalid" id="btn-submit" size="large">
             Sign in
           </ion-button>
         </div>
 
-        <p class="ion-text-center">New to Climate? <a href="/#/register">Create an account</a></p>
+        <p class="ion-text-center">New to Climate? <a href="/#/auth/register">Create an account</a></p>
       </form>
     </ion-card>
   </div>

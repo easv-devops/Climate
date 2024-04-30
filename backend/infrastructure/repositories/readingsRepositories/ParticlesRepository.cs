@@ -35,11 +35,29 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Particle25 readings", ex);
         }
     }
-
+    
+    public bool DeleteParticle25(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"DELETE FROM ReadingParticle2_5 
+                    WHERE DeviceId = @DeviceId";
+            connection.Execute(sql, new
+            {
+                DeviceId = deviceId
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new SqlTypeException("Failed to delete Particle25 readings", ex);
+        }
+    }
     
     public bool SaveParticle100List(int deviceId, List<SensorDto> particles100List)
     {
@@ -62,9 +80,27 @@ public class ParticlesRepository
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             throw new SqlTypeException("Failed to save Particle100 readings", ex);
         }
     }
-
+    
+    public bool DeleteParticle100(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"DELETE FROM ReadingParticle10 
+                    WHERE DeviceId = @DeviceId";
+            connection.Execute(sql, new
+            {
+                DeviceId = deviceId
+            });
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new SqlTypeException("Failed to delete Particle100 readings", ex);
+        }
+    }
 }

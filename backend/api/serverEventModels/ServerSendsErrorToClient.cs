@@ -1,7 +1,7 @@
 ﻿
 using lib;
 
-namespace infrastructure.Models.serverEvents;
+namespace api.serverEventModels;
 
 
 public class ServerSendsErrorMessageToClient : BaseDto

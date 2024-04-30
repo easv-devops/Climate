@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../auth.service";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {Router} from "@angular/router";
+import {ClientWantsToGetDevicesByUserIdDto} from "../../../models/ClientWantsToGetDevicesByUserIdDto";
 
 @Component({
   selector: 'app-login',
@@ -12,14 +13,14 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
-  readonly form : FormGroup = this.fb.group({
+  readonly form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(7)]],
   });
 
   private unsubscribe$ = new Subject<void>();
 
-  constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService, private router: Router){
+  constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService, private router: Router) {
   }
 
   ngOnInit() {
@@ -27,9 +28,9 @@ export class LoginComponent {
     this.ws.jwt.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(jwt => {
-      if(jwt){
+      if (jwt && jwt != '') {
         // JWT is received, perform redirection or other actions here
-        this.router.navigate(['/home']);
+        this.router.navigate(['']);
       }
     });
   }
@@ -47,7 +48,7 @@ export class LoginComponent {
     return this.form.controls['password'];
   }
 
-  submitTestUser(){
+  submitTestUser() {
     this.authService.loginUser("user@mail.com", "12345678");
   }
 
@@ -67,6 +68,11 @@ export class LoginComponent {
   }
 
   RedirectToForgotPassword() {
-    this.router.navigate(['/resetpassword']);
+    this.router.navigate(['auth/resetpassword']);
+  }
+
+  private loadUserInfo() {
+    // Load logged in user's devices in sidebar
+    this.ws.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 }
