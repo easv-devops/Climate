@@ -1,27 +1,23 @@
-#container {
-  text-align: center;
+ion-split-pane {
+  --side-width: 1px;
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  --border: 1px solid #d8dade;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.climate-color {
+  color: #133157;
+  font-variant: all-small-caps;
+  font-family: Verdana;
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+ion-accordion.accordion-collapsing ion-item[slot='header'],
+ion-accordion.accordion-collapsed ion-item[slot='header'],
+ion-toolbar{
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-light-contrast);
 }
 
-#container a {
-  text-decoration: none;
+ion-accordion.accordion-expanding ion-item[slot='header'],
+ion-accordion.accordion-expanded ion-item[slot='header'] {
+  --color: #133157;
 }

@@ -1,17 +1,15 @@
 ﻿using System.Security.Authentication;
 using api.helpers;
-using infrastructure.Models;
 using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
 using Newtonsoft.Json;
 using service.services;
 
-namespace api.security;
+namespace service.services;
 
 public class TokenService
 {
-
     public string IssueJwt(int userId)
     {
         try
@@ -20,6 +18,12 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
+                
+            var payload = new Dictionary<string, object>
+            {
+                { "userId", userId }
+            };
+
             return encoder.Encode(userId, KeyVaultService.GetToken());
         }
         catch (Exception e)
