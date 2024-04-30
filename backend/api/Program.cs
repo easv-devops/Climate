@@ -27,19 +27,9 @@ public static class Startup
         
         builder.Services.AddSingleton<SmtpRepository>();
         
-        //saves connection string
-        //gets connection string to db
-
-        builder.Services.AddSingleton<KeyVaultService>();
-
         if (ReferenceEquals(connectionString, ""))
         {
-            connectionString = new KeyVaultService().GetSecret("dbconn");
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                // Azure Key Vault is not accessible or returned an empty string, use a default connection string
-                connectionString = Utilities.MySqlConnectionString;
-            }
+            connectionString = KeyVaultService.GetDbConn();
             builder.Services.AddSingleton(provider => connectionString); 
         }
         else

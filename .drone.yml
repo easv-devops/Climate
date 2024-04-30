@@ -47,7 +47,7 @@ depends_on:
   - integration
 
 steps:
-  - name: publish api
+  - name: publish backend
     image: plugins/docker
     settings:
       username:
@@ -79,7 +79,7 @@ steps:
       - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
       - sleep 10
     depends_on:
-      - publish api
+      - publish backend
       - publish frontend
     
   - name: update database
@@ -97,3 +97,5 @@ steps:
           -user="$DB_USER"
           -password="$DB_PASSWORD"
           -locations=filesystem:./db/sql
+    depends_on:
+      - trigger update
