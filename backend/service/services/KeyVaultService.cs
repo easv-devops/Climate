@@ -23,17 +23,26 @@ public static class KeyVaultService
 
         var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential(),options);
 
-        KeyVaultSecret secret = client.GetSecret(secretName);
-        System.Threading.Thread.Sleep(5000);
-        return secret.Value;
+        try
+        {
+            KeyVaultSecret secret = client.GetSecret(secretName);
+            System.Threading.Thread.Sleep(5000);
+            return secret.Value;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error occurred while retrieving connection string from Azure Key Vault: {e.Message}");
+            return null;
+        }
+        
     }
 
     public static string GetToken()
     {
-        string JwtKey = GetSecret(EnvVarKeys.JwtKey.ToString());
-        if (ReferenceEquals(JwtKey, ""))
+        string JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
+        if (string.IsNullOrEmpty(JwtKey))
         {
-            JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
+            JwtKey = GetSecret(EnvVarKeys.JwtKey.ToString());
         }
 
         return JwtKey;
@@ -42,10 +51,10 @@ public static class KeyVaultService
     
     public static string GetDbConn()
     {
-        var connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
+        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
         if (string.IsNullOrEmpty(connectionString))
         {
-            connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
+            connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
         }
 
         return connectionString;

@@ -18,12 +18,6 @@ public class TokenService
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-                
-            var payload = new Dictionary<string, object>
-            {
-                { "userId", userId }
-            };
-
             return encoder.Encode(userId, KeyVaultService.GetToken());
         }
         catch (Exception e)
