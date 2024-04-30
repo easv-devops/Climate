@@ -11,7 +11,7 @@ public class ClientWantsToCreateDevice
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
+        Startup.Start(null, "dbtestconn");
     }
     
 
