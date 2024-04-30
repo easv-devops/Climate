@@ -58,7 +58,7 @@ steps:
         from_secret: TestDBPasswordSecret
     commands:
       - flyway migrate
-        -configFile="./db/flyway_test.conf"
+        -configFile=filesystem:./db/flyway_test.conf
         -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
         -user="$DB_USER"
         -password="$DB_PASSWORD"
