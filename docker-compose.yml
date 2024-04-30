@@ -20,8 +20,8 @@ services:
       - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    secrets:
-      - dbconn
+    environment:
+      dbconn: ${dbconn}
 
   mariadb:
     image: mariadb:latest
@@ -51,7 +51,3 @@ services:
 
 volumes:
   mariadb:
-    
-secrets: 
-  dbconn:
-    external: true

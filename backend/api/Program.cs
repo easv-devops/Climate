@@ -30,17 +30,23 @@ public static class Startup
         //saves connection string
         //gets connection string to db
 
+        builder.Services.AddSingleton<KeyVaultService>();
+
         if (ReferenceEquals(connectionString, ""))
         {
-            builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString); 
-
+            connectionString = new KeyVaultService().GetSecret("dbconn");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                // Azure Key Vault is not accessible or returned an empty string, use a default connection string
+                connectionString = Utilities.MySqlConnectionString;
+            }
+            builder.Services.AddSingleton(provider => connectionString); 
         }
         else
         {
+            // Gets connection string for local testing
             builder.Services.AddSingleton(provider => connectionString);
         }
-
-        
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));

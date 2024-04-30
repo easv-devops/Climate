@@ -5,6 +5,7 @@ using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
 using Newtonsoft.Json;
+using service.services;
 
 namespace api.security;
 
@@ -15,12 +16,17 @@ public class TokenService
         
         try
         {
+            string JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
+            if (ReferenceEquals(JwtKey, ""))
+            {
+                JwtKey = new KeyVaultService().GetSecret("JwtKey");
+            }
             
             IJwtAlgorithm algorithm = new HMACSHA512Algorithm();
             IJsonSerializer serializer = new JsonNetSerializer();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-            return encoder.Encode(userId, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+            return encoder.Encode(userId, JwtKey);
         }
         catch (Exception e)
         {
@@ -33,12 +39,18 @@ public class TokenService
     {
         try
         {
+            string JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
+            if (ReferenceEquals(JwtKey, ""))
+            {
+                JwtKey = new KeyVaultService().GetSecret("JwtKey");
+            }
+            
             IJsonSerializer serializer = new JsonNetSerializer();
             var provider = new UtcDateTimeProvider();
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, new HMACSHA512Algorithm());
-            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+            var json = decoder.Decode(jwt, JwtKey);
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
         }
         catch (Exception e)
