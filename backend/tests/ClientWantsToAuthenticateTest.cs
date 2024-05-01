@@ -1,4 +1,5 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
 using api.serverEventModels;
 using tests.WebSocket;
 

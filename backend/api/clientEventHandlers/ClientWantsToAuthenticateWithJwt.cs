@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
-using api.security;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;

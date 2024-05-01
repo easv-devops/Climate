@@ -13,6 +13,8 @@ using lib;
 using service.services;
 using service.services.notificationServices;
 
+namespace api;
+
 public static class Startup
 {
     public static void Main(string[] args)
@@ -58,9 +60,6 @@ public static class Startup
         
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
-        
-        
-        builder.WebHost.UseUrls("http://*:9999");
         
         var app = builder.Build();
         

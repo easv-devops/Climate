@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
-using api.security;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
-using Newtonsoft.Json;
 using service.services;
 using service.services.notificationServices;
 
