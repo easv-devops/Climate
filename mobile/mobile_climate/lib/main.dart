@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_side_menu/flutter_side_menu.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -13,108 +13,88 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _controller = SideMenuController();
-  int _currentIndex = 0;
+  ThemeMode _themeMode = ThemeMode.system;
+
+  void _toggleTheme(ThemeMode themeMode) {
+    setState((){
+      print("tapped");
+      _themeMode = themeMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return MaterialApp(
       title: 'Climate',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
+      theme: MyAppThemes.lightTheme,
+      darkTheme: MyAppThemes.darkTheme,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Row(
-          children: [
-            SideMenu(
-              controller: _controller,
-              backgroundColor: Colors.blueGrey,
-              mode: SideMenuMode.open,
-              builder: (data) {
-                return SideMenuData(
-                  header: const Text('Header'),
-                  items: [
-                    const SideMenuItemDataTitle(
-                        title: 'Section Header'
-                    ),
-                    SideMenuItemDataTile(
-                      isSelected: _currentIndex == 0,
-                      onTap: () => setState(() => _currentIndex = 0),
-                      title: 'Item 1',
-                      hoverColor: Colors.blue,
-                      titleStyle: const TextStyle(color: Colors.white),
-                      icon: const Icon(Icons.home_outlined),
-                      selectedIcon: const Icon(Icons.home),
-                      badgeContent: const Text(
-                        '23',
-                        style: TextStyle(
-                          fontSize: 8,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    SideMenuItemDataTile(
-                      isSelected: _currentIndex == 1,
-                      onTap: () => setState(() => _currentIndex = 1),
-                      title: 'Item 2',
-                      selectedTitleStyle:
-                      const TextStyle(fontWeight: FontWeight.w700,color: Colors.yellow),
-                      icon: const Icon(Icons.table_bar_outlined),
-                      selectedIcon: const Icon(Icons.table_bar),
-                      titleStyle: const TextStyle(color: Colors.deepPurpleAccent),
-                    ),
-                    const SideMenuItemDataTitle(
-                      title: 'Account',
-                      textAlign: TextAlign.center,
-                    ),
-                    SideMenuItemDataTile(
-                      isSelected: _currentIndex == 2,
-                      onTap: () => setState(() => _currentIndex = 2),
-                      title: 'Item 3',
-                      icon: const Icon(Icons.play_arrow),
-                    ),
-                    SideMenuItemDataTile(
-                      isSelected: _currentIndex == 3,
-                      onTap: () => setState(() => _currentIndex = 3),
-                      title: 'Item 4',
-                      icon: const Icon(Icons.car_crash),
-                    ),
-                  ],
-                  footer: const Text('Footer'),
-                );
-              },
+        appBar: AppBar(
+          title: const Text("Climate"),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Color.fromRGBO(101, 130, 245, 1.0),
+                    Color.fromRGBO(87, 108, 187, 1.0),
+                  ]),
             ),
-            Expanded(
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'body',
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _controller.toggle();
-                      },
-                      child: const Text('change side menu state'),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            SideMenu(
-              position: SideMenuPosition.right,
-              builder: (data) => const SideMenuData(
-                customChild: Text('custom view'),
-              ),
-            ),
-          ],
+          ),
+        ),
+        drawer: SideBarMenu(),
+        body: Container(
+          child: ElevatedButton(
+            onPressed: () {
+              _toggleTheme(ThemeMode.dark);
+            },
+            child: Text("Hello"),
+          ),
         ),
       ),
     );
   }
+}
+
+class SideBarMenu extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromRGBO(101, 130, 245, 1.0),
+              Color.fromRGBO(87, 108, 187, 1.0),
+              Color.fromRGBO(49, 73, 162, 1.0),
+              Color.fromRGBO(25, 45, 124, 1.0)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class MyAppColors {
+  static final darkBlue = Color(0xFF0000DE);
+  static final lightBlue = Color(0xFFFF00C3);
+}
+
+class MyAppThemes {
+  static final darkTheme = ThemeData(
+    primaryColor: MyAppColors.darkBlue,
+    brightness: Brightness.dark,
+  );
+
+  static final lightTheme = ThemeData(
+    primaryColor: MyAppColors.lightBlue,
+    brightness: Brightness.light,
+  );
 }
