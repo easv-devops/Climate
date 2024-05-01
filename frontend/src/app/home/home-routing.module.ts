@@ -1,9 +1,11 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { HomePage } from './home.page';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {HomePage} from './home.page';
 
 import {Page1Component} from "./page1/page1.component";
 import {Page2Component} from "./page2/page2.component";
+import {WebBluetoothComponent} from "./webbluetooth/webbluetooth.component";
+
 
 const routes: Routes = [
   {
@@ -25,6 +27,10 @@ const routes: Routes = [
       {
         path: 'devices', //Path for devices module, which loads own children (devices-routing.module)
         loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule)
+      },
+      {
+        path: 'bluetooth',
+        component: WebBluetoothComponent
       }
     ]
   },
