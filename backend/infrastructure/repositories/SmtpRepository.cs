@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using api.helpers;
 using infrastructure.Models;
 
 namespace infrastructure;
@@ -16,7 +15,7 @@ public class SmtpRepository
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
             client.EnableSsl = true;
-            client.Credentials = new NetworkCredential("climatenoti@GMAIL.COM", Environment.GetEnvironmentVariable(EnvVarKeys.MailPassword.ToString()));
+            client.Credentials = new NetworkCredential("climatenoti@GMAIL.COM", KeyVaultService.GetMailPassword());
 
             using (var message = new MailMessage(
                        from: new MailAddress("climatenoti@GMAIL.COM", "Your Climate"),

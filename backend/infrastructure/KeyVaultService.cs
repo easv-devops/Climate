@@ -3,7 +3,7 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 
-namespace service.services;
+namespace infrastructure;
 
 public static class KeyVaultService
 {
@@ -58,5 +58,16 @@ public static class KeyVaultService
         }
 
         return connectionString;
+    }
+    
+    public static string GetMailPassword()
+    {
+        var mailPassword = Environment.GetEnvironmentVariable(EnvVarKeys.MailPassword.ToString());
+        if (string.IsNullOrEmpty(mailPassword))
+        {
+            mailPassword = GetSecret(EnvVarKeys.MailPassword.ToString());
+        }
+
+        return mailPassword;
     }
 }
