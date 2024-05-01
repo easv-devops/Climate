@@ -13,16 +13,13 @@ public class AuthService
 {
     private readonly PasswordHashRepository _passwordHashRepository;
     private readonly UserRepository _userRepository;
-    private readonly SmtpRepository _smtpRepository;
 
     public AuthService(
         UserRepository userRepository,
-        PasswordHashRepository passwordHashRepository,
-        SmtpRepository smtpRepository)
+        PasswordHashRepository passwordHashRepository)
     {
         _userRepository = userRepository;
         _passwordHashRepository = passwordHashRepository;
-        _smtpRepository = smtpRepository;
     }
  
     /**
