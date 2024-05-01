@@ -10,7 +10,7 @@ public class ClientWantsToDeleteDevice
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null, "dbtestconn");
+        Startup.Start(null, "");
     }
     
 
@@ -39,20 +39,13 @@ public class ClientWantsToDeleteDevice
         {
             return fromServer.Count(dto =>
             {
-                Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                    serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {
                     case "ValidDeviceId":
-                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                            serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
-                        
                         return dto.eventType == nameof(ServerSendsDevice); // Replace "ValidEventType" with the expected eventType for Valid test.
                 
                     case "InvalidDeviceId":
-                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                            serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
 
                     default:

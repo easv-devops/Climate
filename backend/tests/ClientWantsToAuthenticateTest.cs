@@ -10,7 +10,7 @@ public class ClientWantsToAuthenticateTest
     public void Setup()
     {
        FlywayDbTestRebuilder.ExecuteMigrations();
-       Startup.Start(null, "dbtestconn");
+       Startup.Start(null, "");
     }
 
     [TestCase("user@example.com", "12345678", TestName = "Valid")]
@@ -28,7 +28,6 @@ public class ClientWantsToAuthenticateTest
         {
             return fromServer.Count(dto =>
             {
-                Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count);
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {
