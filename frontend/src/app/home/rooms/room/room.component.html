@@ -1,5 +1,5 @@
 <p>
-  room {{this.roomId}} works!
+  room {{this.idFromRoute}} works!
 </p>
 
 <div class="flexbox">
@@ -87,3 +87,10 @@
   header="Alert!"
   [buttons]="alertButtons"
 ></ion-alert>
+
+<ion-list>
+  <ion-list-header>Devices in Room {{this.idFromRoute}}</ion-list-header>
+  <ion-item *ngFor="let d of this.roomDevices">
+    <p>#{{d.Id}}: {{d.DeviceName}}</p>
+  </ion-item>
+</ion-list>

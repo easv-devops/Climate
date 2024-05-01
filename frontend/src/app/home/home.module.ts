@@ -6,6 +6,7 @@ import {HomePage} from './home.page';
 
 import {HomePageRoutingModule} from './home-routing.module';
 import {TopbarComponent} from "./topbar/topbar.component";
+import {GraphComponent} from "./graph/graph.component";
 
 
 @NgModule({
@@ -15,6 +16,10 @@ import {TopbarComponent} from "./topbar/topbar.component";
     IonicModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage, TopbarComponent]
+  exports: [
+    GraphComponent,
+    TopbarComponent
+  ],
+  declarations: [HomePage, TopbarComponent, GraphComponent]
 })
 export class HomePageModule {}

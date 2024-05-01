@@ -4,10 +4,11 @@ using System.Security.Authentication;
 using api.helpers;
 using api.mqttEventListeners;
 using api.security;
+using api.ServerEventHandlers;
+using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
-using infrastructure.Models.serverEvents;
 using infrastructure.repositories.readingsRepositories;
 using lib;
 using service.services;
@@ -33,17 +34,21 @@ public static class Startup
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new DeviceRepository(provider.GetRequiredService<string>()));
         
-
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
+        builder.Services.AddSingleton<DeviceService>();
         
         builder.Services.AddSingleton<DeviceReadingsService>();
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton<MqttClientSubscriber>();
+        
+        //todo lav en metode der finder dem her af sig selv..
+        builder.Services.AddSingleton<ServerWantsToSendDevice>();
         
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
@@ -69,6 +74,7 @@ public static class Startup
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     //error handler
                     //todo should have a logger that logs the error so we can se it when deployed 
                     if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))

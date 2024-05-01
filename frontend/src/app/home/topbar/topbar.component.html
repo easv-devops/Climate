@@ -34,9 +34,9 @@
         <ion-icon class="climate-color" name="bulb"></ion-icon>
         <ion-button class="climate-color" fill="clear">Example</ion-button>
       </ion-item>
-      <ion-item routerLink="/logout">
+      <ion-item>
         <ion-icon class="climate-color" name="log-out"></ion-icon>
-        <ion-button color="danger" fill="clear">Sign out</ion-button>
+        <ion-button color="danger" fill="clear" (click)="signOut()">Sign out</ion-button>
       </ion-item>
     </ion-content>
   </ng-template>
