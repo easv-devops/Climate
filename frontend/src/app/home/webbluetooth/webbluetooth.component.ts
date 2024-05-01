@@ -1,7 +1,11 @@
-
+// webbluetooth.component.ts
 import { Component } from '@angular/core';
-// @ts-ignore
-import { BluetoothCore } from '@abandonware/web-bluetooth';
+import {bluetooth} from "webbluetooth";
+
+
+// Import typings for Web Bluetooth API
+//import './typings/web-bluetooth';
+import {from} from "rxjs";
 
 @Component({
   selector: 'app-webbluetooth',
@@ -9,15 +13,48 @@ import { BluetoothCore } from '@abandonware/web-bluetooth';
   styleUrls: ['./webbluetooth.component.scss']
 })
 export class WebBluetoothComponent {
+  scannedDevices: BluetoothDevice[] = [];
 
-  constructor(private readonly ble: BluetoothCore) { }
 
-  async search() {
+  conuctor() {  }
+
+  async connectToDevice(device: BluetoothDevice) {
     try {
-      const device = await this.ble.requestDevice({
+      // Check if device.gatt is defined before accessing it
+      if (!device.gatt) {
+        console.error('Device GATT is not available.');
+        return;
+      }
+
+      const server = await device.gatt.connect();
+      const services = await server.getPrimaryServices();
+
+      // Iterate through services
+      for (const service of services) {
+        console.log('Service:', service.uuid);
+        const characteristics = await service.getCharacteristics();
+
+        // Iterate through characteristics
+        for (const characteristic of characteristics) {
+          console.log('Characteristic:', characteristic.uuid);
+          // Read/write to characteristics as needed
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+
+  async scanForDevices() {
+    try {
+      // Request any Bluetooth device
+      const device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true
       });
-      console.log('Device found:', device);
+
+      // Add the scanned device to the list
+      this.scannedDevices.push(device);
     } catch (error) {
       console.error('Error:', error);
     }

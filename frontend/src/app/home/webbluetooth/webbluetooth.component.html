@@ -1,3 +1,12 @@
-
-
-<button (click)="search()">Search for Bluetooth Devices</button>
+<!-- webbluetooth.component.html -->
+<div>
+  <button (click)="scanForDevices()">Search for Bluetooth Devices</button>
+</div>
+<div *ngIf="scannedDevices.length > 0">
+  <h2>Available Bluetooth Devices:</h2>
+  <ul>
+    <li *ngFor="let device of scannedDevices">
+      <button (click)="connectToDevice(device)">{{ device.name }}</button>
+    </li>
+  </ul>
+</div>
