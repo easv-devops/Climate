@@ -19,6 +19,8 @@ steps:
         from_secret: dbconn
       JwtKey:
         from_secret: JwtKey
+      MailPassword:
+        from_secret: MailPassword
     commands:
       - dotnet sonarscanner begin 
           /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
