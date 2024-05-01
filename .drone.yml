@@ -20,7 +20,6 @@ steps:
       JwtKey:
         from_secret: JwtKey
     commands:
-      - exit 0
       - dotnet sonarscanner begin 
           /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
           /d:sonar.host.url="http://sonar.setgo.dk:9000" 
