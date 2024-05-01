@@ -12,6 +12,10 @@ export class ClientWantsToRegisterDto extends BaseDto<ClientWantsToRegisterDto>{
 export class ClientWantsToCreateRoom extends BaseDto<ClientWantsToCreateRoom>{
   RoomName?: string;
 }
+
+export class ClientWantsAllRooms extends BaseDto<ClientWantsAllRooms>{
+
+}
 export class ClientWantsToAuthenticate extends BaseDto<ClientWantsToAuthenticate> {
   Email?: string;
   Password?: string;

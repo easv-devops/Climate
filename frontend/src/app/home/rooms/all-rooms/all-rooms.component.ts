@@ -20,12 +20,15 @@ export class AllRoomsComponent implements OnInit {
   roomname!: string;
   n: number = 4;
 
+
   form = this.fb.group({
     roomName: ['', [Validators.required, Validators.minLength(2)]]
   });
   constructor(private roomService: RoomService, private readonly fb: FormBuilder) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.roomService.getAllRooms();
+  }
 
   @ViewChild(IonModal) modal!: IonModal;
   cancel() {

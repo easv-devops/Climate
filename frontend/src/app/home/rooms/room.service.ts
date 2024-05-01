@@ -1,6 +1,6 @@
 import {inject, Inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToCreateRoom} from "../../../models/clientRequests";
+import {ClientWantsAllRooms, ClientWantsToCreateRoom} from "../../../models/clientRequests";
 import {Room} from "../../../models/room";
 
 @Injectable({
@@ -19,6 +19,13 @@ export class RoomService {
           RoomName: roomname
         }
       )
+    )
+  }
+
+  getAllRooms() {
+    this.ws.socketConnection.sendDto(
+      new ClientWantsAllRooms({
+      })
     )
   }
 }

@@ -5,23 +5,23 @@ import {BaseDto} from "../models/baseDto";
 import {
   ServerAuthenticatesUserDto,
   ServerRegisterUserDto
-  , ServerResetsPasswordDto, ServerSendsErrorMessageToClient,
-  User
+  , ServerResetsPasswordDto, ServerReturnsAllRoomsDto, ServerSendsErrorMessageToClient,
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-
+import {Device} from "../models/device";
+import {Room} from "../models/room";
+import {RecordHolder} from "../models/recordholder";
 
 @Injectable({providedIn: 'root'})
 export class WebSocketConnectionService {
 
   //Different objects used in the application
-  //TODO check for these objects. Make sure they are used or removed
-  //TODO use records instead of lists
-  //todo should be objects instead of number, reference to the object (key= id. value = object)
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
-  AllRooms: number[] = [];
-  AllDevices: number[] = [];
+  allRoomsRecord!: RecordHolder<Room>;
+  AllDevicesRecord!: RecordHolder<Device>
+
+
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
 
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
@@ -67,6 +67,10 @@ export class WebSocketConnectionService {
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
   }
-
+  ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
+    for (var room of dto.rooms!) {
+      this.allRoomsRecord!.addRecord(room.roomId, room)
+    }
+  }
 }
 
