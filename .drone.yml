@@ -21,6 +21,8 @@ steps:
         from_secret: JwtKey
       MailPassword:
         from_secret: MailPassword
+      MqttToken:
+        from_secret: MqttToken
     commands:
       - dotnet sonarscanner begin 
           /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
