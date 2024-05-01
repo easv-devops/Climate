@@ -30,23 +30,46 @@
 
     <!-- Graph section -->
     <ion-card id="main" style="width: 100%">
-      <ion-tabs>
-        <!-- Tab bar -->
-        <ion-tab-bar slot="top">
-          <ion-tab-button tab="temperature">
-            <ion-icon name="thermometer-outline" class="climate-color"></ion-icon>
-            <ion-label class="climate-color">Temperature</ion-label>
-          </ion-tab-button>
-          <ion-tab-button tab="humidity">
-            <ion-icon name="water-outline" class="climate-color"></ion-icon>
-            <ion-label class="climate-color">Humidity</ion-label>
-          </ion-tab-button>
-          <ion-tab-button tab="pm">
-            <ion-icon name="sparkles-outline" class="climate-color"></ion-icon>
-            <ion-label class="climate-color">Particular Matter</ion-label>
-          </ion-tab-button>
-        </ion-tab-bar>
-      </ion-tabs>
+      <ion-card-header>
+        <div style="display: flex; justify-content: center;">
+          <ion-button fill="outline" (click)="updateGraph('temperature')">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <ion-icon name="thermometer-outline" class="climate-color"></ion-icon>
+              <ion-label class="climate-color">Temperature</ion-label>
+            </div>
+          </ion-button>
+          <ion-button fill="outline" (click)="updateGraph('humidity')">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <ion-icon name="water-outline" class="climate-color"></ion-icon>
+              <ion-label class="climate-color">Humidity</ion-label>
+            </div>
+          </ion-button>
+          <ion-button fill="outline" (click)="updateGraph('pm')">
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <ion-icon name="logo-tableau" class="climate-color"></ion-icon>
+              <ion-label class="climate-color">Particular Matter</ion-label>
+            </div>
+          </ion-button>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Your chart component -->
+        <apx-chart
+          #chart
+          [series]="chartOptions.series"
+          [chart]="chartOptions.chart"
+          [colors]="chartOptions.colors"
+          [yaxis]="chartOptions.yaxis"
+          [dataLabels]="chartOptions.dataLabels"
+          [markers]="chartOptions.markers"
+          [stroke]="chartOptions.stroke"
+          [grid]="chartOptions.grid"
+          [xaxis]="chartOptions.xaxis"
+          [tooltip]="chartOptions.tooltip"
+          [annotations]="chartOptions.annotations"
+        ></apx-chart>
+      </ion-card-content>
     </ion-card>
   </ion-split-pane>
 </ion-content>
