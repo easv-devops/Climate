@@ -40,7 +40,6 @@ type: docker
 name: deliver
 trigger:
   branch:
-    - drone_setup
     - master
   event:
     exclude:
