@@ -22,11 +22,7 @@ public class RoomsRepository
             string query = @"
                 SELECT * From climate.Room;
                 ";
-            List<Room> rooms = connection.QueryFirstOrDefault<List<Room>>(query);
-            foreach (var room in rooms)
-            {
-                Console.WriteLine(room.roomName);
-            }
+            List<Room> rooms = connection.Query<Room>(query).ToList();
             return rooms;
         }
         catch (Exception e)

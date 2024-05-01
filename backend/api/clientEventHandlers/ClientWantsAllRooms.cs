@@ -13,6 +13,7 @@ public class ClientWantsAllRoomsDto : BaseDto
 
 public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
 {
+    
     private readonly RoomService _roomService;
 
     public ClientWantsAllRooms(RoomService roomService)
@@ -22,11 +23,15 @@ public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
 
     public override Task Handle(ClientWantsAllRoomsDto dto, IWebSocketConnection socket)
     {
-        List<Room> allRooms = _roomService.GetAllRooms();
-        socket.SendDto(new ServerReturnsAllRooms
-        {
-            rooms = allRooms
-        });
+        List<Room> allrooms = _roomService.GetAllRooms();
+        
+        socket.SendDto(
+            new ServerReturnsAllRooms()
+            {
+                rooms = allrooms
+            }
+        );
+
         return Task.CompletedTask;
     }
 }

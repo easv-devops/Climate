@@ -2,5 +2,7 @@ namespace infrastructure.Models;
 
 public class Room
 {
-    public string roomName { get; set; }
+    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string RoomName { get; set; }
 }

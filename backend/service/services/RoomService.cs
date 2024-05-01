@@ -1,3 +1,4 @@
+
 using infrastructure;
 using infrastructure.Models;
 
@@ -6,6 +7,12 @@ namespace service.services;
 public class RoomService
 {
     private readonly RoomsRepository _roomsRepository;
+
+    public RoomService(RoomsRepository roomsRepository)
+    {
+        _roomsRepository = roomsRepository;
+    }
+    
     public List<Room> GetAllRooms()
     {
         return _roomsRepository.GetAllRooms();

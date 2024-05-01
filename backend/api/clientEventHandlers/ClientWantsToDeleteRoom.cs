@@ -18,7 +18,6 @@ public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomD
     {
         _roomService = roomService;
     }
-
     
     public override Task Handle(ClientWantsToDeleteRoomDto dto, IWebSocketConnection socket)
     {
