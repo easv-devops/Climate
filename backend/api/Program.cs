@@ -23,6 +23,7 @@ public static class Startup
         app.Run();
     }
 
+    //TODO: Rethink the connectionString parameter setup (for testing). Depends on what db we'll use for testing
     public static WebApplication Start(string[] args, string? connectionString)
     {
         var builder = WebApplication.CreateBuilder(args);

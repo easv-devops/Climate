@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using api.helpers;
 using Fleck;
+using infrastructure;
 using infrastructure.Models;
 using MQTTnet;
 using MQTTnet.Client;
@@ -18,8 +19,6 @@ public class MqttClientSubscriber
         _readingsService = readingsService;
     }
     
-    
-    
     public async Task CommunicateWithBroker()
     {
 
@@ -29,7 +28,7 @@ public class MqttClientSubscriber
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
             .WithProtocolVersion(MqttProtocolVersion.V500)
-            .WithCredentials("FlespiToken iNAXKnfDnzPMgOqTfJkgYGOiYFdBDxhSdvH67RZK7r488rKRNG3EdqgFX9NYSW4T", "") // todo should be a secret
+            .WithCredentials(KeyVaultService.GetMqttToken(), "") // todo should be a secret
             .Build();
 
         await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);

@@ -70,4 +70,15 @@ public static class KeyVaultService
 
         return mailPassword;
     }
+    
+    public static string GetMqttToken()
+    {
+        var mqttToken = Environment.GetEnvironmentVariable(EnvVarKeys.MqttToken.ToString());
+        if (string.IsNullOrEmpty(mqttToken))
+        {
+            mqttToken = GetSecret(EnvVarKeys.MqttToken.ToString());
+        }
+
+        return mqttToken;
+    }
 }
