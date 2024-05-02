@@ -38,7 +38,7 @@ steps:
 
 kind: pipeline
 type: docker
-name: deliver
+name: deliver test
 trigger:
   branch:
     - master
@@ -103,7 +103,55 @@ steps:
       - trigger update
         
         
-  - name: update prod database
+kind: pipeline
+type: docker
+name: deliver prod
+trigger:
+  branch:
+    - master
+    - drone_setup
+  event:
+    exclude:
+      - pull_request
+depends_on:
+  - integration
+
+steps:
+  - name: publish backend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: Dockerfile
+      repo: midr/climate-backend
+      tags:
+        - prod
+
+  - name: publish frontend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: frontend/Dockerfile
+      repo: midr/climate-frontend
+      tags:
+        - prod
+
+  - name: trigger update
+    image: curlimages/curl
+    commands:
+      # Must match the token defined in docker-compose.yml
+      - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
+      - sleep 10
+    depends_on:
+      - publish backend
+      - publish frontend
+
+  - name: update test database
     image: flyway/flyway
     environment:
       DB_NAME:
