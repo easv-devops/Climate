@@ -79,6 +79,14 @@ export class GraphComponent implements OnInit {
         type: "datetime",
         tickAmount: 6
       },
+      yaxis: {
+        labels: {
+          formatter: function (value: number) {
+            // Format the value as you desire, for example, to show only two decimal places
+            return value.toFixed(1); // This will round the value to two decimal places
+          }
+        }
+      },
       tooltip: {
         x: {
           format: "dd MMM yyyy"
