@@ -28,6 +28,9 @@ export class RoomService {
       })
     )
   }
+  getAllRoomRecords(){
+    return this.ws.allRoomsRecord
+  }
 }
 
 

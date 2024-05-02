@@ -27,7 +27,7 @@ export class WebSocketConnectionService {
 
   //Different objects used in the application
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
-  allRoomsRecord!: RecordHolder<Room>;
+  private _allRoomsRecord!: RecordHolder<Room>;
   AllDevicesRecord!: RecordHolder<Device>
 
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
@@ -98,7 +98,7 @@ export class WebSocketConnectionService {
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto) {
     for (var room of dto.rooms!) {
-      this.allRoomsRecord!.addRecord(room.roomId, room)
+      this._allRoomsRecord!.addRecord(room.roomId, room)
     }
   }
 
@@ -170,4 +170,9 @@ export class WebSocketConnectionService {
     this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
+
+  get allRoomsRecord(): RecordHolder<Room> {
+    return this._allRoomsRecord;
+  }
+
 }

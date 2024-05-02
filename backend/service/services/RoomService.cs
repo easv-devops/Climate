@@ -13,9 +13,9 @@ public class RoomService
         _roomsRepository = roomsRepository;
     }
     
-    public List<Room> GetAllRooms()
+    public List<Room> GetAllRooms(int UserId)
     {
-        return _roomsRepository.GetAllRooms();
+        return _roomsRepository.GetAllRooms(UserId);
     }
 
     public bool DeleteRoom(Room room)
@@ -25,7 +25,7 @@ public class RoomService
 
     public Room CreateRoom(Room room)
     {
-        return _roomsRepository.CreateRoom();
+        return _roomsRepository.CreateRoom(room);
     }
 
     public Room EditRoom(Room room)

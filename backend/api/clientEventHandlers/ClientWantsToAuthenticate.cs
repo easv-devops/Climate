@@ -41,6 +41,7 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
     {
         //gets user information from db and checks for ban status
         var user = _authService.GetUser(request.email);
+        Console.WriteLine(user.Email);
         //if (user.Isbanned) throw new AuthenticationException("User is banned");
         
         //checks password hash

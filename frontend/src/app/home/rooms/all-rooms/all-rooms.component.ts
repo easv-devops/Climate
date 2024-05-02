@@ -4,6 +4,7 @@ import {OverlayEventDetail} from "@ionic/core/components";
 import {IonModal} from "@ionic/angular";
 import {RoomService} from "../room.service";
 import {FormBuilder, Validators} from "@angular/forms";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 
 @Component({
   selector: 'app-all-rooms',
@@ -11,6 +12,7 @@ import {FormBuilder, Validators} from "@angular/forms";
   styleUrls: ['../rooms.component.scss'],
 })
 export class AllRoomsComponent implements OnInit {
+  roomRecords = this.roomService.getAllRoomRecords();
   rooms: Room[] = [
     {roomname:"Kitchen", roomId:3, currentHumidity: 20, currentTemperature: 23, image:"https://static.vecteezy.com/system/resources/thumbnails/006/689/881/small/kitchen-icon-illustration-free-vector.jpg"},
     {roomname: "Toilet", roomId:2, currentHumidity: 30, currentTemperature: 27, image: "https://cdn-icons-png.flaticon.com/512/194/194483.png"},

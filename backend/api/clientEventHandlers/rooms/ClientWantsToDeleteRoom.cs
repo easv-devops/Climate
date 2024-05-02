@@ -7,7 +7,8 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToDeleteRoomDto : BaseDto
 {
-    public Room room;
+    public int RoomId { get; set; }
+    public int UserId { get; set; }
 }
 
 public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomDto>
@@ -21,7 +22,12 @@ public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomD
     
     public override Task Handle(ClientWantsToDeleteRoomDto dto, IWebSocketConnection socket)
     {
-        _roomService.DeleteRoom(dto.room);
+        Room room = new Room
+        {
+            Id = dto.RoomId,
+            UserId = dto.UserId
+        };
+        _roomService.DeleteRoom(room);
         return Task.CompletedTask;
     }
 }

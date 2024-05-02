@@ -9,6 +9,7 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsAllRoomsDto : BaseDto
 {
+    public int UserId { get; set;}
 }
 
 public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
@@ -23,8 +24,7 @@ public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
 
     public override Task Handle(ClientWantsAllRoomsDto dto, IWebSocketConnection socket)
     {
-        List<Room> allrooms = _roomService.GetAllRooms();
-        
+        List<Room> allrooms = _roomService.GetAllRooms(dto.UserId);
         socket.SendDto(
             new ServerReturnsAllRooms()
             {
