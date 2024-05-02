@@ -12,11 +12,12 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom} from "../models/Entities";
+import {Device, DeviceInRoom, SensorDto} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
+import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -53,6 +54,9 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
+  private tempReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
+  tempReadings: Observable<SensorDto[] | undefined> = this.tempReadingsSubject.asObservable();
+
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
     this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl);
@@ -63,7 +67,7 @@ export class WebSocketConnectionService {
     this.socketConnection.onmessage = (event) => {
       const data = JSON.parse(event.data) as BaseDto<any>;
       // @ts-ignore
-      this[data.eventType].call(this,data);
+      this[data.eventType].call(this, data);
     }
   }
 
@@ -90,7 +94,7 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
-  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
+  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto) {
     this.roomDevicesSubject.next(dto.Devices)
   }
 
@@ -141,7 +145,7 @@ export class WebSocketConnectionService {
 
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
-      const devices = { ...this.allDevicesSubject.value };
+      const devices = {...this.allDevicesSubject.value};
       delete devices[dto.Id];
       this.allDevicesSubject.next(devices);
     }
@@ -159,7 +163,9 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
 
-
+  ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
+    this.tempReadingsSubject.next(dto.TemperatureReadings);
+  }
 }
 
 

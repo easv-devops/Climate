@@ -63,4 +63,23 @@ public class TemperatureRepository
             throw new SqlTypeException("Failed to delete Temperature readings", ex);
         }
     }
+
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"
+                SELECT Timestamp, Temperature AS Value 
+                FROM ReadingTemperature 
+                WHERE DeviceId = @DeviceId;
+                ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve readings from device "+deviceId, e);
+        }
+    }
 }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
-import {Device} from "../../../../models/Entities";
+import {Device, DeviceInRoom, SensorDto} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
@@ -15,6 +15,7 @@ import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
 export class DeviceComponent implements OnInit {
   idFromRoute: number | undefined;
   device?: Device;
+  tempReadings?: SensorDto[];
   private unsubscribe$ = new Subject<void>();
 
 
@@ -27,7 +28,9 @@ export class DeviceComponent implements OnInit {
 
   ngOnInit() {
     this.getDeviceFromRoute();
-    this.subscribeToDevice()
+    this.subscribeToDevice();
+    this.deviceService.getTempByDeviceId(this.idFromRoute!);
+    this.subscribeToTempReadings();
   }
 
   ngOnDestroy() {
@@ -68,5 +71,15 @@ export class DeviceComponent implements OnInit {
     } else {
       console.error('Room ID not found for the device');
     }
+  }
+
+  subscribeToTempReadings() {
+    this.deviceService.getTempObservable()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(r => {
+        if (r) {
+          this.tempReadings = r;
+        }
+      });
   }
 }

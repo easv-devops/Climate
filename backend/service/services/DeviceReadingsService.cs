@@ -1,4 +1,6 @@
 ﻿using System.Data.SqlTypes;
+using System.Security.Authentication;
+using infrastructure;
 using infrastructure.Models;
 using infrastructure.repositories.readingsRepositories;
 
@@ -9,15 +11,18 @@ public class DeviceReadingsService
     private HumidityRepository _humidityRepository;
     private TemperatureRepository _temperatureRepository;
     private ParticlesRepository _particlesRepository;
+    private DeviceRepository _deviceRepository;
     
     public DeviceReadingsService(
         HumidityRepository humidityRepository,
         TemperatureRepository temperatureRepository,
-        ParticlesRepository particlesRepository)
+        ParticlesRepository particlesRepository,
+        DeviceRepository deviceRepository)
     {
         _humidityRepository = humidityRepository;
         _temperatureRepository = temperatureRepository;
         _particlesRepository = particlesRepository;
+        _deviceRepository = deviceRepository;
     }
     
     public void CreateReadings(DeviceData deviceReadingsDto)
@@ -64,5 +69,13 @@ public class DeviceReadingsService
             throw new SqlTypeException("Failed to delete particle 10.0 readings");
         
         return true;
+    }
+
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId, int userId)
+    {
+        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
+            throw new AuthenticationException
+                ("Only the owner of device #"+deviceId+" has access to this information");
+        return _temperatureRepository.GetTemperatureReadingsFromDevice(deviceId);
     }
 }
