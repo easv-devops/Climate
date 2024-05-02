@@ -1,5 +1,5 @@
 <!-- Content section -->
-<ion-content class="ion-margin" style="height: 60vh;">
+<ion-content class="ion-margin" style="height: 70vh;">
   <ion-split-pane when="sm" contentId="main"> <!-- Show the split-pane when the min-width is 768px -->
     <!-- Stats section -->
     <ion-card>
@@ -69,6 +69,14 @@
           [tooltip]="chartOptions.tooltip"
           [annotations]="chartOptions.annotations"
         ></apx-chart>
+        <!-- Buttons for time range selection -->
+        <div style="display: flex; justify-content: center;">
+          <ion-button fill="clear" (click)="setTimeRange('1d')">1D</ion-button>
+          <ion-button fill="clear" (click)="setTimeRange('1m')">1M</ion-button>
+          <ion-button fill="clear" (click)="setTimeRange('6m')">6M</ion-button>
+          <ion-button fill="clear" (click)="setTimeRange('1y')">1Y</ion-button>
+          <ion-button fill="clear" (click)="setTimeRange('all')">All</ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   </ion-split-pane>

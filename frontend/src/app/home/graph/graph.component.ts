@@ -15,6 +15,8 @@ import {
 } from "ng-apexcharts";
 //import {data} from "./series-data";
 import {SensorDto} from "../../../models/Entities";
+import {WebSocketConnectionService} from "../../web-socket-connection.service";
+import {Subject, takeUntil} from "rxjs";
 
 
 export type ChartOptions = {
@@ -38,58 +40,35 @@ export type ChartOptions = {
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.scss'],
 })
-export class GraphComponent implements OnInit{
+export class GraphComponent implements OnInit {
   @Input() readings!: SensorDto[];
-  @ViewChild("chart", { static: false }) chart!: ChartComponent;
+  @ViewChild("chart", {static: false}) chart!: ChartComponent;
   chartOptions: any = {};
   public activeOptionButton = "all";
-  public updateOptionsData = {
-    "1m": {
-      xaxis: {
-        min: new Date("28 Jan 2013").getTime(),
-        max: new Date("27 Feb 2013").getTime()
-      }
-    },
-    "6m": {
-      xaxis: {
-        min: new Date("27 Sep 2012").getTime(),
-        max: new Date("27 Feb 2013").getTime()
-      }
-    },
-    "1y": {
-      xaxis: {
-        min: new Date("27 Feb 2012").getTime(),
-        max: new Date("27 Feb 2013").getTime()
-      }
-    },
-    "1yd": {
-      xaxis: {
-        min: new Date("01 Jan 2013").getTime(),
-        max: new Date("27 Feb 2013").getTime()
-      }
-    },
-    all: {
-      xaxis: {
-        min: undefined,
-        max: undefined
-      }
-    }
-  };
+  ws: WebSocketConnectionService;
+  private unsubscribe$ = new Subject<void>();
 
-  constructor() {
+
+  constructor(ws: WebSocketConnectionService) {
+    this.ws = ws;
+  }
+
+  ngOnInit(): void {
     this.initChart();
+    this.subscribeToTemperature(); // Showing temperature as default, since that's what is working now
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   initChart(): void {
     this.chartOptions = {
-      series: [
-        {
-          data: []
-        }
-      ],
+      series: [{data: []}],
       chart: {
         type: "area",
-        height: 350
+        height: 300
       },
       dataLabels: {
         enabled: false
@@ -99,7 +78,6 @@ export class GraphComponent implements OnInit{
       },
       xaxis: {
         type: "datetime",
-        min: new Date("01 Mar 2012").getTime(),
         tickAmount: 6
       },
       tooltip: {
@@ -119,10 +97,58 @@ export class GraphComponent implements OnInit{
     };
   }
 
-  public updateOptions(option: any): void {
-    this.activeOptionButton = option;
-    // @ts-ignore
-    this.chart.updateOptions(this.updateOptionsData[option], false, true, true);
+  setTimeRange(range: string): void {
+    const updateOptionsData: { [key: string]: { xaxis?: { min?: number; max?: number } } } = {
+      "1d": {
+        xaxis: {min: new Date().getTime() - (24 * 60 * 60 * 1000), max: new Date().getTime()}
+      },
+      "1m": {
+        xaxis: {min: new Date().getTime() - (30 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
+      },
+      "6m": {
+        xaxis: {min: new Date().getTime() - (6 * 30 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
+      },
+      "1y": {
+        xaxis: {min: new Date().getTime() - (365 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
+      },
+      "all": {
+        xaxis: {min: undefined, max: undefined}
+      }
+    };
+
+    this.chartOptions = {
+      ...this.chartOptions,
+      xaxis: {
+        ...this.chartOptions.xaxis,
+        ...(updateOptionsData[range]?.xaxis || {}) // Apply range updates or keep existing values
+      }
+    };
+  }
+
+  private subscribeToTemperature(): void {
+    this.ws.tempReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((data: SensorDto[] | undefined) => {
+        if (data && data.length > 0) {
+          const newDataSeries = data.map((reading: SensorDto) => ({
+            x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
+            y: reading.Value
+          }));
+
+          // Clear existing data before appending new data series
+          if (!this.chartOptions.series[0] || !this.chartOptions.series[0].data) {
+            this.chartOptions.series[0] = {data: []};
+          } else {
+            this.chartOptions.series[0].data = [];
+          }
+
+          // Append the new data series to the existing series
+          this.chartOptions.series[0].data.push(...newDataSeries);
+
+          // Update time range option
+          this.setTimeRange(this.activeOptionButton);
+        }
+      });
   }
 
   updateGraph(option: string) {
@@ -135,38 +161,5 @@ export class GraphComponent implements OnInit{
     } else if (option === 'pm') {
       // Update graph for PM
     }
-  }
-
-  // TODO: logic should not be placed here, testing if this is the issue
-  private convertTimestamp() {
-    // Make sure readings is initialized and is an array
-    if (Array.isArray(this.readings)) {
-      for (const r of this.readings) {
-        r.TimeStamp = new Date(r.TimeStamp).getTime();
-      }
-    }
-  }
-
-  private updateChartData() {
-    // Assuming SensorDto has properties for x and y axes data
-    if (Array.isArray(this.readings)) {
-      // Map readings data to chart data format for each series
-      this.chartOptions.series = this.readings.map((reading, index) => ({
-        data: [
-          {
-            x: reading.TimeStamp, // Assuming TimeStamp is your x-axis data
-            y: reading.Value // Replace Value with actual property name for y-axis
-          }
-        ]
-      }));
-    }
-
-    this.updateOptions(null);
-  }
-
-
-  ngOnInit(): void {
-    this.convertTimestamp();
-    this.updateChartData();
   }
 }
