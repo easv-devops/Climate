@@ -86,4 +86,20 @@ public class DeviceReadingsService
                 ("Only the owner of device #"+deviceId+" has access to this information");
         return _humidityRepository.GetHumidityReadingsFromDevice(deviceId);
     }
+    
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId, int userId)
+    {
+        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
+            throw new AuthenticationException
+                ("Only the owner of device #"+deviceId+" has access to this information");
+        return _particlesRepository.GetPm25ReadingsFromDevice(deviceId);
+    }
+    
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId, int userId)
+    {
+        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
+            throw new AuthenticationException
+                ("Only the owner of device #"+deviceId+" has access to this information");
+        return _particlesRepository.GetPm100ReadingsFromDevice(deviceId);
+    }
 }

@@ -19,6 +19,8 @@ import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserI
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
 import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
+import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
+import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -60,6 +62,12 @@ export class WebSocketConnectionService {
 
   private humidityReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
   humidityReadings: Observable<SensorDto[] | undefined> = this.humidityReadingsSubject.asObservable();
+
+  private pm25ReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
+  pm25Readings: Observable<SensorDto[] | undefined> = this.pm25ReadingsSubject.asObservable();
+
+  private pm100ReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
+  pm100Readings: Observable<SensorDto[] | undefined> = this.pm100ReadingsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -173,6 +181,14 @@ export class WebSocketConnectionService {
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadingsSubject.next(dto.HumidityReadings);
+  }
+
+  ServerSendsPm25Readings(dto: ServerSendsPm25ReadingsDto) {
+    this.pm25ReadingsSubject.next(dto.Pm25Readings);
+  }
+
+  ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
+    this.pm100ReadingsSubject.next(dto.Pm100Readings);
   }
 }
 

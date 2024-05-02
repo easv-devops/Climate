@@ -9,6 +9,8 @@ import {Device} from "../../../models/Entities";
 import {ClientWantsToDeleteDeviceDto} from "../../../models/ClientWantsToDeleteDevice";
 import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
 import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
+import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
+import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -57,6 +59,20 @@ export class DeviceService {
 
   getHumidityByDeviceId(id: number) {
     var dto = new ClientWantsToGetHumidityReadingsDto({
+      DeviceId: id
+    });
+    this.ws.socketConnection.sendDto(dto)
+  }
+
+  getPm25ByDeviceId(id: number) {
+    var dto = new ClientWantsToGetPm25ReadingsDto({
+      DeviceId: id
+    });
+    this.ws.socketConnection.sendDto(dto)
+  }
+
+  getPm100ByDeviceId(id: number) {
+    var dto = new ClientWantsToGetPm100ReadingsDto({
       DeviceId: id
     });
     this.ws.socketConnection.sendDto(dto)

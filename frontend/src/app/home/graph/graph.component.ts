@@ -148,7 +148,7 @@ export class GraphComponent implements OnInit {
 
   /* Method to subscribe to the selected reading */
   /* Call by passing the observable and series name as parameters, like this: */
-  /* this.subscribeToReading(this.ws.temperatureReadings, '🌡 Temperature'); */
+  /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature'); */
   private subscribeToReading(observable: Observable<SensorDto[] | undefined>, seriesName: string): void {
     observable
       .pipe(takeUntil(this.unsubscribe$))
@@ -189,13 +189,20 @@ export class GraphComponent implements OnInit {
         this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
         break;
       case 'pm':
-        console.log('pm selected');
+        this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
+        this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+        this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
+        this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
         break;
       case 'all':
         this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
         this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
         this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
         this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
+        this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
+        this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+        this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
+        this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
         break;
       default:
         console.error('Invalid option:', option);
