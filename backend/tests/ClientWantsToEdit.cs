@@ -1,5 +1,6 @@
 ﻿using api;
 using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -11,7 +12,7 @@ public class ClientWantsToEdit
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null, "");
+        Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));
     }
     
 

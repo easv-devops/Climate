@@ -13,5 +13,6 @@ public enum EnvVarKeys
     JwtKey,
     dbconn,
     MailPassword,
-    MqttToken
+    MqttToken,
+    dbtestconn
 }
