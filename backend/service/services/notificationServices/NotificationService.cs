@@ -17,7 +17,7 @@ public class NotificationService
      * checks notification preference and call relevant methods for preferences.
      * Include other message types in switch case if needed (Dont know if we want sms)
      */
-    public bool SendWelcomeMessage(List<MessageType> notiPreferences, ShortUserDto user)
+    public async Task<bool> SendWelcomeMessage(List<MessageType> notiPreferences, ShortUserDto user)
     {
         if (notiPreferences == null || !notiPreferences.Any())
             throw new Exception("no message types selected");
@@ -27,10 +27,7 @@ public class NotificationService
             switch (messageType)
             {
                 case MessageType.EMAIL:
-                    if (!SendWelcomeEmail(user))
-                    {
-                        return false;
-                    }
+                    return await SendWelcomeEmail(user);
                     break;
                 case MessageType.SMS:
                     break;
@@ -41,16 +38,13 @@ public class NotificationService
         return true;
     }
 
-    public bool SendResetPasswordMessage(MessageType messageType, string newPassword, string email)
+    public async Task<bool> SendResetPasswordMessage(MessageType messageType, string newPassword, string email)
     { 
         switch (messageType)
         {
             case MessageType.EMAIL:
-                if (!SendResetPasswordEmail(newPassword, email))
-                {
-                    return false;
-                }
-                break;
+                return await SendResetPasswordEmail(newPassword, email);
+            break;
             case MessageType.SMS:
                 break;
             default:
@@ -60,7 +54,7 @@ public class NotificationService
         return true;
     }
 
-    private bool SendResetPasswordEmail(string newPassword, string email)
+    private async Task<bool> SendResetPasswordEmail(string newPassword, string email)
     {
         var mailBuilder = new EmailBuilder();
         string mailBody = mailBuilder.BuildResetPasswordMessage(newPassword);
@@ -70,11 +64,11 @@ public class NotificationService
             htmlBody = mailBody,
             recipientEmail = email
         };
-        return _smtpRepository.SendEmail(mail);
+        return await _smtpRepository.SendEmail(mail);
         
     }
 
-    private bool SendWelcomeEmail(ShortUserDto user)
+    private async Task<bool> SendWelcomeEmail(ShortUserDto user)
     {
         var mailBuilder = new EmailBuilder();
         string mailBody = mailBuilder.BuildWelcomeMessage(user.Name);
@@ -86,6 +80,6 @@ public class NotificationService
             recipientEmail = user.Email
         };
         
-        return _smtpRepository.SendEmail(mail);
+        return await _smtpRepository.SendEmail(mail);
     }
 }

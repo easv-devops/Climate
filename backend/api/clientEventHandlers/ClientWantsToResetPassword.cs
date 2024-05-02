@@ -27,13 +27,13 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
     }
     
     //todo should maybe have some security question Like (What is your username or phone number...)
-    public override Task Handle(ClientWantsToResetPasswordDto dto, IWebSocketConnection socket)
+    public override async Task Handle(ClientWantsToResetPasswordDto dto, IWebSocketConnection socket)
     {
         string newPassword = _authService.ResetPassword(dto.Email);
         
         var isReset = _notificationService.SendResetPasswordMessage(MessageType.EMAIL, newPassword, dto.Email);
-        socket.SendDto(new ServerResetsPassword { IsReset= isReset});
-        return Task.CompletedTask;
+        socket.SendDto(new ServerResetsPassword { IsReset=  await isReset});
+ 
     }
 }
 

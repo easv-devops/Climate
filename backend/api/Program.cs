@@ -32,7 +32,9 @@ public static class Startup
         
         if (ReferenceEquals(connectionString, ""))
         {
-            connectionString = KeyVaultService.GetDbConn();
+            var dbConnTask = KeyVaultService.GetDbConn();
+            dbConnTask.Wait();
+            connectionString =  dbConnTask.Result;
             builder.Services.AddSingleton(provider => connectionString);
         }
         else

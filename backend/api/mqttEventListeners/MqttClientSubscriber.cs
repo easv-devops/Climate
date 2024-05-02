@@ -28,7 +28,7 @@ public class MqttClientSubscriber
         var mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
             .WithProtocolVersion(MqttProtocolVersion.V500)
-            .WithCredentials(KeyVaultService.GetMqttToken(), "")
+            .WithCredentials(await KeyVaultService.GetMqttToken(), "")
             .Build();
 
         await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);

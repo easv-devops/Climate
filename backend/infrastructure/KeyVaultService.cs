@@ -7,7 +7,7 @@ namespace infrastructure;
 
 public static class KeyVaultService
 {
-    public static string GetSecret(string secretName)
+    public static async Task<string> GetSecret(string secretName)
     {
         var kvUri = "https://climatekv.vault.azure.net/";
         SecretClientOptions options = new SecretClientOptions()
@@ -25,8 +25,7 @@ public static class KeyVaultService
 
         try
         {
-            KeyVaultSecret secret = client.GetSecret(secretName);
-            System.Threading.Thread.Sleep(5000);
+            KeyVaultSecret secret = await client.GetSecretAsync(secretName);
             return secret.Value;
         }
         catch (Exception e)
@@ -37,46 +36,46 @@ public static class KeyVaultService
         
     }
 
-    public static string GetToken()
+    public static async Task<string> GetToken()
     {
         string JwtKey = Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString());
         if (string.IsNullOrEmpty(JwtKey))
         {
-            JwtKey = GetSecret(EnvVarKeys.JwtKey.ToString());
+            JwtKey = await GetSecret(EnvVarKeys.JwtKey.ToString());
         }
 
         return JwtKey;
 
     }
     
-    public static string GetDbConn()
+    public static async Task<string>  GetDbConn()
     {
         var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
         if (string.IsNullOrEmpty(connectionString))
         {
-            connectionString = GetSecret(EnvVarKeys.dbconn.ToString());
+            connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
         }
 
         return connectionString;
     }
     
-    public static string GetMailPassword()
+    public static async Task<string>  GetMailPassword()
     {
         var mailPassword = Environment.GetEnvironmentVariable(EnvVarKeys.MailPassword.ToString());
         if (string.IsNullOrEmpty(mailPassword))
         {
-            mailPassword = GetSecret(EnvVarKeys.MailPassword.ToString());
+            mailPassword = await GetSecret(EnvVarKeys.MailPassword.ToString());
         }
 
         return mailPassword;
     }
     
-    public static string GetMqttToken()
+    public static async Task<string>  GetMqttToken()
     {
         var mqttToken = Environment.GetEnvironmentVariable(EnvVarKeys.MqttToken.ToString());
         if (string.IsNullOrEmpty(mqttToken))
         {
-            mqttToken = GetSecret(EnvVarKeys.MqttToken.ToString());
+            mqttToken = await GetSecret(EnvVarKeys.MqttToken.ToString());
         }
 
         return mqttToken;

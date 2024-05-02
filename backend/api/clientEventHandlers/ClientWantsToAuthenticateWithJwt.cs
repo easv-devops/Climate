@@ -30,12 +30,12 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
         _authService = authService;
         _tokenService = tokenService;
     }
-    public override Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
+    public override async Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
     {
         //validates the jwt
-        var claims = _tokenService.ValidateJwtAndReturnClaims(dto.jwt!);
+        var claims =  await _tokenService.ValidateJwtAndReturnClaims(dto.jwt!);
         //gets the user in db
-        EndUser user = _authService.GetUserById(Int32.Parse(claims["userId"]));
+        EndUser user = _authService.GetUserById(Int32.Parse(claims["sub"]));
        
         
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
@@ -45,6 +45,5 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
         {
             Jwt = dto.jwt
         });
-        return Task.CompletedTask;
     }
 }
