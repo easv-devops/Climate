@@ -33,10 +33,13 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
     {
         //checks if the user has permission before deleting
-        if (!_deviceService.IsItUsersDevice(dto.Id, StateService.GetClient(socket.ConnectionInfo.Id).User.Id))
+        if (!_deviceService.IsItUsersDevice(dto.Id, StateService.GetClient(socket.ConnectionInfo.Id).User!.Id))
         {
             throw new AccessViolationException("You do not have permission to delete this device");
         }
+
+        _deviceReadingsService.DeleteAllReadings(dto.Id);
+        _deviceService.DeleteDevice(dto.Id);
         //removes the device from stateService
         StateService.RemoveUserFromDevice(dto.Id, socket.ConnectionInfo.Id);
         
@@ -46,7 +49,6 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
             IsDeleted = _deviceService.DeleteDevice(dto.Id),
             Id = dto.Id
         });
-        
         return Task.CompletedTask;
     }
 }
