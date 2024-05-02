@@ -8,6 +8,7 @@ import {Device} from "../../../models/Entities";
 
 import {ClientWantsToDeleteDeviceDto} from "../../../models/ClientWantsToDeleteDevice";
 import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
+import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
 
 
 @Injectable({providedIn: 'root'})
@@ -47,14 +48,17 @@ export class DeviceService {
     //TODO
   }
 
-  getTempByDeviceId(id: number) {
+  getTemperatureByDeviceId(id: number) {
     var dto = new ClientWantsToGetTemperatureReadingsDto({
       DeviceId: id
     });
     this.ws.socketConnection.sendDto(dto)
   }
 
-  getTempObservable() {
-    return this.ws.tempReadings;
+  getHumidityByDeviceId(id: number) {
+    var dto = new ClientWantsToGetHumidityReadingsDto({
+      DeviceId: id
+    });
+    this.ws.socketConnection.sendDto(dto)
   }
 }

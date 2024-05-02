@@ -79,7 +79,7 @@ public class TemperatureRepository
         }
         catch (Exception e)
         {
-            throw new SqlTypeException("Failed to retrieve readings from device "+deviceId, e);
+            throw new SqlTypeException("Failed to retrieve temperature readings from device "+deviceId, e);
         }
     }
 }

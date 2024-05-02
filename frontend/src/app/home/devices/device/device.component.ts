@@ -15,22 +15,18 @@ import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
 export class DeviceComponent implements OnInit {
   idFromRoute: number | undefined;
   device?: Device;
-  tempReadings?: SensorDto[];
   private unsubscribe$ = new Subject<void>();
 
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               public ws: WebSocketConnectionService,
-
               private deviceService: DeviceService) {
   }
 
   ngOnInit() {
     this.getDeviceFromRoute();
     this.subscribeToDevice();
-    this.deviceService.getTempByDeviceId(this.idFromRoute!);
-    this.subscribeToTempReadings();
   }
 
   ngOnDestroy() {
@@ -71,15 +67,5 @@ export class DeviceComponent implements OnInit {
     } else {
       console.error('Room ID not found for the device');
     }
-  }
-
-  subscribeToTempReadings() {
-    this.deviceService.getTempObservable()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(r => {
-        if (r) {
-          this.tempReadings = r;
-        }
-      });
   }
 }

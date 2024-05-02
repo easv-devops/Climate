@@ -17,6 +17,8 @@ import {
 import {SensorDto} from "../../../models/Entities";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Observable, Subject, takeUntil} from "rxjs";
+import {DeviceService} from "../devices/device.service";
+import {ActivatedRoute} from "@angular/router";
 
 
 export type ChartOptions = {
@@ -41,25 +43,38 @@ export type ChartOptions = {
   styleUrls: ['./graph.component.scss'],
 })
 export class GraphComponent implements OnInit {
-  @Input() readings!: SensorDto[];
+  idFromRoute: number | undefined;
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   chartOptions: any = {};
   public activeOptionButton = "all";
   ws: WebSocketConnectionService;
+  deviceService: DeviceService;
+  activatedRoute: ActivatedRoute;
   private unsubscribe$ = new Subject<void>();
 
-  constructor(ws: WebSocketConnectionService) {
+  constructor(ws: WebSocketConnectionService,
+              deviceService: DeviceService,
+              activatedRoute: ActivatedRoute,) {
     this.ws = ws;
+    this.deviceService = deviceService;
+    this.activatedRoute = activatedRoute;
   }
 
   ngOnInit(): void {
+    this.getDeviceFromRoute();
     this.initChart();
-    this.subscribeToReading(this.ws.tempReadings); // Showing temperature as default, since that's what is working now
+    this.subscribeToReading(this.ws.temperatureReadings);
+    this.subscribeToReading(this.ws.humidityReadings);
+    this.updateGraph('temperature'); // Showing temperature as default, since that's what is working now
   }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  getDeviceFromRoute() {
+    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
 
   initChart(): void {
@@ -163,11 +178,12 @@ export class GraphComponent implements OnInit {
 
   updateGraph(option: string) {
     // Logic to update the graph based on the selected option
-    // For example:
     if (option === 'temperature') {
-      this.subscribeToReading(this.ws.tempReadings);
+      // Update graph for temperature
+      this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
     } else if (option === 'humidity') {
       // Update graph for humidity
+      this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
     } else if (option === 'pm') {
       // Update graph for PM
     }

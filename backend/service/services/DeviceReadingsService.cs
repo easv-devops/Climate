@@ -78,4 +78,12 @@ public class DeviceReadingsService
                 ("Only the owner of device #"+deviceId+" has access to this information");
         return _temperatureRepository.GetTemperatureReadingsFromDevice(deviceId);
     }
+    
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId, int userId)
+    {
+        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
+            throw new AuthenticationException
+                ("Only the owner of device #"+deviceId+" has access to this information");
+        return _humidityRepository.GetHumidityReadingsFromDevice(deviceId);
+    }
 }

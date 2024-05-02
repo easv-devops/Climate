@@ -18,6 +18,7 @@ import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
+import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -54,8 +55,11 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
-  private tempReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
-  tempReadings: Observable<SensorDto[] | undefined> = this.tempReadingsSubject.asObservable();
+  private temperatureReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
+  temperatureReadings: Observable<SensorDto[] | undefined> = this.temperatureReadingsSubject.asObservable();
+
+  private humidityReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
+  humidityReadings: Observable<SensorDto[] | undefined> = this.humidityReadingsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -164,7 +168,11 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
-    this.tempReadingsSubject.next(dto.TemperatureReadings);
+    this.temperatureReadingsSubject.next(dto.TemperatureReadings);
+  }
+
+  ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
+    this.humidityReadingsSubject.next(dto.HumidityReadings);
   }
 }
 
