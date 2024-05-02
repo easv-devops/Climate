@@ -16,7 +16,7 @@ import {
 //import {data} from "./series-data";
 import {SensorDto} from "../../../models/Entities";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {Subject, takeUntil} from "rxjs";
+import {Observable, Subject, takeUntil} from "rxjs";
 
 
 export type ChartOptions = {
@@ -48,14 +48,13 @@ export class GraphComponent implements OnInit {
   ws: WebSocketConnectionService;
   private unsubscribe$ = new Subject<void>();
 
-
   constructor(ws: WebSocketConnectionService) {
     this.ws = ws;
   }
 
   ngOnInit(): void {
     this.initChart();
-    this.subscribeToTemperature(); // Showing temperature as default, since that's what is working now
+    this.subscribeToReading(this.ws.tempReadings); // Showing temperature as default, since that's what is working now
   }
 
   ngOnDestroy() {
@@ -125,8 +124,11 @@ export class GraphComponent implements OnInit {
     };
   }
 
-  private subscribeToTemperature(): void {
-    this.ws.tempReadings
+  /* Method to subscribe to the selected reading */
+  /* Call by passing the observable as a parameter, like this: */
+  /* this.subscribeToReading(this.ws.tempReadings); */
+  private subscribeToReading(observable: Observable<SensorDto[] | undefined>): void {
+    observable
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data: SensorDto[] | undefined) => {
         if (data && data.length > 0) {
@@ -155,7 +157,7 @@ export class GraphComponent implements OnInit {
     // Logic to update the graph based on the selected option
     // For example:
     if (option === 'temperature') {
-      // Update graph for temperature
+      this.subscribeToReading(this.ws.tempReadings);
     } else if (option === 'humidity') {
       // Update graph for humidity
     } else if (option === 'pm') {
