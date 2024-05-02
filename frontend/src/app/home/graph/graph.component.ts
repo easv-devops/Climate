@@ -63,8 +63,7 @@ export class GraphComponent implements OnInit {
   ngOnInit(): void {
     this.getDeviceFromRoute();
     this.initChart();
-    this.subscribeToReading(this.ws.temperatureReadings);
-    this.subscribeToReading(this.ws.humidityReadings);
+    this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
     this.updateGraph('temperature'); // Showing temperature as default, since that's what is working now
   }
 
@@ -148,9 +147,9 @@ export class GraphComponent implements OnInit {
   }
 
   /* Method to subscribe to the selected reading */
-  /* Call by passing the observable as a parameter, like this: */
-  /* this.subscribeToReading(this.ws.tempReadings); */
-  private subscribeToReading(observable: Observable<SensorDto[] | undefined>): void {
+  /* Call by passing the observable and series name as parameters, like this: */
+  /* this.subscribeToReading(this.ws.temperatureReadings, '🌡 Temperature'); */
+  private subscribeToReading(observable: Observable<SensorDto[] | undefined>, seriesName: string): void {
     observable
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data: SensorDto[] | undefined) => {
@@ -160,15 +159,15 @@ export class GraphComponent implements OnInit {
             y: reading.Value
           }));
 
-          // Clear existing data before appending new data series
-          if (!this.chartOptions.series[0] || !this.chartOptions.series[0].data) {
-            this.chartOptions.series[0] = {data: []};
-          } else {
-            this.chartOptions.series[0].data = [];
+          // Find the existing series or create a new one
+          let series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+          if (!series) {
+            series = { name: seriesName, data: [] };
+            this.chartOptions.series.push(series);
           }
 
-          // Append the new data series to the existing series
-          this.chartOptions.series[0].data.push(...newDataSeries);
+          // Update the data for the series
+          series.data = [...newDataSeries];
 
           // Update time range option
           this.setTimeRange(this.activeOptionButton);
@@ -177,15 +176,29 @@ export class GraphComponent implements OnInit {
   }
 
   updateGraph(option: string) {
-    // Logic to update the graph based on the selected option
-    if (option === 'temperature') {
-      // Update graph for temperature
-      this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
-    } else if (option === 'humidity') {
-      // Update graph for humidity
-      this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-    } else if (option === 'pm') {
-      // Update graph for PM
+    // Clear existing chart data
+    this.chartOptions.series = [];
+
+    switch (option) {
+      case 'temperature':
+        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
+        this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
+        break;
+      case 'humidity':
+        this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
+        this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
+        break;
+      case 'pm':
+        console.log('pm selected');
+        break;
+      case 'all':
+        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
+        this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
+        this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
+        this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
+        break;
+      default:
+        console.error('Invalid option:', option);
     }
   }
 }
