@@ -11,5 +11,5 @@ export class DeviceInRoom {
 
 export class SensorDto {
   Value!: number;
-  TimeStamp!: Date;
+  TimeStamp!: Date | number;
 }

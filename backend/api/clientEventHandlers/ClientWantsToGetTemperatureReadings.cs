@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -14,6 +15,8 @@ public class ClientWantsToGetTemperatureReadingsDto : BaseDto
     public int DeviceId { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsToGetTemperatureReadingsDto>
 {
     private readonly DeviceReadingsService _deviceReadingsService;

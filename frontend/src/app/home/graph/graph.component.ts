@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {
   ApexAnnotations,
   ApexAxisChartSeries,
@@ -13,7 +13,9 @@ import {
   ApexYAxis,
   ChartComponent
 } from "ng-apexcharts";
-import {data} from "./series-data";
+//import {data} from "./series-data";
+import {SensorDto} from "../../../models/Entities";
+
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -36,7 +38,8 @@ export type ChartOptions = {
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.scss'],
 })
-export class GraphComponent {
+export class GraphComponent implements OnInit{
+  @Input() readings!: SensorDto[];
   @ViewChild("chart", { static: false }) chart!: ChartComponent;
   chartOptions: any = {};
   public activeOptionButton = "all";
@@ -81,40 +84,12 @@ export class GraphComponent {
     this.chartOptions = {
       series: [
         {
-          data: data
+          data: []
         }
       ],
       chart: {
         type: "area",
         height: 350
-      },
-      annotations: {
-        yaxis: [
-          {
-            y: 30,
-            borderColor: "#999",
-            label: {
-              text: "Support",
-              style: {
-                color: "#fff",
-                background: "#00E396"
-              }
-            }
-          }
-        ],
-        xaxis: [
-          {
-            x: new Date("14 Nov 2012").getTime(),
-            borderColor: "#999",
-            label: {
-              text: "Rally",
-              style: {
-                color: "#fff",
-                background: "#775DD0"
-              }
-            }
-          }
-        ]
       },
       dataLabels: {
         enabled: false
@@ -160,5 +135,38 @@ export class GraphComponent {
     } else if (option === 'pm') {
       // Update graph for PM
     }
+  }
+
+  // TODO: logic should not be placed here, testing if this is the issue
+  private convertTimestamp() {
+    // Make sure readings is initialized and is an array
+    if (Array.isArray(this.readings)) {
+      for (const r of this.readings) {
+        r.TimeStamp = new Date(r.TimeStamp).getTime();
+      }
+    }
+  }
+
+  private updateChartData() {
+    // Assuming SensorDto has properties for x and y axes data
+    if (Array.isArray(this.readings)) {
+      // Map readings data to chart data format for each series
+      this.chartOptions.series = this.readings.map((reading, index) => ({
+        data: [
+          {
+            x: reading.TimeStamp, // Assuming TimeStamp is your x-axis data
+            y: reading.Value // Replace Value with actual property name for y-axis
+          }
+        ]
+      }));
+    }
+
+    this.updateOptions(null);
+  }
+
+
+  ngOnInit(): void {
+    this.convertTimestamp();
+    this.updateChartData();
   }
 }
