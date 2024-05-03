@@ -1,65 +1,6 @@
 services:
-  testdb:
-    image: mariadb:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: mypassword
-      MYSQL_DATABASE: mydb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-    ports:
-      - "3307:3306"
-        
   climate-frontend:
-    build: 
-      context: .
-      dockerfile: frontend/Dockerfile
     image: midr/climate-frontend:prod
-    ports:
-      - "5001:80"
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-    tty: true
-    depends_on:
-      - climate-backend
-  
+
   climate-backend:
     image: midr/climate-backend:prod
-    ports:
-      - "5002:8080"
-    depends_on:
-      - mariadb
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-    environment:
-      dbconn: ${dbconn}
-      JwtKey: ${JwtKey}
-
-  mariadb:
-    image: mariadb:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DBPasswordSecret}
-      MYSQL_DATABASE: ${DBNameSecret}
-      MYSQL_USER: ${DBUserSecret}
-      MYSQL_PASSWORD: ${DBPasswordSecret}
-    ports:
-      - "3306:3306"
-    volumes:
-      - mariadb:/var/lib/mysql
-
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --debug --http-api-update
-    environment:
-      - WATCHTOWER_HTTP_API_TOKEN=mytoken
-      - WATCHTOWER_LABEL_ENABLE=true
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
-    ports:
-      - 8080:8080
-
-volumes:
-  mariadb:
