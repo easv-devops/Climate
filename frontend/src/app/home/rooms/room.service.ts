@@ -1,7 +1,11 @@
 import {inject, Inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsAllRooms, ClientWantsSpecificRoom, ClientWantsToCreateRoom} from "../../../models/clientRequests";
-import {Room} from "../../../models/room";
+import {
+  ClientWantsAllRooms,
+  ClientWantsSpecificRoom,
+  ClientWantsToCreateRoom,
+  ClientWantsToDeleteRoom
+} from "../../../models/clientRequests";
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +40,14 @@ export class RoomService {
     this.ws.socketConnection.sendDto(
       new ClientWantsSpecificRoom({
         RoomId: idFromRoute
+      })
+    )
+  }
+
+  deleteRoom(Id: number) {
+    this.ws.socketConnection.sendDto(
+      new ClientWantsToDeleteRoom({
+        RoomId: Id
       })
     )
   }

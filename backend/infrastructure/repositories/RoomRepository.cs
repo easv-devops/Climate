@@ -41,8 +41,8 @@ public class RoomsRepository
             string query = @"
                 DELETE FROM climate.Room WHERE Id = @id AND UserId = @UserId;
                 ";
-            Room rooms = connection.ExecuteScalar<Room>(query, new { id = room.Id, UserId = room.UserId });
-
+            connection.Execute(query, new { id = room.Id, UserId = room.UserId });
+            Console.WriteLine(" deleted");
             return true;
         }
         catch (Exception e)

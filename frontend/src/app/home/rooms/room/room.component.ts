@@ -5,6 +5,8 @@ import {Subject, takeUntil} from "rxjs";
 import {DeviceInRoom} from "../../../../models/Entities";
 import {DeviceService} from "../../devices/device.service";
 import {RoomService} from "../room.service";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
+import {Room} from "../../../../models/room";
 
 @Component({
   selector: 'app-room',
@@ -12,7 +14,7 @@ import {RoomService} from "../room.service";
   styleUrls: ['./../rooms.component.scss'],
 })
 export class RoomComponent  implements OnInit {
-  roomId: number | undefined;
+  specificRoom!: Room;
   devices: Device[] = [{deviceId: 1},{deviceId: 2},{deviceId: 3}];
   deviceName?: string;
   roomName?: string;
@@ -26,9 +28,11 @@ export class RoomComponent  implements OnInit {
       },
     },
     {
-      text: 'OK',
+      text: 'Delete',
       role: 'confirm',
       handler: () => {
+        console.log(this.specificRoom.Id)
+        this.roomService.deleteRoom(this.specificRoom?.Id!)
         console.log('Alert confirmed');
       },
     },
@@ -39,12 +43,14 @@ export class RoomComponent  implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private deviceService: DeviceService,
-              private roomService: RoomService) { }
+              private roomService: RoomService,
+              private ws: WebSocketConnectionService) { }
 
   ngOnInit() {
     this.getRoomFromRoute()
     this.getDevicesFromRoute();
     this.subscribeToRoomDevices();
+    this.subscribeToRooms()
   }
 
   ngOnDestroy() {
@@ -70,7 +76,17 @@ export class RoomComponent  implements OnInit {
         }
       });
   }
-
+  subscribeToRooms() {
+    this.ws.specificRoom
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(theSpecificRoom => {
+        if (!theSpecificRoom)
+          throw new Error();
+        console.log(theSpecificRoom.Id)
+        const room = theSpecificRoom
+        this.specificRoom = room!;
+      });
+  }
 
   onWillDismiss($event: any) {
   }

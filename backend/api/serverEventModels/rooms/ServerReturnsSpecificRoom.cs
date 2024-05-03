@@ -5,5 +5,5 @@ namespace api.serverEventModels.rooms;
 
 public class ServerReturnsSpecificRoom : BaseDto
 {
-    Room specificRoom { get; set; }
+    public Room specificRoom { get; set; }
 }

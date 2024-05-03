@@ -1,5 +1,6 @@
 using api.helpers;
 using api.serverEventModels;
+using api.serverEventModels.rooms;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
@@ -23,8 +24,7 @@ public class ClientWantsSpecificRoom : BaseEventHandler<ClientWantsSpecificRoomD
     }
 
     public override Task Handle(ClientWantsSpecificRoomDto dto, IWebSocketConnection socket)
-    {
-
+    {                                                                                                                                                                                                                                                                                                                                                                                                  
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
 
         Room room = new Room
@@ -34,11 +34,11 @@ public class ClientWantsSpecificRoom : BaseEventHandler<ClientWantsSpecificRoomD
         };
 
         Room specificRoom = _roomService.getSpecificRoom(room);
-        List<Room> allrooms = _roomService.GetAllRooms(userId);
+
         socket.SendDto(
-            new ServerReturnsAllRooms()
+            new ServerReturnsSpecificRoom()
             {
-                rooms = allrooms
+                specificRoom = specificRoom
             }
         );
         return Task.CompletedTask;

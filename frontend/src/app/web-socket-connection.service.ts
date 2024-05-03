@@ -9,7 +9,7 @@ import {
   ServerReturnsAllRoomsDto,
   ServerSendsErrorMessageToClient,
   ServerRegisterUserDto,
-  ServerSendsDeviceDeletionStatusDto,
+  ServerSendsDeviceDeletionStatusDto, ServerReturnsSpecificRoomDto,
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
@@ -31,6 +31,9 @@ export class WebSocketConnectionService {
 
   private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
   allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
+
+  private specificRoomSubject = new BehaviorSubject<Room | undefined>(undefined);
+  specificRoom : Observable<Room | undefined> = this.specificRoomSubject.asObservable();
 
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
   AllRooms: number[] = [];
@@ -96,6 +99,14 @@ export class WebSocketConnectionService {
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
+  }
+
+  ServerReturnsSpecificRoom(dto: ServerReturnsSpecificRoomDto){
+    this.specificRoom.pipe(take(1)).subscribe(theSpecificRoom =>{
+      //specific room is updated
+      this.specificRoomSubject.next(theSpecificRoom)
+    })
+
   }
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto) {

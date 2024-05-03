@@ -28,9 +28,9 @@ public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
         List<Room> allrooms = _roomService.GetAllRooms(userId);
         socket.SendDto(
-            new ServerReturnsSpecificRoom()
+            new ServerReturnsAllRooms()
             {
-                
+                rooms = allrooms
             }
         );
 

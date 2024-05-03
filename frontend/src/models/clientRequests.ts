@@ -20,6 +20,10 @@ export class ClientWantsSpecificRoom extends BaseDto<ClientWantsSpecificRoom>{
   RoomId!: number;
 }
 
+export class ClientWantsToDeleteRoom extends BaseDto<ClientWantsToDeleteRoom>{
+  RoomId!: number;
+}
+
 export class ClientWantsToAuthenticate extends BaseDto<ClientWantsToAuthenticate> {
   Email?: string;
   Password?: string;

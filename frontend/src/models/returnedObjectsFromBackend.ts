@@ -12,6 +12,10 @@ export class User {
   email!: string;
 }
 
+export class ServerReturnsSpecificRoomDto{
+  specificRoom!: Room
+}
+
 export class ServerRegisterUserDto {
   Jwt!: string;
 }
