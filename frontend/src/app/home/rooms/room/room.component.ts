@@ -4,6 +4,7 @@ import {Device} from "../../../../models/device";
 import {Subject, takeUntil} from "rxjs";
 import {DeviceInRoom} from "../../../../models/Entities";
 import {DeviceService} from "../../devices/device.service";
+import {RoomService} from "../room.service";
 
 @Component({
   selector: 'app-room',
@@ -37,9 +38,11 @@ export class RoomComponent  implements OnInit {
   roomDevices?: DeviceInRoom[];
 
   constructor(private activatedRoute: ActivatedRoute,
-              private deviceService: DeviceService) { }
+              private deviceService: DeviceService,
+              private roomService: RoomService) { }
 
   ngOnInit() {
+    this.getRoomFromRoute()
     this.getDevicesFromRoute();
     this.subscribeToRoomDevices();
   }
@@ -47,6 +50,10 @@ export class RoomComponent  implements OnInit {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+  getRoomFromRoute() {
+    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
+    this.roomService.getRoomById(this.idFromRoute)
   }
 
   getDevicesFromRoute() {

@@ -28,7 +28,9 @@ export class WebSocketConnectionService {
   //Different objects used in the application
   //todo maybe not "AllDevices" but just "devices". We should lazy load with longer json elements.
   private _allRoomsRecord!: RecordHolder<Room>;
-  AllDevicesRecord!: RecordHolder<Device>
+
+  private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
+  allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
 
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
   AllRooms: number[] = [];
@@ -97,9 +99,18 @@ export class WebSocketConnectionService {
   }
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto) {
-    for (var room of dto.rooms!) {
-      this._allRoomsRecord!.addRecord(room.roomId, room)
-    }
+    this.allRooms.pipe(take(1)).subscribe(allRoomsRecord => {
+      if (!allRoomsRecord) {
+        allRoomsRecord = {};
+      }
+      dto.rooms!.forEach(room => {
+        // Add or update in record
+        allRoomsRecord![room.Id] = room;
+      });
+
+      // Opdater allDevicesSubject med den opdaterede record
+      this.allRoomsSubject.next(allRoomsRecord);
+    });
   }
 
   ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto) {

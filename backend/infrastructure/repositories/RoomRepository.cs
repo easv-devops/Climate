@@ -1,3 +1,4 @@
+using System.Data.SqlTypes;
 using Dapper;
 using infrastructure.Models;
 using MySqlConnector;
@@ -22,13 +23,12 @@ public class RoomsRepository
             string query = @"
                     SELECT * From climate.Room WHERE UserId = @UserId;
                 ";
-            List<Room> rooms = connection.Query<Room>(query, new {UserId}).ToList();
+            List<Room> rooms = connection.Query<Room>(query, new { UserId }).ToList();
             return rooms;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            throw new SqlTypeException("Failed to get all rooms", e);
         }
     }
 
@@ -47,8 +47,7 @@ public class RoomsRepository
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            throw new SqlTypeException("Failed to delete the specific room", e);
         }
     }
 
@@ -57,23 +56,21 @@ public class RoomsRepository
         using var connection = new MySqlConnection(_connectionString);
         try
         {
-            Console.WriteLine("room: " + room.RoomName);
             connection.Open();
             string query = @"
                 INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
                 RETURNING *;
                 ";
-            Room rooms = connection.QueryFirstOrDefault<Room>(query, new { UserId = room.UserId, RoomName = room.RoomName });
-
+            Room rooms =
+                connection.QueryFirstOrDefault<Room>(query, new { UserId = room.UserId, RoomName = room.RoomName });
             return rooms;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            throw new SqlTypeException("Failed to create a room", e);
         }
     }
-    
+
     public Room EditRoom(Room room)
     {
         using var connection = new MySqlConnection(_connectionString);
@@ -84,14 +81,33 @@ public class RoomsRepository
                 UPDATE climate.Room SET RoomName = @roomName WHERE Id = @id AND UserId = @UserId
                 RETURNING *;
                 ";
-            Room rooms = connection.ExecuteScalar<Room>(query, new { roomName = room.RoomName, id = room.Id, UserId = room.UserId });
+            Room rooms = connection.ExecuteScalar<Room>(query,
+                new { roomName = room.RoomName, id = room.Id, UserId = room.UserId });
 
             return rooms;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            throw new SqlTypeException("Failed to update the given room", e);
+        }
+    }
+
+    public Room getRoomById(Room room)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+                SELECT * FROM climate.Room WHERE Id = @id AND UserId = @UserId
+                ";
+            
+            Room specificRoom = connection.QueryFirstOrDefault<Room>(query, new { id = room.Id, UserId = room.UserId });
+            return specificRoom;
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get the specific room", e);
         }
     }
 }

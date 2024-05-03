@@ -32,4 +32,9 @@ public class RoomService
     {
         return _roomsRepository.EditRoom(room);
     }
+
+    public Room getSpecificRoom(Room room)
+    {
+        return _roomsRepository.getRoomById(room);
+    }
 }

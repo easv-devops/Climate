@@ -1,3 +1,6 @@
+using api.helpers;
+using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -8,7 +11,6 @@ namespace api.clientEventHandlers;
 public class ClientWantsToDeleteRoomDto : BaseDto
 {
     public int RoomId { get; set; }
-    public int UserId { get; set; }
 }
 
 public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomDto>
@@ -22,12 +24,21 @@ public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomD
     
     public override Task Handle(ClientWantsToDeleteRoomDto dto, IWebSocketConnection socket)
     {
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
+
         Room room = new Room
         {
             Id = dto.RoomId,
-            UserId = dto.UserId
+            UserId = userId
         };
         _roomService.DeleteRoom(room);
+        List<Room> allrooms = _roomService.GetAllRooms(userId);
+        socket.SendDto(
+            new ServerReturnsAllRooms()
+            {
+                rooms = allrooms
+            }
+        );
         return Task.CompletedTask;
     }
 }

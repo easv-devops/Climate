@@ -49,7 +49,7 @@ export class LoginComponent {
   }
 
   submitTestUser() {
-    this.authService.loginUser("user@mail.com", "12345678");
+    this.authService.loginUser("user@example.com", "12345678");
   }
 
   submit() {

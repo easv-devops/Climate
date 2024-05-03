@@ -1,3 +1,6 @@
+using api.helpers;
+using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -7,7 +10,6 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToCreateRoomDto : BaseDto
 {
-    public int UserId { get; set; }
     public string RoomName { get; set; }
 }
 
@@ -24,14 +26,23 @@ public class ClientWantsToCreateRoom : BaseEventHandler<ClientWantsToCreateRoomD
 
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
+
         Room room = new Room
         {
-            UserId = dto.UserId,
+            UserId = userId,
             RoomName = dto.RoomName
         };
-        Console.WriteLine("userId: " + dto.UserId + " roomname: " + dto.RoomName);
 
         _roomService.CreateRoom(room);
+        List<Room> allrooms = _roomService.GetAllRooms(userId);
+        socket.SendDto(
+            new ServerReturnsAllRooms()
+            {
+                rooms = allrooms
+            }
+        );
+        
         return Task.CompletedTask;
     }
 }

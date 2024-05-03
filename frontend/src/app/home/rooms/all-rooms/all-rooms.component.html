@@ -2,7 +2,7 @@
   <div style="width: 100vw; height: 30vh; margin: 20px;">
     <p>Space for the cool card</p>
   </div>
-  <app-room-card *ngFor="let roomname of rooms.reverse()" [room]="roomname"></app-room-card>
+  <app-room-card *ngFor="let roomname of allRooms.reverse()" [room]="roomname"></app-room-card>
 </div>
 
 <ion-fab id="create_room" slot="fixed" vertical="bottom" horizontal="end">
