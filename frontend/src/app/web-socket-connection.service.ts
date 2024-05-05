@@ -107,7 +107,6 @@ export class WebSocketConnectionService {
       //specific room is updated
       this.specificRoomSubject.next(dto.specificRoom)
     })
-
   }
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto) {

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Device} from "../../../../models/device";
 import {Subject, takeUntil} from "rxjs";
@@ -7,6 +7,8 @@ import {DeviceService} from "../../devices/device.service";
 import {RoomService} from "../room.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Room} from "../../../../models/room";
+import {OverlayEventDetail} from "@ionic/core/components";
+import {IonModal} from "@ionic/angular";
 
 @Component({
   selector: 'app-room',
@@ -31,7 +33,6 @@ export class RoomComponent  implements OnInit {
       text: 'Delete',
       role: 'confirm',
       handler: () => {
-        console.log(this.specificRoom.Id)
         this.roomService.deleteRoom(this.specificRoom.Id!)
         console.log('Alert confirmed');
       },
@@ -82,17 +83,22 @@ export class RoomComponent  implements OnInit {
       .subscribe(theSpecificRoom => {
         if (!theSpecificRoom)
           throw new Error();
-        console.log(theSpecificRoom.Id)
-        const room = theSpecificRoom
-        this.specificRoom = room!;
+        this.specificRoom = theSpecificRoom;
       });
   }
+  @ViewChild(IonModal) modal!: IonModal;
 
   onWillDismiss($event: any) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+
+    }
   }
   confirm(){
+    this.modal.dismiss(null, 'confirm');
+
   }
   cancel() {
-
+    this.modal.dismiss(null, 'cancel');
   }
 }
