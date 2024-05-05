@@ -34,6 +34,7 @@ public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsT
         
         socket.SendDto(new ServerSendsTemperatureReadings
         {
+            DeviceId = dto.DeviceId,
             TemperatureReadings = readings
         });
 

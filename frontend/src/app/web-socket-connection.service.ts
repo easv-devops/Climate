@@ -57,8 +57,8 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
-  private temperatureReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
-  temperatureReadings: Observable<SensorDto[] | undefined> = this.temperatureReadingsSubject.asObservable();
+  private temperatureReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  temperatureReadings: Observable<Record<number, SensorDto[]> | undefined> = this.temperatureReadingsSubject.asObservable();
 
   private humidityReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
   humidityReadings: Observable<SensorDto[] | undefined> = this.humidityReadingsSubject.asObservable();
@@ -176,7 +176,17 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
-    this.temperatureReadingsSubject.next(dto.TemperatureReadings);
+    this.temperatureReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
+
+      if (!temperatureReadingsRecord) {
+        temperatureReadingsRecord = {};
+      }
+
+      temperatureReadingsRecord![dto.DeviceId] = dto.TemperatureReadings;
+
+      // Opdater temperatureReadingsSubject med den opdaterede record
+      this.temperatureReadingsSubject.next(temperatureReadingsRecord);
+    });
   }
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {

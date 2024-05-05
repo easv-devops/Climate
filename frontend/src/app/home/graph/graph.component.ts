@@ -51,6 +51,7 @@ export class GraphComponent implements OnInit {
   deviceService: DeviceService;
   activatedRoute: ActivatedRoute;
   private unsubscribe$ = new Subject<void>();
+  temperatureReadings: SensorDto[] = [];
 
   constructor(ws: WebSocketConnectionService,
               deviceService: DeviceService,
@@ -63,7 +64,18 @@ export class GraphComponent implements OnInit {
   ngOnInit(): void {
     this.getDeviceFromRoute();
     this.initChart();
-    this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
+
+    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
+    this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
+    this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
+    this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+
+    this.subscribeToTemperature();
+    //this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
+    this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
+    this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
+    this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
+
     this.updateGraph('temperature'); // Showing temperature as default, since that's what is working now
   }
 
@@ -175,34 +187,58 @@ export class GraphComponent implements OnInit {
       });
   }
 
+  subscribeToTemperature() {
+    this.ws.temperatureReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(tempReadings => {
+        if (tempReadings) {
+          this.temperatureReadings = tempReadings[this.idFromRoute!]
+        }
+
+        if (this.temperatureReadings.length > 0) {
+          const newDataSeries = this.temperatureReadings.map((reading: SensorDto) => ({
+            x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
+            y: reading.Value
+          }));
+
+          // Find the existing series or create a new one
+          let series = this.chartOptions.series.find((s: any) => s.name === 'Temperature');
+          if (!series) {
+            series = { name: 'Temperature', data: [] };
+            this.chartOptions.series.push(series);
+          }
+
+          // Update the data for the series
+          series.data = [...newDataSeries];
+
+          // Update time range option
+          this.setTimeRange(this.activeOptionButton);
+        }
+      });
+  }
+
   updateGraph(option: string) {
-    // Clear existing chart data
+    // Clear existing chart data //TODO & subscriptions
     this.chartOptions.series = [];
+    //TODO this.ngOnDestroy();
 
     switch (option) {
       case 'temperature':
-        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
-        this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
+        this.subscribeToTemperature();
+        //this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
         break;
       case 'humidity':
         this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-        this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
         break;
       case 'pm':
         this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
         this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
-        this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
-        this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
         break;
       case 'all':
         this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
         this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-        this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
-        this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
         this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
         this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
-        this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
-        this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
         break;
       default:
         console.error('Invalid option:', option);
