@@ -51,7 +51,6 @@ export class GraphComponent implements OnInit {
   deviceService: DeviceService;
   activatedRoute: ActivatedRoute;
   private unsubscribe$ = new Subject<void>();
-  temperatureReadings: SensorDto[] = [];
 
   constructor(ws: WebSocketConnectionService,
               deviceService: DeviceService,
@@ -65,18 +64,13 @@ export class GraphComponent implements OnInit {
     this.getDeviceFromRoute();
     this.initChart();
 
+    // Request all the readings data
     this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
     this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
     this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
     this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
 
-    this.subscribeToTemperature();
-    //this.subscribeToReading(this.ws.temperatureReadings, 'Temperature');
-    this.subscribeToReading(this.ws.humidityReadings, 'Humidity');
-    this.subscribeToReading(this.ws.pm25Readings, 'PM 2.5');
-    this.subscribeToReading(this.ws.pm100Readings, 'PM 10');
-
-    this.updateGraph('temperature'); // Showing temperature as default, since that's what is working now
+    this.updateGraph('temperature'); // Showing temperature as default
   }
 
   ngOnDestroy() {
@@ -160,85 +154,54 @@ export class GraphComponent implements OnInit {
 
   /* Method to subscribe to the selected reading */
   /* Call by passing the observable and series name as parameters, like this: */
-  /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature'); */
-  private subscribeToReading(observable: Observable<SensorDto[] | undefined>, seriesName: string): void {
+  /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature') */
+  subscribeToReadings(observable: Observable<Record<number, SensorDto[]> | undefined>, seriesName: string) {
     observable
       .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((data: SensorDto[] | undefined) => {
-        if (data && data.length > 0) {
-          const newDataSeries = data.map((reading: SensorDto) => ({
-            x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
-            y: reading.Value
-          }));
-
-          // Find the existing series or create a new one
+      .subscribe(readings => {
+        if (readings) {
+          // Find series to update
           let series = this.chartOptions.series.find((s: any) => s.name === seriesName);
-          if (!series) {
-            series = { name: seriesName, data: [] };
+
+          const data = readings[this.idFromRoute!];
+          if (data && data.length > 0) {
+            const newSeries = data.map((reading: SensorDto) => ({
+              x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
+              y: reading.Value
+            }));
+
+            // Update the series with new data
+            series = { name: seriesName, data: newSeries };
             this.chartOptions.series.push(series);
+
+            // Update time range option
+            this.setTimeRange(this.activeOptionButton);
           }
-
-          // Update the data for the series
-          series.data = [...newDataSeries];
-
-          // Update time range option
-          this.setTimeRange(this.activeOptionButton);
-        }
-      });
-  }
-
-  subscribeToTemperature() {
-    this.ws.temperatureReadings
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(tempReadings => {
-        if (tempReadings) {
-          this.temperatureReadings = tempReadings[this.idFromRoute!]
-        }
-
-        if (this.temperatureReadings.length > 0) {
-          const newDataSeries = this.temperatureReadings.map((reading: SensorDto) => ({
-            x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
-            y: reading.Value
-          }));
-
-          // Find the existing series or create a new one
-          let series = this.chartOptions.series.find((s: any) => s.name === 'Temperature');
-          if (!series) {
-            series = { name: 'Temperature', data: [] };
-            this.chartOptions.series.push(series);
-          }
-
-          // Update the data for the series
-          series.data = [...newDataSeries];
-
-          // Update time range option
-          this.setTimeRange(this.activeOptionButton);
         }
       });
   }
 
   updateGraph(option: string) {
-    // Clear existing chart data //TODO & subscriptions
+    // Clear existing chart data & subscriptions
     this.chartOptions.series = [];
-    //TODO this.ngOnDestroy();
+    this.ngOnDestroy();
 
     switch (option) {
       case 'temperature':
-        this.subscribeToTemperature();
-        //this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
+        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
         break;
       case 'humidity':
-        this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
+        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
         break;
       case 'pm':
-        this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
-        this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
+        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
         break;
       case 'all':
-        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
-        this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-        this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
-        this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
+        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
+        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
+        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
         break;
       default:
         console.error('Invalid option:', option);

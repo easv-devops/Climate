@@ -34,6 +34,7 @@ public class ClientWantsToGetPm25Readings : BaseEventHandler<ClientWantsToGetPm2
         
         socket.SendDto(new ServerSendsPm25Readings()
         {
+            DeviceId = dto.DeviceId,
             Pm25Readings = readings
         });
         

@@ -60,14 +60,14 @@ export class WebSocketConnectionService {
   private temperatureReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   temperatureReadings: Observable<Record<number, SensorDto[]> | undefined> = this.temperatureReadingsSubject.asObservable();
 
-  private humidityReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
-  humidityReadings: Observable<SensorDto[] | undefined> = this.humidityReadingsSubject.asObservable();
+  private humidityReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  humidityReadings: Observable<Record<number, SensorDto[]> | undefined> = this.humidityReadingsSubject.asObservable();
 
-  private pm25ReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
-  pm25Readings: Observable<SensorDto[] | undefined> = this.pm25ReadingsSubject.asObservable();
+  private pm25ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm25Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm25ReadingsSubject.asObservable();
 
-  private pm100ReadingsSubject = new BehaviorSubject<SensorDto[] | undefined>(undefined);
-  pm100Readings: Observable<SensorDto[] | undefined> = this.pm100ReadingsSubject.asObservable();
+  private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -190,15 +190,45 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
-    this.humidityReadingsSubject.next(dto.HumidityReadings);
+    this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
+
+      if (!humidityReadingsRecord) {
+        humidityReadingsRecord = {};
+      }
+
+      humidityReadingsRecord![dto.DeviceId] = dto.HumidityReadings;
+
+      // Opdater humidityReadingsSubject med den opdaterede record
+      this.humidityReadingsSubject.next(humidityReadingsRecord);
+    });
   }
 
   ServerSendsPm25Readings(dto: ServerSendsPm25ReadingsDto) {
-    this.pm25ReadingsSubject.next(dto.Pm25Readings);
+    this.pm25Readings.pipe(take(1)).subscribe(pm25ReadingsRecord => {
+
+      if (!pm25ReadingsRecord) {
+        pm25ReadingsRecord = {};
+      }
+
+      pm25ReadingsRecord![dto.DeviceId] = dto.Pm25Readings;
+
+      // Opdater pm25ReadingsSubject med den opdaterede record
+      this.pm25ReadingsSubject.next(pm25ReadingsRecord);
+    });
   }
 
   ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
-    this.pm100ReadingsSubject.next(dto.Pm100Readings);
+    this.pm100Readings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
+
+      if (!pm100ReadingsRecord) {
+        pm100ReadingsRecord = {};
+      }
+
+      pm100ReadingsRecord![dto.DeviceId] = dto.Pm100Readings;
+
+      // Opdater pm100ReadingsSubject med den opdaterede record
+      this.pm100ReadingsSubject.next(pm100ReadingsRecord);
+    });
   }
 }
 
