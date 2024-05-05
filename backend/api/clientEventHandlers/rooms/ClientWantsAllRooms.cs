@@ -9,9 +9,7 @@ using service.services;
 
 namespace api.clientEventHandlers;
 
-public class ClientWantsAllRoomsDto : BaseDto
-{
-}
+public class ClientWantsAllRoomsDto : BaseDto { }
 
 public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
 {

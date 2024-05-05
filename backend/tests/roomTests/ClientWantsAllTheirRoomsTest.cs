@@ -32,7 +32,6 @@ public class ClientWantsAllTheirRoomsTest
                 //Act
                 await ws.DoAndAssert(new ClientWantsAllRoomsDto()
                     {
-                        UserId = userId
                     },
 
                     //Assert

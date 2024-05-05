@@ -42,7 +42,6 @@ public class RoomsRepository
                 DELETE FROM climate.Room WHERE Id = @id AND UserId = @UserId;
                 ";
             connection.Execute(query, new { id = room.Id, UserId = room.UserId });
-            Console.WriteLine(" deleted");
             return true;
         }
         catch (Exception e)

@@ -20,6 +20,7 @@ import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomI
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
+import {image} from "ionicons/icons";
 
 
 @Injectable({providedIn: 'root'})
@@ -104,7 +105,7 @@ export class WebSocketConnectionService {
   ServerReturnsSpecificRoom(dto: ServerReturnsSpecificRoomDto){
     this.specificRoom.pipe(take(1)).subscribe(theSpecificRoom =>{
       //specific room is updated
-      this.specificRoomSubject.next(theSpecificRoom)
+      this.specificRoomSubject.next(dto.specificRoom)
     })
 
   }

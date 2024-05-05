@@ -32,7 +32,7 @@ export class RoomComponent  implements OnInit {
       role: 'confirm',
       handler: () => {
         console.log(this.specificRoom.Id)
-        this.roomService.deleteRoom(this.specificRoom?.Id!)
+        this.roomService.deleteRoom(this.specificRoom.Id!)
         console.log('Alert confirmed');
       },
     },

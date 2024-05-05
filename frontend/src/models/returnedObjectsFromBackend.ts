@@ -13,7 +13,7 @@ export class User {
 }
 
 export class ServerReturnsSpecificRoomDto{
-  specificRoom!: Room
+  specificRoom!: Room;
 }
 
 export class ServerRegisterUserDto {
