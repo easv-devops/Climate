@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {Device} from "../../../../models/device";
 import {Subject, takeUntil} from "rxjs";
 import {DeviceInRoom} from "../../../../models/Entities";
@@ -15,9 +15,9 @@ import {IonModal} from "@ionic/angular";
   templateUrl: './room.component.html',
   styleUrls: ['./../rooms.component.scss'],
 })
-export class RoomComponent  implements OnInit {
+export class RoomComponent implements OnInit {
   specificRoom!: Room;
-  devices: Device[] = [{deviceId: 1},{deviceId: 2},{deviceId: 3}];
+  devices: Device[] = [{deviceId: 1}, {deviceId: 2}, {deviceId: 3}];
   deviceName?: string;
   roomName?: string;
 
@@ -34,7 +34,9 @@ export class RoomComponent  implements OnInit {
       role: 'confirm',
       handler: () => {
         this.roomService.deleteRoom(this.specificRoom.Id!)
+        this.router.navigate(['/rooms/all']);
         console.log('Alert confirmed');
+        this.modal.dismiss(null, 'cancel');
       },
     },
   ];
@@ -45,7 +47,9 @@ export class RoomComponent  implements OnInit {
   constructor(private activatedRoute: ActivatedRoute,
               private deviceService: DeviceService,
               private roomService: RoomService,
-              private ws: WebSocketConnectionService) { }
+              private ws: WebSocketConnectionService,
+              private router: Router) {
+  }
 
   ngOnInit() {
     this.getRoomFromRoute()
@@ -58,6 +62,7 @@ export class RoomComponent  implements OnInit {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
+
   getRoomFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
     this.roomService.getRoomById(this.idFromRoute)
@@ -77,27 +82,33 @@ export class RoomComponent  implements OnInit {
         }
       });
   }
+
   subscribeToRooms() {
     this.ws.specificRoom
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(theSpecificRoom => {
-        if (!theSpecificRoom)
+        if (!theSpecificRoom){
           throw new Error();
+        }
         this.specificRoom = theSpecificRoom;
       });
   }
+
   @ViewChild(IonModal) modal!: IonModal;
 
   onWillDismiss($event: any) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirm') {
-
+      console.log("Changing the name from " + this.specificRoom.RoomName + " to " + this.roomName)
+      this.roomService.editRoom(this.roomName!, this.specificRoom.Id);
     }
   }
-  confirm(){
+
+  confirm() {
     this.modal.dismiss(null, 'confirm');
 
   }
+
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -10,9 +12,13 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToDeleteRoomDto : BaseDto
 {
+    
+    [Required(ErrorMessage = "RoomId is required")]
     public int RoomId { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToDeleteRoom : BaseEventHandler<ClientWantsToDeleteRoomDto>
 {
     private readonly RoomService _roomService;

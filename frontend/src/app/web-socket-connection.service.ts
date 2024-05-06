@@ -105,6 +105,7 @@ export class WebSocketConnectionService {
   ServerReturnsSpecificRoom(dto: ServerReturnsSpecificRoomDto){
     this.specificRoom.pipe(take(1)).subscribe(theSpecificRoom =>{
       //specific room is updated
+      console.log(dto.specificRoom!.RoomName + dto.specificRoom!.Id)
       this.specificRoomSubject.next(dto.specificRoom)
     })
   }

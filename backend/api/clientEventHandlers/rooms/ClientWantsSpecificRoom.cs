@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.serverEventModels.rooms;
@@ -11,8 +13,14 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsSpecificRoomDto : BaseDto
 {
+    
+    [Required(ErrorMessage = "RoomId is required")]
     public int RoomId { get; set; }
 }
+
+
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsSpecificRoom : BaseEventHandler<ClientWantsSpecificRoomDto>
 {
     

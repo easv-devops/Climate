@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -10,10 +12,15 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToCreateRoomDto : BaseDto
 {
+    
+    [Required(ErrorMessage = "RoomId is required")]
+    [MinLength(2, ErrorMessage = "Room name is too short.")]
     public string RoomName { get; set; }
 }
 
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToCreateRoom : BaseEventHandler<ClientWantsToCreateRoomDto>
 {
     

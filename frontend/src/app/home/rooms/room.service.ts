@@ -4,7 +4,7 @@ import {
   ClientWantsAllRooms,
   ClientWantsSpecificRoom,
   ClientWantsToCreateRoom,
-  ClientWantsToDeleteRoom
+  ClientWantsToDeleteRoom, ClientWantsToEditRoom
 } from "../../../models/clientRequests";
 
 @Injectable({
@@ -48,6 +48,15 @@ export class RoomService {
     this.ws.socketConnection.sendDto(
       new ClientWantsToDeleteRoom({
         RoomId: Id
+      })
+    )
+  }
+
+  editRoom(Roomname: string, Id: number) {
+    this.ws.socketConnection.sendDto(
+      new ClientWantsToEditRoom({
+        RoomId: Id,
+        RoomName: Roomname
       })
     )
   }

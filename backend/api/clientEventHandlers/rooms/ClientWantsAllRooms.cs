@@ -1,3 +1,4 @@
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.serverEventModels.rooms;
@@ -11,6 +12,8 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsAllRoomsDto : BaseDto { }
 
+
+[RequireAuthentication]
 public class ClientWantsAllRooms : BaseEventHandler<ClientWantsAllRoomsDto>
 {
     

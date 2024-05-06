@@ -77,9 +77,11 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-                UPDATE climate.Room SET RoomName = @roomName WHERE Id = @id AND UserId = @UserId
-                RETURNING *;
-                ";
+                UPDATE climate.Room 
+                SET RoomName = @roomName 
+                WHERE Id = @id 
+                AND UserId = @UserId;
+            ";
             Room rooms = connection.ExecuteScalar<Room>(query,
                 new { roomName = room.RoomName, id = room.Id, UserId = room.UserId });
 
