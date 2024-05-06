@@ -154,20 +154,20 @@ steps:
       - publish prod backend
       - publish prod frontend
 
-  - name: update prod database
-    image: flyway/flyway
-    environment:
-      DB_NAME:
-        from_secret: DBNameSecret
-      DB_USER:
-        from_secret: DBUserSecret
-      DB_PASSWORD:
-        from_secret: DBPasswordSecret
-    commands:
-      - flyway migrate
-        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
-        -user="$DB_USER"
-        -password="$DB_PASSWORD"
-        -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
+#  - name: update prod database
+#    image: flyway/flyway
+#    environment:
+#      DB_NAME:
+#        from_secret: DBNameSecret
+#      DB_USER:
+#        from_secret: DBUserSecret
+#      DB_PASSWORD:
+#        from_secret: DBPasswordSecret #TODO: DBProdPasswordSecret osv.
+#    commands: 
+#      - flyway migrate
+#        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
+#        -user="$DB_USER"
+#        -password="$DB_PASSWORD"
+#        -locations=filesystem:./db/sql
+#    depends_on:
+#      - trigger update
