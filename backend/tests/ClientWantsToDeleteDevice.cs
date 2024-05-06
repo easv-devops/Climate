@@ -45,7 +45,7 @@ public class ClientWantsToDeleteDevice
                 switch (testName)
                 {
                     case "ValidDeviceId":
-                        return dto.eventType == nameof(ServerSendsDevice); // Replace "ValidEventType" with the expected eventType for Valid test.
+                        return dto.eventType == nameof(ServerSendsDeviceDeletionStatus); // Replace "ValidEventType" with the expected eventType for Valid test.
                 
                     case "InvalidDeviceId":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
