@@ -1,4 +1,6 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -10,7 +12,7 @@ public class ClientWantsToGetDeviceTests
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
+        Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));
     }
 
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]
@@ -40,9 +42,6 @@ public class ClientWantsToGetDeviceTests
                     {
                         return fromServer.Count(dto =>
                         {
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsDeviceById)));
-
                             return dto.eventType == nameof(ServerSendsDeviceById);
                         }) == 1;
                     }
@@ -59,9 +58,6 @@ public class ClientWantsToGetDeviceTests
                     {
                         return fromServer.Count(dto =>
                         {
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                         }) == 1;
                     }
@@ -92,9 +88,6 @@ public class ClientWantsToGetDeviceTests
             {
                 return fromServer.Count(dto =>
                 {
-                    Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                        serverEvent => serverEvent.eventType == nameof(ServerSendsDevicesByUserId)));
-
                     return dto.eventType == nameof(ServerSendsDevicesByUserId);
                 }) == 1;
             }
@@ -124,19 +117,12 @@ public class ClientWantsToGetDeviceTests
             {
                 return fromServer.Count(dto =>
                 {
-                    Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                        serverEvent => serverEvent.eventType == nameof(ServerSendsDevicesByRoomId)));
-                    
                     string testName = TestContext.CurrentContext.Test.Name;
                     switch (testName)
                     {
                         case "Valid":
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsDevicesByRoomId)));
                             return dto.eventType == nameof(ServerSendsDevicesByRoomId);
                         case "Not logged in user's room": 
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient); 
                         default:
                             return false;
@@ -169,9 +155,6 @@ public class ClientWantsToGetDeviceTests
                     {
                         return fromServer.Count(dto =>
                         {
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                         }) == 1;
                     }
@@ -187,9 +170,6 @@ public class ClientWantsToGetDeviceTests
                     {
                         return fromServer.Count(dto =>
                         {
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                         }) == 1;
                     }
@@ -206,9 +186,6 @@ public class ClientWantsToGetDeviceTests
                     {
                         return fromServer.Count(dto =>
                         {
-                            Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                                serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                         }) == 1; 
                     }

@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
-using api.security;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
-using Newtonsoft.Json;
 using service.services;
 using service.services.notificationServices;
 
@@ -54,7 +52,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         _notificationService = notificationService;
     }
 
-    public override Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
+    public override async Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
     {
         //check if the user already exists 
         if (_authService.DoesUserAlreadyExist(dto.Email))
@@ -79,7 +77,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
 
         //return JWT to client 
-        socket.SendDto(new ServerAuthenticatesUser { Jwt = token });
+        socket.SendDto(new ServerAuthenticatesUser { Jwt = await token });
         
         //sets noti settings and sends welcome message
         List<MessageType> selectedMessageTypes = new List<MessageType>();
@@ -90,7 +88,7 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             Email = dto.Email,
             Name = dto.FirstName
         });
-        return Task.CompletedTask;
+
     }
 }
 

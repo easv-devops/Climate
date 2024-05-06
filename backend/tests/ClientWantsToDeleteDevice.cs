@@ -1,4 +1,6 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -10,12 +12,12 @@ public class ClientWantsToDeleteDevice
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
+        Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));
     }
     
 
-    [TestCase(1, "user@example.com", "12345678","navnpådevice", "1", TestName = "ValidDeviceId")]
-    [TestCase(-1, "user@example.com", "12345678","jfiewfwe", "1", TestName = "InvalidDeviceId")]
+    [TestCase(1, "user@example.com", "12345678","navnpådevice", 1, TestName = "ValidDeviceId")]
+    [TestCase(50, "user@example.com", "12345678","jfiewfwe", 1, TestName = "InvalidDeviceId")]
     public async Task DeleteDeviceTest(int id, string email, string password, string deviceName, int roomId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
@@ -39,20 +41,13 @@ public class ClientWantsToDeleteDevice
         {
             return fromServer.Count(dto =>
             {
-                Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                    serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {
                     case "ValidDeviceId":
-                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                            serverEvent => serverEvent.eventType == nameof(ServerEditsDeviceDto)));
-                        
-                        return dto.eventType == nameof(ServerSendsDevice); // Replace "ValidEventType" with the expected eventType for Valid test.
+                        return dto.eventType == nameof(ServerSendsDeviceDeletionStatus); // Replace "ValidEventType" with the expected eventType for Valid test.
                 
                     case "InvalidDeviceId":
-                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
-                            serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
 
                     default:

@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Authentication;
-using System.Text.Json;
 using api.ClientEventFilters;
-using Fleck;
 using api.helpers;
-using api.security;
 using api.serverEventModels;
 using api.WebSocket;
-using infrastructure.Models;
+using Fleck;
 using lib;
 using service.services;
 
@@ -37,7 +34,7 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         _tokenService = tokenService;
     }
 
-    public override Task Handle(ClientWantsToSignInDto request, IWebSocketConnection socket)
+    public override async Task Handle(ClientWantsToSignInDto request, IWebSocketConnection socket)
     {
         //gets user information from db and checks for ban status
         var user = _authService.GetUser(request.email);
@@ -54,8 +51,7 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         //sends the JWT token to the client
         socket.SendDto(new ServerAuthenticatesUser
         {
-            Jwt = _tokenService.IssueJwt(user.Id)
+            Jwt =  await _tokenService.IssueJwt(user.Id)
         });
-        return Task.CompletedTask;
     }
 }

@@ -10,8 +10,9 @@ public class EnvironmentSetup
  */
 public enum EnvVarKeys
 {
-    JWT_KEY,
+    JwtKey,
     dbconn,
     MailPassword,
-    MqttToken
+    MqttToken,
+    dbtestconn
 }

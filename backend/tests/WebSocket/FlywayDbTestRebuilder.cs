@@ -11,7 +11,7 @@ public class FlywayDbTestRebuilder
         try
         {
             // Opret forbindelse til databasen
-            using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString())))
+            using (var connection = new MySqlConnection(Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString())))
             {
                 DropAllTables(connection);
 
@@ -40,13 +40,13 @@ public class FlywayDbTestRebuilder
 
     private static void DropAllTables(MySqlConnection connection)
      {
-         string databaseName = "climate";
+         string databaseName = "mydb";
 
          try
          {
              // Opret forbindelse til en indbygget database, f.eks. "mysql"
              string systemDatabaseName = "";
-             string connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString()).Replace(databaseName, systemDatabaseName);
+             string connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString().Replace(databaseName, systemDatabaseName));
              using (var systemConnection = new MySqlConnection(connectionString))
              {
                  systemConnection.Open();

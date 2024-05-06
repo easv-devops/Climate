@@ -40,7 +40,7 @@ public class WebSocketTestClient
         if (condition != null)
         {
             DateTime startTime = DateTime.UtcNow;
-            while (DateTime.UtcNow - startTime < TimeSpan.FromSeconds(20.0))
+            while (DateTime.UtcNow - startTime < TimeSpan.FromSeconds(5.0))
             {
                 lock (this.ReceivedMessages)
                 {
