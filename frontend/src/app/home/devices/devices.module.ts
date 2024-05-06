@@ -9,11 +9,10 @@ import {DeviceComponent} from "./device/device.component";
 import {CreateDeviceComponent} from "./create-device/create-device.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {EditDeviceComponent} from "./edit-device/edit-device.component";
-import {DeviceCardComponent} from "./device-card/device-card.component";
 
 
 @NgModule({
-  declarations: [DevicesComponent, DeviceComponent, CreateDeviceComponent, EditDeviceComponent, DeviceCardComponent],
+  declarations: [DevicesComponent, DeviceComponent, CreateDeviceComponent, EditDeviceComponent],
   imports: [
     CommonModule,
     DevicesRoutingModule,

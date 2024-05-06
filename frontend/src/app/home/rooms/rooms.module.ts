@@ -12,21 +12,21 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AuthService} from "../../auth/auth.service";
 import {RoomService} from "./room.service";
 import {DevicesModule} from "../devices/devices.module";
-import {DeviceCardComponent} from "../devices/device-card/device-card.component";
+import {EditRoomComponent} from "./edit-room/edit-room.component";
+import {CreateRoomComponent} from "./create-room/create-room.component";
 
 
 @NgModule({
   providers:[
     RoomService
   ],
-  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent],
+  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent, EditRoomComponent, CreateRoomComponent],
     imports: [
         CommonModule,
         IonicModule,
         RoomsRoutingModule,
         HomePageModule,
         FormsModule,
-        DevicesModule,
         ReactiveFormsModule
     ]
 })

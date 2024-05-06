@@ -20,7 +20,6 @@ import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomI
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
-import {image} from "ionicons/icons";
 
 
 @Injectable({providedIn: 'root'})
@@ -64,6 +63,10 @@ export class WebSocketConnectionService {
 
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
+
+  private isRoomEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
+  isRoomEdited: Observable<boolean | undefined> = this.isRoomEditedSubject.asObservable();
+
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -172,7 +175,9 @@ export class WebSocketConnectionService {
   setIsDeviceEdited(value: boolean) {
     this.isDeviceEditedSubject.next(value);
   }
-
+  setIsRoomEdited(value: boolean) {
+    this.isRoomEditedSubject.next(value);
+  }
 
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
@@ -197,5 +202,4 @@ export class WebSocketConnectionService {
   get allRoomsRecord(): RecordHolder<Room> {
     return this._allRoomsRecord;
   }
-
 }

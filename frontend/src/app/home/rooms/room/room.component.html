@@ -11,49 +11,11 @@
   </app-device-card-->
 </div>
 
-<ion-fab id="settings" slot="fixed" vertical="top" horizontal="end">
+<ion-fab id="settingsl" slot="fixed" vertical="top" horizontal="end" routerLink="/rooms/{{this.idFromRoute}}/edit">
   <ion-fab-button>
     <ion-icon name="settings-outline"></ion-icon>
   </ion-fab-button>
 </ion-fab>
-
-<ion-modal trigger="settings" (willDismiss)="onWillDismiss($event)">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button (click)="cancel()">Cancel</ion-button>
-        </ion-buttons>
-        <ion-title>Room Settings</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <ion-item>
-        <ion-input
-          label="Room name"
-          labelPlacement="stacked"
-          type="text"
-          placeholder="{{specificRoom.RoomName}}"
-          [(ngModel)]="roomName"
-        ></ion-input>
-      </ion-item>
-      <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-        <ion-fab-button id="present-alert" style="--background: var(--ion-color-danger);">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
-
-      <ion-alert
-        trigger="present-alert"
-        header="Are you sure you want to delete the {{specificRoom.RoomName}}?"
-        [buttons]="alertButtons"
-      ></ion-alert>
-    </ion-content>
-  </ng-template>
-</ion-modal>
 
 
 <ion-list>

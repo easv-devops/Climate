@@ -3,20 +3,30 @@ import { RouterModule, Routes } from '@angular/router';
 import {RoomsComponent} from "./rooms.component";
 import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {RoomComponent} from "./room/room.component";
+import {EditRoomComponent} from "./edit-room/edit-room.component";
+import {CreateRoomComponent} from "./create-room/create-room.component";
 
 const routes: Routes = [
   {
     path: '',
     component: RoomsComponent,
-    children: [ // Child routes for authentication
+    children: [ // Child routes for rooms
       {
-        path: 'all', // Path for login component (e.g., /auth/login)
+        path: 'all',
         component: AllRoomsComponent
       },
       {
-        path: ':id', // Path for login component (e.g., /auth/login)
+        path: ':id',
         component: RoomComponent
       },
+      {
+        path: ':id/edit',
+        component: EditRoomComponent
+      },
+      {
+        path: 'create',
+        component: CreateRoomComponent
+      }
     ]
   },
 ];

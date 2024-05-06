@@ -6,6 +6,7 @@ import {
   ClientWantsToCreateRoom,
   ClientWantsToDeleteRoom, ClientWantsToEditRoom
 } from "../../../models/clientRequests";
+import {Room} from "../../../models/room";
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,14 @@ export class RoomService {
       })
     )
   }
+
+  isRoomEdited() {
+    return this.ws.isRoomEdited
+  }
+
+    updateRoom(room: Room) {
+        //TODO
+    }
 }
 
 

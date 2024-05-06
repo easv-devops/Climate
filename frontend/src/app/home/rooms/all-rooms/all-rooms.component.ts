@@ -1,11 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {Room} from "../../../../models/room";
-import {OverlayEventDetail} from "@ionic/core/components";
 import {IonModal} from "@ionic/angular";
 import {RoomService} from "../room.service";
 import {FormBuilder, Validators} from "@angular/forms";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-all-rooms',
@@ -21,7 +21,11 @@ export class AllRoomsComponent implements OnInit {
   form = this.fb.group({
     roomName: ['', [Validators.required, Validators.minLength(2)]]
   });
-  constructor(private roomService: RoomService, private readonly fb: FormBuilder, private ws: WebSocketConnectionService) {}
+  constructor(private roomService: RoomService,
+              private readonly fb: FormBuilder,
+              private ws: WebSocketConnectionService,
+              private router: Router
+              ) {}
 
   ngOnInit() {
     this.roomService.getAllRooms();
@@ -46,21 +50,7 @@ export class AllRoomsComponent implements OnInit {
   }
   @ViewChild(IonModal) modal!: IonModal;
 
-  cancel() {
-    this.modal.dismiss(null, 'cancel');
-  }
-
-  confirm() {
-    this.modal.dismiss(this.roomname, 'confirm');
-  }
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.roomService.createRoom(this.roomname);
-    }
-  }
-
-  get roomName() {
-    return this.form.controls.roomName;
+  goToCreateRoom(){
+    this.router.navigate(['/rooms/create']);
   }
 }

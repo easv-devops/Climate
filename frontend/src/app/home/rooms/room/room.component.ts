@@ -48,7 +48,8 @@ export class RoomComponent implements OnInit {
               private deviceService: DeviceService,
               private roomService: RoomService,
               private ws: WebSocketConnectionService,
-              private router: Router) {
+              private router: Router
+  ) {
   }
 
   ngOnInit() {
