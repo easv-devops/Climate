@@ -146,7 +146,7 @@ steps:
     image: curlimages/curl
     commands:
       # Must match the token defined in docker-compose.yml
-      - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
+      - "curl --fail -X GET 'http://20.67.249.7:8080/v1/update' -H 'Authorization: Bearer mytoken'"
       - sleep 10
     depends_on:
       - publish prod backend
