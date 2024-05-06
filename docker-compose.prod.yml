@@ -1,0 +1,6 @@
+services:
+  climate-frontend:
+    image: midr/climate-frontend:prod
+
+  climate-backend:
+    image: midr/climate-backend:prod

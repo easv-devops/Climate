@@ -11,6 +11,7 @@ public class PasswordHashRepository
     
     public PasswordHashRepository(string connectionString)
     {
+        
         _connectionString = connectionString;
     }
     

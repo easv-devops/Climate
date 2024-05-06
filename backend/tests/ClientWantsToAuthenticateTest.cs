@@ -1,4 +1,6 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -10,7 +12,7 @@ public class ClientWantsToAuthenticateTest
     public void Setup()
     {
        FlywayDbTestRebuilder.ExecuteMigrations();
-       Startup.Start(null);
+       Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));
     }
 
     [TestCase("user@example.com", "12345678", TestName = "Valid")]
@@ -28,7 +30,6 @@ public class ClientWantsToAuthenticateTest
         {
             return fromServer.Count(dto =>
             {
-                Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count);
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {
@@ -37,6 +38,33 @@ public class ClientWantsToAuthenticateTest
                     case "Invalid password":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                     case "Invalid email":
+                        return dto.eventType == nameof(ServerSendsErrorMessageToClient);
+                    default:
+                        return false;
+                }
+            }) == 1;
+        });
+    }
+    
+    [TestCase("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEsImV4cCI6MTgwMTM5NDI2OX0.u-80Cb2ysefJsMwP_YnkltvN5pQkI2IIJmuOfPy9ITBvC-QYaASiWVJbCe31EUSplqnknPHqhS6Gm1-d7qk6kA", TestName = "Valid")]
+    [TestCase("eyYOthisISaFAKEjwt", TestName = "Invalid")]
+    public async Task LoginWithJwtTest(string jwt)
+    {
+        var ws = await new WebSocketTestClient().ConnectAsync();
+
+        await ws.DoAndAssert(new ClientWantsToAuthenticateWithJwtDto
+        {
+            jwt = jwt
+        }, fromServer =>
+        {
+            return fromServer.Count(dto =>
+            {
+                string testName = TestContext.CurrentContext.Test.Name;
+                switch (testName)
+                {
+                    case "Valid":
+                        return dto.eventType == nameof(ServerAuthenticatesUser);
+                    case "Invalid":
                         return dto.eventType == nameof(ServerSendsErrorMessageToClient);
                     default:
                         return false;

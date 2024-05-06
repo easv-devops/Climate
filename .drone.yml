@@ -4,8 +4,8 @@ name: integration
 
 trigger: 
   branch:
-    - drone_setup
     - master
+    - drone_setup
   event:
     exclude:
       - pull_request
@@ -15,8 +15,17 @@ steps:
     environment:
       SONARSECRET:
         from_secret: SonarQubeSecret
+      dbconn:
+        from_secret: dbconn
+      JwtKey:
+        from_secret: JwtKey
+      MailPassword:
+        from_secret: MailPassword
+      MqttToken:
+        from_secret: MqttToken
+      dbtestconn:
+        from_secret: dbtestconn
     commands:
-      - exit 0
       - dotnet sonarscanner begin 
           /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
           /d:sonar.host.url="http://sonar.setgo.dk:9000" 
@@ -31,19 +40,53 @@ steps:
 
 kind: pipeline
 type: docker
-name: deliver
+name: deliver test
 trigger:
   branch:
-    - drone_setup
     - master
+    - drone_setup
   event:
     exclude:
       - pull_request
 depends_on:
   - integration
 
-steps:
-  - name: update database
+steps:    
+  - name: publish test backend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: Dockerfile
+      repo: midr/climate-backend
+      tags:
+        - staging
+
+  - name: publish test frontend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: frontend/Dockerfile
+      repo: midr/climate-frontend
+      tags:
+        - staging
+
+  - name: trigger update
+    image: curlimages/curl
+    commands:
+      # Must match the token defined in docker-compose.yml
+      - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
+      - sleep 10
+    depends_on:
+      - publish test backend
+      - publish test frontend
+    
+  - name: update test database
     image: flyway/flyway
     environment:
       DB_NAME:
@@ -54,7 +97,77 @@ steps:
         from_secret: DBPasswordSecret
     commands:
       - flyway migrate
-          -url="jdbc:mariadb://74.234.8.67:3306/climate"
-          -user="aladeen"
-          -password="xAladeen4life"
+          -url="jdbc:mariadb://74.234.8.67:3306/$DB_NAME"
+          -user="$DB_USER"
+          -password="$DB_PASSWORD"
           -locations=filesystem:./db/sql
+    depends_on:
+      - trigger update
+        
+---
+
+kind: pipeline
+type: docker
+name: deliver prod
+trigger:
+  branch:
+    - master
+    - drone_setup
+  event:
+    exclude:
+      - pull_request
+depends_on:
+  - integration
+
+steps:
+  - name: publish prod backend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: Dockerfile
+      repo: midr/climate-backend
+      tags:
+        - prod
+
+  - name: publish prod frontend
+    image: plugins/docker
+    settings:
+      username:
+        from_secret: DockerUsername
+      password:
+        from_secret: DockerPassword
+      dockerfile: frontend/Dockerfile
+      repo: midr/climate-frontend
+      tags:
+        - prod
+
+  - name: trigger update
+    image: curlimages/curl
+    commands:
+      # Must match the token defined in docker-compose.yml
+      - "curl --fail -X GET 'http://20.67.249.7:8080/v1/update' -H 'Authorization: Bearer mytoken'"
+      - sleep 10
+    depends_on:
+      - publish prod backend
+      - publish prod frontend
+
+#  - name: update prod database
+#    image: flyway/flyway
+#    environment:
+#      DB_NAME:
+#        from_secret: DBNameSecret
+#      DB_USER:
+#        from_secret: DBUserSecret
+#      DB_PASSWORD:
+#        from_secret: DBPasswordSecret #TODO: DBProdPasswordSecret osv.
+#    commands: 
+#      - flyway migrate
+#        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
+#        -user="$DB_USER"
+#        -password="$DB_PASSWORD"
+#        -locations=filesystem:./db/sql
+#    depends_on:
+#      - trigger update

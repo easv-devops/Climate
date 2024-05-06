@@ -1,4 +1,6 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -10,8 +12,7 @@ public class ClientWantsToResetPassword
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
-    }
+        Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));    }
     
     [TestCase("user@example.com", TestName = "Valid")]
     [TestCase("userDoesNotExist@example.com", TestName = "Invalid user")]
@@ -27,7 +28,6 @@ public class ClientWantsToResetPassword
         {
             return fromServer.Count(dto =>
             {
-                Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count);
                 string testName = TestContext.CurrentContext.Test.Name;
                 switch (testName)
                 {

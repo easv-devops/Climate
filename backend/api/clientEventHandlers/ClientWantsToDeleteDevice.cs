@@ -33,7 +33,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
     {
-        
+        //checks if the user has permission before deleting
         var guid = socket.ConnectionInfo.Id;
 
         if (!StateService.UserHasDevice(guid, dto.Id))

@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Security.Authentication;
 using api.helpers;
 using api.mqttEventListeners;
-using api.security;
 using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -14,23 +13,35 @@ using lib;
 using service.services;
 using service.services.notificationServices;
 
+namespace api;
+
 public static class Startup
 {
     public static void Main(string[] args)
     {
-        var app = Start(args);
+        var app = Start(args, "");
         app.Run();
     }
 
-    public static WebApplication Start(string[] args)
+    //TODO: Rethink the connectionString parameter setup (for testing). Depends on what db we'll use for testing
+    public static WebApplication Start(string[] args, string? connectionString)
     {
         var builder = WebApplication.CreateBuilder(args);
         
         builder.Services.AddSingleton<SmtpRepository>();
         
-        //saves connection string
-        //gets connection string to db
-        builder.Services.AddSingleton(provider => Utilities.MySqlConnectionString);
+        if (ReferenceEquals(connectionString, ""))
+        {
+            var dbConnTask = KeyVaultService.GetDbConn();
+            dbConnTask.Wait();
+            connectionString =  dbConnTask.Result;
+            builder.Services.AddSingleton(provider => connectionString);
+        }
+        else
+        {
+            // Gets connection string for local testing
+            builder.Services.AddSingleton(provider => connectionString);
+        }
         
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
@@ -40,8 +51,8 @@ public static class Startup
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<DeviceService>();
-        
         builder.Services.AddSingleton<DeviceReadingsService>();
+        
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
@@ -52,9 +63,6 @@ public static class Startup
         
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
-        
-        
-        builder.WebHost.UseUrls("http://*:9999");
         
         var app = builder.Build();
         

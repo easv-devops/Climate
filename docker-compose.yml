@@ -1,4 +1,15 @@
 services:
+  testdb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3307:3306"
+        
   climate-frontend:
     build: 
       context: .
@@ -20,8 +31,9 @@ services:
       - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    secrets:
-      - dbconn
+    environment:
+      dbconn: ${dbconn}
+      JwtKey: ${JwtKey}
 
   mariadb:
     image: mariadb:latest
@@ -51,7 +63,3 @@ services:
 
 volumes:
   mariadb:
-    
-secrets: 
-  dbconn:
-    external: true
