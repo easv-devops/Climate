@@ -45,4 +45,31 @@ public class ClientWantsToAuthenticateTest
             }) == 1;
         });
     }
+    
+    [TestCase("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEsImV4cCI6MTgwMTM5NDI2OX0.u-80Cb2ysefJsMwP_YnkltvN5pQkI2IIJmuOfPy9ITBvC-QYaASiWVJbCe31EUSplqnknPHqhS6Gm1-d7qk6kA", TestName = "Valid")]
+    [TestCase("eyYOthisISaFAKEjwt", TestName = "Invalid")]
+    public async Task LoginWithJwtTest(string jwt)
+    {
+        var ws = await new WebSocketTestClient().ConnectAsync();
+
+        await ws.DoAndAssert(new ClientWantsToAuthenticateWithJwtDto
+        {
+            jwt = jwt
+        }, fromServer =>
+        {
+            return fromServer.Count(dto =>
+            {
+                string testName = TestContext.CurrentContext.Test.Name;
+                switch (testName)
+                {
+                    case "Valid":
+                        return dto.eventType == nameof(ServerAuthenticatesUser);
+                    case "Invalid":
+                        return dto.eventType == nameof(ServerSendsErrorMessageToClient);
+                    default:
+                        return false;
+                }
+            }) == 1;
+        });
+    }
 }
