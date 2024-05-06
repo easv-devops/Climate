@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {
   ApexAnnotations,
   ApexAxisChartSeries,
@@ -13,7 +13,6 @@ import {
   ApexYAxis,
   ChartComponent
 } from "ng-apexcharts";
-//import {data} from "./series-data";
 import {SensorDto} from "../../../models/Entities";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Observable, Subject, takeUntil} from "rxjs";
