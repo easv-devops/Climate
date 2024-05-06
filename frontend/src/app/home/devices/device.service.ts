@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToGetDevicesByRoomIdDto} from "../../../models/ClientWantsToGetDevicesByRoomIdDto";
 import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
 
 import {ClientWantsToEditDeviceDto} from "../../../models/ClientWantsToEditDeviceDto";
 import {Device} from "../../../models/Entities";
 
 import {ClientWantsToDeleteDeviceDto} from "../../../models/ClientWantsToDeleteDevice";
+import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -25,7 +25,7 @@ export class DeviceService {
 
 
   getDevicesByRoomId(id: number){
-    var dto = new ClientWantsToGetDevicesByRoomIdDto({
+    var dto = new ClientWantsToGetDeviceIdsForRoomDto({
       RoomId: id
     });
     this.ws.socketConnection.sendDto(dto)

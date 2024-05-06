@@ -12,11 +12,17 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom} from "../models/Entities";
+import {Device, DeviceInRoom, Room} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
+import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
+import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGetAllRoomsDto";
+import {
+  ServerSendsDeviceIdListForRoomDto
+} from "../models/ServerSendsDeviceIdListForRoomDto";
+import {ClientWantsToGetDeviceIdsForRoomDto} from "../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -25,7 +31,6 @@ export class WebSocketConnectionService {
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
-  AllRooms: number[] = [];
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
   private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
@@ -46,6 +51,10 @@ export class WebSocketConnectionService {
 
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
+
+
+  private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
+  allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
 
   private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
   roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
@@ -73,6 +82,7 @@ export class WebSocketConnectionService {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
     this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
+    this.socketConnection.sendDto(new ClientWantsToGetAllRoomsDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
@@ -147,6 +157,38 @@ export class WebSocketConnectionService {
     }
   }
 
+  ServerSendsDeviceIdListForRoom(dto: ServerSendsDeviceIdListForRoomDto) {
+    this.allRooms.pipe(take(1)).subscribe(roomsSnapshot => {
+      if (roomsSnapshot && roomsSnapshot[dto.RoomId]) {
+        // Kopier det aktuelle rum
+        const updatedRoom = { ...roomsSnapshot[dto.RoomId] };
+
+        updatedRoom.DeviceIds = dto.DeviceIds;
+        console.log("ejwfwi")
+        const updatedRoomsSnapshot = { ...roomsSnapshot, [dto.RoomId]: updatedRoom };
+
+        // Udsend den opdaterede snapshot
+        this.allRoomsSubject.next(updatedRoomsSnapshot);
+      }
+    });
+  }
+
+
+
+  ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
+    this.allRooms.pipe(take(1)).subscribe(allRoomRecord => {
+      if (!allRoomRecord) {
+        allRoomRecord = {};
+      }
+
+      dto.Rooms?.forEach(room => {
+          // Tilføj eller opdater enheden i record
+          allRoomRecord![room.Id] = room;
+        });
+
+      this.allRoomsSubject.next(allRoomRecord);
+    });
+  }
 
   clearDataOnLogout() {
     localStorage.setItem("jwt", ""); // Nulstil JWT i local storage
@@ -158,8 +200,6 @@ export class WebSocketConnectionService {
     this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
-
-
 }
 
 

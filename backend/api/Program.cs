@@ -46,13 +46,15 @@ public static class Startup
         builder.Services.AddSingleton(provider => new PasswordHashRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new DeviceRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new RoomsRepository(provider.GetRequiredService<string>()));
         
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();
         builder.Services.AddSingleton<DeviceService>();
         builder.Services.AddSingleton<DeviceReadingsService>();
-        
+        builder.Services.AddSingleton<RoomService>();
+
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));

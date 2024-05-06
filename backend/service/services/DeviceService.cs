@@ -58,4 +58,9 @@ public class DeviceService
     {
         return _deviceRepository.IsItUsersDevice(deviceId, userId);
     }
+    
+    public IEnumerable<int> GetDeviceIdsFromRoom(int roomId)
+    {
+        return _deviceRepository.GetDeviceIdsForRoom(roomId);
+    }
 }

@@ -1,0 +1,20 @@
+﻿using infrastructure;
+using infrastructure.Models;
+
+namespace service.services;
+
+public class RoomService
+{
+    private readonly RoomsRepository _roomsRepository;
+
+    public RoomService(RoomsRepository roomsRepository, DeviceRepository deviceRepository)
+    {
+        _roomsRepository = roomsRepository;
+    }
+
+    public IEnumerable<RoomWithId> GetAllRooms(int UserId)
+    {
+
+        return _roomsRepository.GetAllRooms(UserId);
+    }
+}

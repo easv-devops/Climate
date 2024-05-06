@@ -4,7 +4,6 @@ import {AuthService} from "../auth.service";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {Router} from "@angular/router";
-import {ClientWantsToGetDevicesByUserIdDto} from "../../../models/ClientWantsToGetDevicesByUserIdDto";
 
 @Component({
   selector: 'app-login',
@@ -22,7 +21,6 @@ export class LoginComponent {
 
   constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService, private router: Router) {
   }
-
   ngOnInit() {
     // Subscribe to jwt observable
     this.ws.jwt.pipe(
@@ -71,8 +69,4 @@ export class LoginComponent {
     this.router.navigate(['auth/resetpassword']);
   }
 
-  private loadUserInfo() {
-    // Load logged in user's devices in sidebar
-    this.ws.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
-  }
 }

@@ -201,4 +201,23 @@ public class DeviceRepository
             throw new Exception(e.Message, e);
         }
     }
+    
+    public IEnumerable<int> GetDeviceIdsForRoom(int roomId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            SELECT Id
+            FROM climate.Device
+            WHERE RoomId = @RoomId;
+        ";
+            return connection.Query<int>(query, new { RoomId = roomId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get device IDs for room", e);
+        }
+    }
 }

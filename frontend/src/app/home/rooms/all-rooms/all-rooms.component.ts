@@ -9,6 +9,7 @@ export class AllRoomsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
 }
