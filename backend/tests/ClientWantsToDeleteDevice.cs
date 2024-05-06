@@ -16,8 +16,8 @@ public class ClientWantsToDeleteDevice
     }
     
 
-    [TestCase(1, "user@example.com", "12345678","navnpådevice", "1", TestName = "ValidDeviceId")]
-    [TestCase(-1, "user@example.com", "12345678","jfiewfwe", "1", TestName = "InvalidDeviceId")]
+    [TestCase(1, "user@example.com", "12345678","navnpådevice", 1, TestName = "ValidDeviceId")]
+    [TestCase(-1, "user@example.com", "12345678","jfiewfwe", 1, TestName = "InvalidDeviceId")]
     public async Task DeleteDeviceTest(int id, string email, string password, string deviceName, int roomId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
