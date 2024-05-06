@@ -39,12 +39,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
             throw new AccessViolationException("You do not have permission to delete this device");
         }
 
-        if (!_deviceReadingsService.DeleteAllReadings(dto.Id))
-        {
-            throw new SqlTypeException("Something went wrong when deleting readings for device #" + dto.Id);
-        }
-
-        if (!_deviceService.DeleteDevice(dto.Id))
+        if (!_deviceReadingsService.DeleteAllReadings(dto.Id) || !_deviceService.DeleteDevice(dto.Id))
         {
             throw new SqlTypeException("Something went wrong when deleting device #" + dto.Id);
         }
