@@ -19,55 +19,43 @@ public class ClientWantsToGetReadingsTests
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        //Arrange (login)
-        ws.Send(new ClientWantsToSignInDto()
+        //Arrange: login & request devices (so they're mapped in State)
+        ws.Send(new ClientWantsToSignInDto
         {
             email = email,
             password = password
         });
+        
+        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
 
-        string testName = TestContext.CurrentContext.Test.Name;
-        switch (testName)
-        {
-            case "Valid":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetTemperatureReadingsDto
+        //Act
+        await ws.DoAndAssert(new ClientWantsToGetTemperatureReadingsDto
+            {
+                DeviceId = deviceId
+            },
+            //Assert
+            fromServer =>
+            {
+                return fromServer.Count(dto =>
+                {
+                    string testName = TestContext.CurrentContext.Test.Name;
+                    switch (testName)
                     {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        case "Valid":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsTemperatureReadings)));
-
                             return dto.eventType == nameof(ServerSendsTemperatureReadings);
-                        }) == 1;
-                    }
-                );
-                break;
-            case "Not logged in user's device":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetTemperatureReadingsDto
-                    {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        
+                        case "Not logged in user's device":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1;
+                        default:
+                            return false;
                     }
-                );
-                break;
-        }
+                }) == 1;
+            }
+        );
     }
 
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]
@@ -76,55 +64,43 @@ public class ClientWantsToGetReadingsTests
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        //Arrange (login)
-        ws.Send(new ClientWantsToSignInDto()
+        //Arrange: login & request devices (so they're mapped in State)
+        ws.Send(new ClientWantsToSignInDto
         {
             email = email,
             password = password
         });
+        
+        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
 
-        string testName = TestContext.CurrentContext.Test.Name;
-        switch (testName)
-        {
-            case "Valid":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetHumidityReadingsDto
+        //Act
+        await ws.DoAndAssert(new ClientWantsToGetHumidityReadingsDto
+            {
+                DeviceId = deviceId
+            },
+            //Assert
+            fromServer =>
+            {
+                return fromServer.Count(dto =>
+                {
+                    string testName = TestContext.CurrentContext.Test.Name;
+                    switch (testName)
                     {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        case "Valid":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsHumidityReadings)));
-
                             return dto.eventType == nameof(ServerSendsHumidityReadings);
-                        }) == 1;
-                    }
-                );
-                break;
-            case "Not logged in user's device":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetHumidityReadingsDto
-                    {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        
+                        case "Not logged in user's device":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1;
+                        default:
+                            return false;
                     }
-                );
-                break;
-        }
+                }) == 1;
+            }
+        );
     }
 
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]
@@ -133,112 +109,88 @@ public class ClientWantsToGetReadingsTests
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        //Arrange (login)
-        ws.Send(new ClientWantsToSignInDto()
+        //Arrange: login & request devices (so they're mapped in State)
+        ws.Send(new ClientWantsToSignInDto
         {
             email = email,
             password = password
         });
+        
+        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
 
-        string testName = TestContext.CurrentContext.Test.Name;
-        switch (testName)
-        {
-            case "Valid":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetPm25ReadingsDto
+        //Act
+        await ws.DoAndAssert(new ClientWantsToGetPm25ReadingsDto
+            {
+                DeviceId = deviceId
+            },
+            //Assert
+            fromServer =>
+            {
+                return fromServer.Count(dto =>
+                {
+                    string testName = TestContext.CurrentContext.Test.Name;
+                    switch (testName)
                     {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        case "Valid":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsPm25Readings)));
-
                             return dto.eventType == nameof(ServerSendsPm25Readings);
-                        }) == 1;
-                    }
-                );
-                break;
-            case "Not logged in user's device":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetPm25ReadingsDto
-                    {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        
+                        case "Not logged in user's device":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1;
+                        default:
+                            return false;
                     }
-                );
-                break;
-        }
+                }) == 1;
+            }
+        );
     }
-    
+
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]
     [TestCase("user@example.com", "12345678", 5, TestName = "Not logged in user's device")]
     public async Task ClientWantsToGetPm100Readings(string email, string password, int deviceId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
 
-        //Arrange (login)
-        ws.Send(new ClientWantsToSignInDto()
+        //Arrange: login & request devices (so they're mapped in State)
+        ws.Send(new ClientWantsToSignInDto
         {
             email = email,
             password = password
         });
+        
+        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
 
-        string testName = TestContext.CurrentContext.Test.Name;
-        switch (testName)
-        {
-            case "Valid":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetPm100ReadingsDto
+        //Act
+        await ws.DoAndAssert(new ClientWantsToGetPm100ReadingsDto
+            {
+                DeviceId = deviceId
+            },
+            //Assert
+            fromServer =>
+            {
+                return fromServer.Count(dto =>
+                {
+                    string testName = TestContext.CurrentContext.Test.Name;
+                    switch (testName)
                     {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        case "Valid":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsPm100Readings)));
-
                             return dto.eventType == nameof(ServerSendsPm100Readings);
-                        }) == 1;
-                    }
-                );
-                break;
-            case "Not logged in user's device":
-                //Act
-                await ws.DoAndAssert(new ClientWantsToGetPm100ReadingsDto
-                    {
-                        DeviceId = deviceId
-                    },
-                    //Assert
-                    fromServer =>
-                    {
-                        return fromServer.Count(dto =>
-                        {
+                        
+                        case "Not logged in user's device":
                             Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
-
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1;
+                        default:
+                            return false;
                     }
-                );
-                break;
-        }
+                }) == 1;
+            }
+        );
     }
 
     [TestCase(1, TestName = "Temperature")]
@@ -306,7 +258,7 @@ public class ClientWantsToGetReadingsTests
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
 
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1; 
+                        }) == 1;
                     }
                 );
                 break;
@@ -325,7 +277,7 @@ public class ClientWantsToGetReadingsTests
                                 serverEvent => serverEvent.eventType == nameof(ServerSendsErrorMessageToClient)));
 
                             return dto.eventType == nameof(ServerSendsErrorMessageToClient);
-                        }) == 1; 
+                        }) == 1;
                     }
                 );
                 break;

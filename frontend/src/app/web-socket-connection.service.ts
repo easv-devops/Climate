@@ -99,7 +99,6 @@ export class WebSocketConnectionService {
   ServerRegisterUser(dto: ServerRegisterUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
-    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
