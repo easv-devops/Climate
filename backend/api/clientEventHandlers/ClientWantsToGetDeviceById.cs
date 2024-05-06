@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
@@ -31,6 +32,14 @@ public class ClientWantsToGetDeviceById : BaseEventHandler<ClientWantsToGetDevic
     public override Task Handle(ClientWantsToGetDeviceByIdDto dto, IWebSocketConnection socket)
     {
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+        
+        var guid = socket.ConnectionInfo.Id;
+
+        if (!StateService.UserHasDevice(guid, dto.DeviceId))
+        {
+            throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
+        }
+        
         var device = _deviceService.GetDeviceById(dto.DeviceId, userId);
 
         socket.SendDto(new ServerSendsDeviceById

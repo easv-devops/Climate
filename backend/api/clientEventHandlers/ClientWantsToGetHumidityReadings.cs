@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
@@ -29,6 +30,13 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
     {
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
 
+        var guid = socket.ConnectionInfo.Id;
+
+        if (!StateService.UserHasDevice(guid, dto.DeviceId))
+        {
+            throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
+        }
+        
         var readings =
             _deviceReadingsService.GetHumidityReadingsFromDevice(dto.DeviceId, userId);
         

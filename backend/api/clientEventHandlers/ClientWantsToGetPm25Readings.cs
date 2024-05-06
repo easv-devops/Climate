@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
@@ -29,6 +30,13 @@ public class ClientWantsToGetPm25Readings : BaseEventHandler<ClientWantsToGetPm2
     {
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
 
+        var guid = socket.ConnectionInfo.Id;
+
+        if (!StateService.UserHasDevice(guid, dto.DeviceId))
+        {
+            throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
+        }
+        
         var readings =
             _deviceReadingsService.GetPm25ReadingsFromDevice(dto.DeviceId, userId);
         
