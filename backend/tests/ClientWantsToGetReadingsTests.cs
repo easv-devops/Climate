@@ -1,4 +1,6 @@
-﻿using api.clientEventHandlers;
+﻿using api;
+using api.clientEventHandlers;
+using api.helpers;
 using api.serverEventModels;
 using tests.WebSocket;
 
@@ -10,7 +12,7 @@ public class ClientWantsToGetReadingsTests
     public void Setup()
     {
         FlywayDbTestRebuilder.ExecuteMigrations();
-        Startup.Start(null);
+        Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));
     }
 
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]

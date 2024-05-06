@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
@@ -41,6 +42,12 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
             throw new AuthenticationException("Only the owner of device #"+dto.Id+" has access to this information");
         }
 
+        // Removes readings for the device and then the device itself
+        if (!_deviceReadingsService.DeleteAllReadings(dto.Id) || !_deviceService.DeleteDevice(dto.Id))
+        {
+            throw new SqlTypeException("Something went wrong when deleting device #" + dto.Id);
+        }
+        
         //removes the device from stateService
         StateService.RemoveUserFromDevice(dto.Id, socket.ConnectionInfo.Id);
         
