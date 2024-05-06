@@ -17,7 +17,7 @@ public class ClientWantsToDeleteDevice
     
 
     [TestCase(1, "user@example.com", "12345678","navnpådevice", 1, TestName = "ValidDeviceId")]
-    [TestCase(5, "user@example.com", "12345678","jfiewfwe", 1, TestName = "InvalidDeviceId")]
+    [TestCase(50, "user@example.com", "12345678","jfiewfwe", 1, TestName = "InvalidDeviceId")]
     public async Task DeleteDeviceTest(int id, string email, string password, string deviceName, int roomId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
@@ -26,6 +26,12 @@ public class ClientWantsToDeleteDevice
         {
             email = email,
             password = password
+        });
+        
+        ws.Send(new ClientWantsToCreateDeviceDto
+        {
+            DeviceName = deviceName,
+            RoomId = roomId
         });
         
         await ws.DoAndAssert(new ClientWantsToDeleteDeviceDto
