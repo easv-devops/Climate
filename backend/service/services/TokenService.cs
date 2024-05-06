@@ -25,7 +25,7 @@ public class TokenService
                 { "userId", userId }
             };
 
-            return encoder.Encode(payload, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+            return encoder.Encode(payload, Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString()));
         }
         catch (Exception e)
         {
@@ -43,7 +43,7 @@ public class TokenService
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
             IJwtValidator validator = new JwtValidator(serializer, provider);
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, new HMACSHA512Algorithm());
-            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JWT_KEY.ToString()));
+            var json = decoder.Decode(jwt, Environment.GetEnvironmentVariable(EnvVarKeys.JwtKey.ToString()));
 
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
             
