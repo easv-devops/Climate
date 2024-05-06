@@ -23,6 +23,8 @@ steps:
         from_secret: MailPassword
       MqttToken:
         from_secret: MqttToken
+      dbtestconn:
+        from_secret: dbtestconn
     commands:
       - dotnet sonarscanner begin 
           /k:"easv-devops_Climate_AY7hF_zMEVvRW2O60EsK" 
