@@ -24,6 +24,7 @@ import {
 } from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import {ClientWantsToCreateRoomDto} from "../models/roomModels/ClientWantsToCreateRoomDto";
+import {ClientWantsToEditRoomDto, RoomToEdit} from "../models/roomModels/ClientWantsToEditRoomDto";
 
 
 @Injectable({providedIn: 'root'})

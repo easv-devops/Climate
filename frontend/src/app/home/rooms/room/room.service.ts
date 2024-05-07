@@ -2,6 +2,7 @@ import {inject, Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToGetAllRoomsDto} from "../../../../models/roomModels/clientWantsToGetAllRoomsDto";
 import {ClientWantsToCreateRoomDto} from "../../../../models/roomModels/ClientWantsToCreateRoomDto";
+import {ClientWantsToEditRoomDto} from "../../../../models/roomModels/ClientWantsToEditRoomDto";
 
 
 @Injectable({
@@ -31,5 +32,12 @@ export class RoomService {
     }));
   }
 
+  editRoom(){
+    this.ws.socketConnection.sendDto(new ClientWantsToEditRoomDto( new ClientWantsToEditRoomDto({RoomToEdit: {
+        Id: 1, // Id på det rum, du vil redigere
+        RoomName: 'New Room Name' // Det nye navn til rummet
+      }})
+    ));
+  }
 }
 
