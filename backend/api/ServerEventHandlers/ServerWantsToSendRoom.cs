@@ -12,6 +12,7 @@ public class ServerWantsToSendRoom
 {
     public bool SendRoomToClient(RoomWithId room)
     {
+     
         var subscribedUserList = StateService.GetUsersForRoom(room.Id);
         
         foreach (var user in subscribedUserList)

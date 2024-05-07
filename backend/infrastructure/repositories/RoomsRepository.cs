@@ -124,4 +124,28 @@ public class RoomsRepository
         }
     }
     */
+    public RoomWithId EditRoom(Room dto)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            UPDATE climate.Room 
+            SET RoomName = @roomName 
+            WHERE Id = @id;
+            SELECT LAST_INSERT_ID() AS Id, @roomName AS RoomName;
+        ";
+
+            // Udfører opdateringsforespørgslen og henter det opdaterede rum
+            RoomWithId updatedRoom = connection.QueryFirst<RoomWithId>(query, new { roomName = dto.RoomName, id = dto.Id });
+
+            return updatedRoom;
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to update the given room", e);
+        }
+    }
+
 }

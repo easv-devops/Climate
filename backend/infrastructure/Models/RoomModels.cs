@@ -22,3 +22,9 @@ public class CreateRoomDto
 
     public required string RoomName { get; set; }
 }
+
+public class Room
+{
+    public required int Id { get; set; }
+    public required string RoomName { get; set; }
+}

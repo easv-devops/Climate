@@ -27,8 +27,7 @@ public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoom
     public override Task Handle(ClientWantsToGetAllRoomsDto dto, IWebSocketConnection socket)
     {
         var user = StateService.GetClient(socket.ConnectionInfo.Id);
-
- 
+        
         
         var roomList = _roomService.GetAllRooms(user.User!.Id);
         

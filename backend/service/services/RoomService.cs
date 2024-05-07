@@ -22,4 +22,9 @@ public class RoomService
     {
         return _roomsRepository.CreateRoom(room);
     }
+
+    public RoomWithId EditRoom(Room dto)
+    {
+        return _roomsRepository.EditRoom(dto);
+    }
 }
