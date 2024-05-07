@@ -35,12 +35,7 @@ public static class StateService
 
     public static WebSocketMetaData GetClient(Guid clientId)
     {
-        if (_clients.ContainsKey(clientId))
-        {
-            return _clients[clientId];
-        }
-
-        return null;
+        return _clients.GetValueOrDefault(clientId) ?? throw new InvalidOperationException();
     }
 
     public static void AddClient(Guid clientId, IWebSocketConnection connection)
@@ -79,9 +74,9 @@ public static class StateService
     
     public static List<Guid> GetUsersForDevice(int deviceId)
     {
-        if (_deviceToUser.ContainsKey(deviceId))
+        if (_deviceToUser.TryGetValue(deviceId, out var userList))
         {
-            return _deviceToUser[deviceId];
+            return userList;
         }
         else
         {
@@ -91,9 +86,9 @@ public static class StateService
 
     public static void AddUserToDevice(int deviceId, Guid userId)
     {
-        if (_deviceToUser.ContainsKey(deviceId))
+        if (_deviceToUser.TryGetValue(deviceId, out var userList))
         {
-            _deviceToUser[deviceId].Add(userId);
+            userList.Add(userId);
         }
         else
         {
@@ -101,9 +96,9 @@ public static class StateService
         }
         
         // Add the device to the user's list of subscribed devices.
-        if (_userToDevice.ContainsKey(userId))
+        if (_userToDevice.TryGetValue(userId, out var deviceList))
         {
-            _userToDevice[userId].Add(deviceId);
+            deviceList.Add(deviceId);
         }
         else
         {
@@ -135,13 +130,13 @@ public static class StateService
     
     public static bool UserHasDevice(Guid userId, int deviceId)
     {
-        if (!_userToDevice.ContainsKey(userId))
+        if (!_userToDevice.TryGetValue(userId, out var deviceList))
         {
             // Brugeren findes ikke i vores system
             return false;
         }
 
         // Tjek om enheden findes i brugerens liste over enheder
-        return _userToDevice[userId].Contains(deviceId);
+        return deviceList.Contains(deviceId);
     }
 }

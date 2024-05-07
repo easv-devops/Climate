@@ -28,8 +28,7 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
 
     public override Task Handle(ClientWantsToGetHumidityReadingsDto dto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
-
+        
         var guid = socket.ConnectionInfo.Id;
 
         if (!StateService.UserHasDevice(guid, dto.DeviceId))
@@ -38,7 +37,7 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
         }
         
         var readings =
-            _deviceReadingsService.GetHumidityReadingsFromDevice(dto.DeviceId, userId);
+            _deviceReadingsService.GetHumidityReadingsFromDevice(dto.DeviceId);
         
         socket.SendDto(new ServerSendsHumidityReadings()
         {
