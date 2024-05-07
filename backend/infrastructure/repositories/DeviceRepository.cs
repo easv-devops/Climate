@@ -210,7 +210,7 @@ public class DeviceRepository
             connection.Open();
             string query = @"
             SELECT Id
-            FROM climate.Device
+            FROM Device
             WHERE RoomId = @RoomId;
         ";
             return connection.Query<int>(query, new { RoomId = roomId });
