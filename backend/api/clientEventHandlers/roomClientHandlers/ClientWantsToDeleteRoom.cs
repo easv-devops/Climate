@@ -1,4 +1,6 @@
-﻿using System.Net.Sockets;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Sockets;
+using api.ClientEventFilters;
 using api.helpers;
 using api.WebSocket;
 using Fleck;
@@ -10,17 +12,20 @@ namespace api.clientEventHandlers.roomClientHandlers;
 
 public class ClientWantsToDeleteRoomDto : BaseDto
 {
+    [Required(ErrorMessage = "Room Id is required.")]
+    [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")] 
     public required int RoomToDelete { get; set; }
 }
 
-
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDto>
 {
     
     private RoomService _roomService;
     private DeviceService _deviceService;
     private readonly DeviceReadingsService _deviceReadingsService;
-
+    
     public ClientWantsToDeleteRoom(RoomService roomService, DeviceService deviceService, DeviceReadingsService deviceReadingsService)
     {
         _roomService = roomService;
@@ -49,16 +54,16 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
             throw new Exception("could not delete Room");
         }
         
-        socket.SendDto(new ServerDeletesDevice
+        socket.SendDto(new ServerDeletesRoom()
         {
-            DeletedDevice = 1
+            DeletedRoom = dto.RoomToDelete
         });
         
         return Task.CompletedTask;
     }
 }
 
-public class ServerDeletesDevice : BaseDto
+public class ServerDeletesRoom : BaseDto
 {
-    public int DeletedDevice { get; set; }
+    public int DeletedRoom { get; set; }
 }

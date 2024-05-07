@@ -57,7 +57,7 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-                DELETE FROM climate.Room WHERE Id = @id;
+                DELETE FROM Room WHERE Id = @id;
                 ";
             return connection.Execute(query, new { Id = room }) == 1;
         }
