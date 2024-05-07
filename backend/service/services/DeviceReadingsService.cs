@@ -8,10 +8,9 @@ namespace service.services;
 
 public class DeviceReadingsService
 {
-    private HumidityRepository _humidityRepository;
-    private TemperatureRepository _temperatureRepository;
-    private ParticlesRepository _particlesRepository;
-    private DeviceRepository _deviceRepository;
+    private readonly HumidityRepository _humidityRepository;
+    private readonly TemperatureRepository _temperatureRepository;
+    private readonly ParticlesRepository _particlesRepository;
     
     public DeviceReadingsService(
         HumidityRepository humidityRepository,
@@ -22,7 +21,6 @@ public class DeviceReadingsService
         _humidityRepository = humidityRepository;
         _temperatureRepository = temperatureRepository;
         _particlesRepository = particlesRepository;
-        _deviceRepository = deviceRepository;
     }
     
     public void CreateReadings(DeviceData deviceReadingsDto)
