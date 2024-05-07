@@ -26,7 +26,6 @@ export class RoomService {
   createRoom(){
     this.ws.socketConnection.sendDto(new ClientWantsToCreateRoomDto({
       RoomToCreate: {
-        UserId: 1, // Erstat med den ønskede bruger-ID
         RoomName: "Living Room" // Erstat med det ønskede navn på rummet
       }
     }));
