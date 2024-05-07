@@ -118,17 +118,20 @@ public class RoomsRepository
         }
     }
     */
-    public RoomWithId EditRoom(Room dto)
+    public RoomWithId EditRoom(RoomWithId dto)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
             string query = @"
-            UPDATE climate.Room 
+            UPDATE Room 
             SET RoomName = @roomName 
             WHERE Id = @id;
-            SELECT LAST_INSERT_ID() AS Id, @roomName AS RoomName;
+
+            SELECT Id, RoomName
+            FROM Room
+            WHERE Id = @id;
         ";
 
             // Udfører opdateringsforespørgslen og henter det opdaterede rum
