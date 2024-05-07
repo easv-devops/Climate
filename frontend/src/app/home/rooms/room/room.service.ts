@@ -3,6 +3,7 @@ import {WebSocketConnectionService} from "../../../web-socket-connection.service
 import {ClientWantsToGetAllRoomsDto} from "../../../../models/roomModels/clientWantsToGetAllRoomsDto";
 import {ClientWantsToCreateRoomDto} from "../../../../models/roomModels/ClientWantsToCreateRoomDto";
 import {ClientWantsToEditRoomDto} from "../../../../models/roomModels/ClientWantsToEditRoomDto";
+import {ClientWantsToDeleteRoomDto} from "../../../../models/roomModels/ClientWantsToDeleteRoomDto";
 
 
 @Injectable({
@@ -23,19 +24,25 @@ export class RoomService {
   }
 
   //todo send et rigtigt objekt med, men den virker
-  createRoom(){
+  createRoom(name: string){
     this.ws.socketConnection.sendDto(new ClientWantsToCreateRoomDto({
       RoomToCreate: {
-        RoomName: "Living Room" // Erstat med det ønskede navn på rummet
+        RoomName: name
       }
     }));
   }
 
-  editRoom(){
+  editRoom(roomId: number, name: string){
     this.ws.socketConnection.sendDto(new ClientWantsToEditRoomDto( new ClientWantsToEditRoomDto({RoomToEdit: {
-        Id: 1, // Id på det rum, du vil redigere
-        RoomName: 'New Room Name' // Det nye navn til rummet
+        Id: roomId as number,
+        RoomName: name
       }})
+    ));
+  }
+
+  deleteRoom(roomId: number){
+    this.ws.socketConnection.sendDto(new ClientWantsToDeleteRoomDto(
+      {RoomToDelete: roomId}
     ));
   }
 }

@@ -45,7 +45,7 @@ export class HomePage implements OnInit {
       this.addSubItem('Room ' + r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
     }
     this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
-    this.addSubItem('New room', 'rooms/new', this.roomMenuItem!, 'add')
+    this.addSubItem('New room', 'rooms/add', this.roomMenuItem!, 'add')
   }
 
   loadDevices(devices: Device[]) {

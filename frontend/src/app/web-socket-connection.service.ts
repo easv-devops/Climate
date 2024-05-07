@@ -23,8 +23,7 @@ import {
   ServerSendsDeviceIdListForRoomDto
 } from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
-import {ClientWantsToCreateRoomDto} from "../models/roomModels/ClientWantsToCreateRoomDto";
-import {ClientWantsToEditRoomDto, RoomToEdit} from "../models/roomModels/ClientWantsToEditRoomDto";
+import { ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
 
 
 @Injectable({providedIn: 'root'})
@@ -192,7 +191,6 @@ export class WebSocketConnectionService {
   }
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
-
     var tempListOfRoomIds: number[] = [];
     this.allRooms.pipe(take(1)).subscribe(allRoomRecord => {
       if (!allRoomRecord) {
@@ -209,6 +207,15 @@ export class WebSocketConnectionService {
     });
   }
 
+  ServerDeletesRoom(dto: ServerDeletesRoom) {
+    console.log(dto.DeletedRoom)
+    if (dto.DeletedRoom) {
+      const rooms = { ...this.allRoomsSubject.value };
+      delete rooms[dto.DeletedRoom];
+      this.allRoomsSubject.next(rooms);
+    }
+  }
+
   clearDataOnLogout() {
     localStorage.setItem("jwt", ""); // Nulstil JWT i local storage
     this.jwtSubject.next(undefined); // Nulstil JWT-subjektet
@@ -220,5 +227,3 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
 }
-
-

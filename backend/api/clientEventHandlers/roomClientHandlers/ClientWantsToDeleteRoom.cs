@@ -7,7 +7,6 @@ using service.services;
 
 namespace api.clientEventHandlers.roomClientHandlers;
 
-
 public class ClientWantsToDeleteRoomDto : BaseDto
 {
     public required int RoomToDelete { get; set; }
@@ -49,16 +48,16 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
             throw new Exception("could not delete Room");
         }
         
-        socket.SendDto(new ServerDeletesDevice
+        socket.SendDto(new ServerDeletesRoom
         {
-            DeletedDevice = 1
+            DeletedRoom = dto.RoomToDelete
         });
         
         return Task.CompletedTask;
     }
 }
 
-public class ServerDeletesDevice : BaseDto
+public class ServerDeletesRoom : BaseDto
 {
-    public int DeletedDevice { get; set; }
+    public int DeletedRoom { get; set; }
 }

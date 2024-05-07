@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {filter, map, Subject, switchMap, takeUntil} from "rxjs";
 import {Device, DeviceInRoom, Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
@@ -19,7 +19,8 @@ export class RoomComponent  implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private roomService: RoomService,
-              private ws: WebSocketConnectionService) {
+              private ws: WebSocketConnectionService,
+              private readonly router: Router) {
   }
 
   ngOnInit() {
@@ -53,6 +54,11 @@ export class RoomComponent  implements OnInit {
             this.room = selectedRoom;
           }
       });
+  }
+
+  deleteRoom(){
+    this.roomService.deleteRoom(this.idFromRoute as number)
+    this.router.navigate(["rooms/all"])
   }
 
 }

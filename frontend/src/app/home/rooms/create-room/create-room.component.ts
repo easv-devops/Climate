@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
+import {RoomService} from "../room/room.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-room',
@@ -12,7 +14,8 @@ export class CreateRoomComponent  implements OnInit {
     roomName: ['', Validators.required]
   });
 
-  constructor(private readonly fb: FormBuilder) { }
+  constructor(private readonly fb: FormBuilder, private readonly roomService: RoomService,
+              private readonly router: Router) { }
 
   ngOnInit() {}
 
@@ -22,5 +25,7 @@ export class CreateRoomComponent  implements OnInit {
   }
 
   createRoom() {
+    this.roomService.createRoom(this.roomName.value!)
+    this.router.navigate(["rooms/all"])
   }
 }
