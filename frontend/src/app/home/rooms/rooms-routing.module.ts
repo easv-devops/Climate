@@ -4,6 +4,7 @@ import {RoomsComponent} from "./rooms.component";
 import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {RoomComponent} from "./room/room.component";
 import {CreateRoomComponent} from "./create-room/create-room.component";
+import {EditRoomComponent} from "./edit-room/edit-room.component";
 
 const routes: Routes = [
   {
@@ -13,6 +14,10 @@ const routes: Routes = [
       {
         path: 'add', // Path for creating a room
         component: CreateRoomComponent
+      },
+      {
+        path: 'edit', // Path for creating a room
+        component: EditRoomComponent
       },
       {
         path: 'all', // Path for login component (e.g., /auth/login)

@@ -10,10 +10,11 @@ import {HomePageModule} from "../home.module";
 import {CreateRoomComponent} from "./create-room/create-room.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {RoomCardComponent} from "./room/device-card/device-card.component";
+import {EditRoomComponent} from "./edit-room/edit-room.component";
 
 
 @NgModule({
-  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent, CreateRoomComponent],
+  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent, CreateRoomComponent, EditRoomComponent],
   imports: [
     CommonModule,
     IonicModule,
