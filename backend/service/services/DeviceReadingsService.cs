@@ -71,22 +71,22 @@ public class DeviceReadingsService
         return true;
     }
 
-    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId, int userId)
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId)
     {
         return _temperatureRepository.GetTemperatureReadingsFromDevice(deviceId);
     }
     
-    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId, int userId)
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId)
     {
         return _humidityRepository.GetHumidityReadingsFromDevice(deviceId);
     }
     
-    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId, int userId)
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId)
     {
         return _particlesRepository.GetPm25ReadingsFromDevice(deviceId);
     }
     
-    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId, int userId)
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId)
     {
         return _particlesRepository.GetPm100ReadingsFromDevice(deviceId);
     }

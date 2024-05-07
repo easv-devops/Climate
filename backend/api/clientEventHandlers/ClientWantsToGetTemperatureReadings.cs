@@ -28,8 +28,6 @@ public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsT
 
     public override Task Handle(ClientWantsToGetTemperatureReadingsDto dto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
-
         var guid = socket.ConnectionInfo.Id;
 
         if (!StateService.UserHasDevice(guid, dto.DeviceId))
@@ -38,7 +36,7 @@ public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsT
         }
         
         var readings =
-            _deviceReadingsService.GetTemperatureReadingsFromDevice(dto.DeviceId, userId);
+            _deviceReadingsService.GetTemperatureReadingsFromDevice(dto.DeviceId);
         
         socket.SendDto(new ServerSendsTemperatureReadings
         {

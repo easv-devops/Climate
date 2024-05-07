@@ -28,8 +28,6 @@ public class ClientWantsToGetPm25Readings : BaseEventHandler<ClientWantsToGetPm2
 
     public override Task Handle(ClientWantsToGetPm25ReadingsDto dto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
-
         var guid = socket.ConnectionInfo.Id;
 
         if (!StateService.UserHasDevice(guid, dto.DeviceId))
@@ -38,7 +36,7 @@ public class ClientWantsToGetPm25Readings : BaseEventHandler<ClientWantsToGetPm2
         }
         
         var readings =
-            _deviceReadingsService.GetPm25ReadingsFromDevice(dto.DeviceId, userId);
+            _deviceReadingsService.GetPm25ReadingsFromDevice(dto.DeviceId);
         
         socket.SendDto(new ServerSendsPm25Readings()
         {
