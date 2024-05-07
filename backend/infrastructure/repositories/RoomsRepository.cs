@@ -21,7 +21,7 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-                    SELECT * From climate.Room WHERE UserId = @UserId;
+                    SELECT * FROM Room WHERE UserId = @UserId;
                 ";
             return connection.Query<RoomWithId>(query, new { UserId = UserId });
         }
@@ -38,7 +38,7 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-            INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
+            INSERT INTO Room(UserId, RoomName) VALUES (@UserId, @RoomName)
             RETURNING Id, RoomName;
             ";
         
@@ -50,10 +50,6 @@ public class RoomsRepository
         }
     }
 
-
-    /**
-     * 
-     */
     public bool DeleteRoom(Room room)
     {
         using var connection = new MySqlConnection(_connectionString);

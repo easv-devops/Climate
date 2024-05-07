@@ -14,7 +14,6 @@ public class RoomService
 
     public IEnumerable<RoomWithId> GetAllRooms(int UserId)
     {
-
         return _roomsRepository.GetAllRooms(UserId);
     }
     

@@ -7,7 +7,6 @@ export class ClientWantsToCreateRoomDto extends BaseDto<ClientWantsToCreateRoomD
 }
 
 export class CreateRoomDto {
-  UserId!: number;
   RoomName!: string;
 }
 

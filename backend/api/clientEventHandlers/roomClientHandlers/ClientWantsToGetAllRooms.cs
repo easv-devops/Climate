@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using System.Security.Authentication;
+﻿using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels.roomDtos;
 using api.WebSocket;
@@ -14,6 +13,7 @@ public class ClientWantsToGetAllRoomsDto : BaseDto
     //Intentionally empty. We need a Dto, but we get the only needed attribute, userId, from the socket connection.
 }
 
+[RequireAuthentication]
 public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoomsDto>
 {
     private RoomService _roomService;
@@ -27,7 +27,6 @@ public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoom
     public override Task Handle(ClientWantsToGetAllRoomsDto dto, IWebSocketConnection socket)
     {
         var user = StateService.GetClient(socket.ConnectionInfo.Id);
-        
         
         var roomList = _roomService.GetAllRooms(user.User!.Id);
         
