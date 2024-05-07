@@ -38,10 +38,10 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-                INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
-                RETURNING *;
-                ";
-            
+            INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
+            RETURNING Id, RoomName;
+            ";
+        
             return connection.QueryFirst<RoomWithId>(query, new { UserId = room.UserId, RoomName = room.RoomName });
         }
         catch (Exception e)
@@ -49,6 +49,7 @@ public class RoomsRepository
             throw new SqlTypeException("Failed to create a room", e);
         }
     }
+
     
     
     

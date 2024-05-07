@@ -22,5 +22,4 @@ public class RoomService
     {
         return _roomsRepository.CreateRoom(room);
     }
-    
 }

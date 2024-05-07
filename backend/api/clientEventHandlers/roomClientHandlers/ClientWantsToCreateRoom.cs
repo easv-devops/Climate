@@ -1,4 +1,6 @@
-﻿using api.ServerEventHandlers;
+﻿using System.Net.Sockets;
+using api.ServerEventHandlers;
+using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
 using lib;
@@ -9,8 +11,6 @@ namespace api.clientEventHandlers.roomClientHandlers;
 public class ClientWantsToCreateRoomDto : BaseDto
 {
     public CreateRoomDto RoomToCreate { get; set; }
- 
-
 }
 
 
@@ -31,6 +31,8 @@ public class ClientWantsToCreateRoom: BaseEventHandler<ClientWantsToCreateRoomDt
     {
         var room = _roomService.CreateRoom(dto.RoomToCreate);
 
+        StateService.AddUserToRoom(room.Id, socket.ConnectionInfo.Id);
+        
         _serverResponse.SendRoomToClient(room);
         
         return Task.CompletedTask;

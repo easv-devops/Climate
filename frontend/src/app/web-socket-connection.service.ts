@@ -22,7 +22,8 @@ import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGet
 import {
   ServerSendsDeviceIdListForRoomDto
 } from "../models/ServerSendsDeviceIdListForRoomDto";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../models/ClientWantsToGetDeviceIdsForRoomDto";
+import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
+import {ClientWantsToCreateRoomDto} from "../models/roomModels/ClientWantsToCreateRoomDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -123,6 +124,18 @@ export class WebSocketConnectionService {
     });
   }
 
+  ServerSendsRoom(dto: ServerSendsRoom) {
+    this.allRooms.pipe(take(1)).subscribe(allRoomsRecord => {
+      if (allRoomsRecord !== undefined) {
+
+        allRoomsRecord[dto.Room.Id] = dto.Room;
+        // Opdater allDevicesSubject med den opdaterede liste over enheder
+        this.allRoomsSubject.next(allRoomsRecord);
+        console.log(dto.Room)
+      }
+    });
+  }
+
 
   //todo could maybe just check if the new values has been changed on the alldevice list just maybe..
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
@@ -176,8 +189,6 @@ export class WebSocketConnectionService {
       }
     });
   }
-
-
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
 
