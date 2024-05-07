@@ -62,7 +62,8 @@ public static class Startup
         
         //todo lav en metode der finder dem her af sig selv..
         builder.Services.AddSingleton<ServerWantsToSendDevice>();
-        
+        builder.Services.AddSingleton<ServerWantsToSendRoom>();
+
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
         

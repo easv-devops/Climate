@@ -1,0 +1,12 @@
+<ion-card (click)="routeToDevice()">
+  <div *ngIf="device?.DeviceName != undefined">
+
+
+  <ion-card-header>
+    <ion-list-header>{{device!.DeviceName}}</ion-list-header>
+    Device ID: {{ deviceId?.toString() }}
+  </ion-card-header>
+  <!-- Add more content here as needed -->
+
+  </div>
+</ion-card>

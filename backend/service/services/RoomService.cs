@@ -17,4 +17,10 @@ public class RoomService
 
         return _roomsRepository.GetAllRooms(UserId);
     }
+    
+    public RoomWithId CreateRoom(CreateRoomDto room)
+    {
+        return _roomsRepository.CreateRoom(room);
+    }
+    
 }

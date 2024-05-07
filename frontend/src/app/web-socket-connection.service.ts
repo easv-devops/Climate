@@ -49,6 +49,10 @@ export class WebSocketConnectionService {
   private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
   deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
+  private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
+  allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
+
+
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
 
@@ -158,15 +162,15 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsDeviceIdListForRoom(dto: ServerSendsDeviceIdListForRoomDto) {
+
+    //sets all rooms record
     this.allRooms.pipe(take(1)).subscribe(roomsSnapshot => {
       if (roomsSnapshot && roomsSnapshot[dto.RoomId]) {
         // Kopier det aktuelle rum
         const updatedRoom = { ...roomsSnapshot[dto.RoomId] };
 
         updatedRoom.DeviceIds = dto.DeviceIds;
-        console.log("ejwfwi")
         const updatedRoomsSnapshot = { ...roomsSnapshot, [dto.RoomId]: updatedRoom };
-
         // Udsend den opdaterede snapshot
         this.allRoomsSubject.next(updatedRoomsSnapshot);
       }
@@ -176,6 +180,8 @@ export class WebSocketConnectionService {
 
 
   ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
+
+    var tempListOfRoomIds: number[] = [];
     this.allRooms.pipe(take(1)).subscribe(allRoomRecord => {
       if (!allRoomRecord) {
         allRoomRecord = {};
@@ -184,6 +190,7 @@ export class WebSocketConnectionService {
       dto.Rooms?.forEach(room => {
           // Tilføj eller opdater enheden i record
           allRoomRecord![room.Id] = room;
+        tempListOfRoomIds.push(room.Id)
         });
 
       this.allRoomsSubject.next(allRoomRecord);

@@ -4,7 +4,6 @@ import {filter, map, Subject, switchMap, takeUntil} from "rxjs";
 import {Device, DeviceInRoom, Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {RoomService} from "./room.service";
-import {ClientWantsToGetAllRoomsDto} from "../../../../models/roomModels/clientWantsToGetAllRoomsDto";
 import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 @Component({
@@ -27,7 +26,6 @@ export class RoomComponent  implements OnInit {
 
     this.getRoomFromRoute();//todo skal bruges til at loade room info later
     this.subscribeToRoomDevice();//todo skal ændres til allrooms.
-    this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({ RoomId: this.idFromRoute}))
   }
 
   ngOnDestroy() {
@@ -47,15 +45,13 @@ export class RoomComponent  implements OnInit {
       )
       .subscribe(roomRecord => {
         if (roomRecord !== undefined) {
-          const rooms = Object.values(roomRecord);
-
-          const selectedRoom = rooms[this.idFromRoute!];
-          //checks if any changes in room from server and updates room and devices
-
-            this.room = selectedRoom;
-            console.log(selectedRoom)
+          if (roomRecord[this.idFromRoute!].DeviceIds == null){
+            this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({ RoomId: this.idFromRoute}))
           }
-
+          const selectedRoom = roomRecord[this.idFromRoute!];
+          //checks if any changes in room from server and updates room and devices
+            this.room = selectedRoom;
+          }
       });
   }
 

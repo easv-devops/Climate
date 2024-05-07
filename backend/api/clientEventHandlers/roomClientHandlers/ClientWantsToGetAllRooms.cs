@@ -28,10 +28,7 @@ public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoom
     {
         var user = StateService.GetClient(socket.ConnectionInfo.Id);
 
-        if (!user.IsAuthenticated)
-        {
-            throw new AuthenticationException("Could not validate user");
-        }
+ 
         
         var roomList = _roomService.GetAllRooms(user.User!.Id);
         

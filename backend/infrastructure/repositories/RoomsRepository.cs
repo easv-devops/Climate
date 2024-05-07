@@ -31,7 +31,24 @@ public class RoomsRepository
         }
     }
     
-    
+    public RoomWithId CreateRoom(CreateRoomDto room)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+                INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
+                RETURNING *;
+                ";
+            
+            return connection.QueryFirst<RoomWithId>(query, new { UserId = room.UserId, RoomName = room.RoomName });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to create a room", e);
+        }
+    }
     
     
     
@@ -60,26 +77,10 @@ public class RoomsRepository
     */
 
     
-    /**
-    public RoomWithId CreateRoom(CreateRoomDto room)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-            string query = @"
-                INSERT INTO climate.Room(UserId, RoomName) VALUES (@UserId, @RoomName)
-                RETURNING *;
-                ";
-            
-            return connection.QueryFirst<RoomWithId>(query, new { UserId = room.UserId, RoomName = room.RoomName });
-        }
-        catch (Exception e)
-        {
-            throw new SqlTypeException("Failed to create a room", e);
-        }
-    }
 
+
+
+    /**
     public Room EditRoom(Room room)
     {
         using var connection = new MySqlConnection(_connectionString);

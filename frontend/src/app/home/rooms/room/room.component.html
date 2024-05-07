@@ -26,7 +26,10 @@
   <!-- todo skal loade fede kort med tiden -->
   <ion-list>
     <ion-list-header>Devices in Room {{ this.room?.RoomName }}</ion-list-header>
+    <div *ngIf="room?.DeviceIds !== undefined">
+      <app-device-card *ngFor="let deviceId of room?.DeviceIds" [deviceId]="deviceId"></app-device-card>
 
+    </div>
 
   </ion-list>
 

@@ -42,8 +42,7 @@ export class HomePage implements OnInit {
     //TODO: Load logged in user's rooms like for devices (max amount?).
 
     for (var r of rooms) {
-      var idIndex = r.Id -1;
-      this.addSubItem('Room ' + r.RoomName, 'rooms/' + idIndex, this.roomMenuItem!, 'chevron-forward')
+      this.addSubItem('Room ' + r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
     }
     this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
     this.addSubItem('New room', 'rooms/new', this.roomMenuItem!, 'add')
@@ -106,9 +105,16 @@ export class HomePage implements OnInit {
         if (roomRecord !== undefined) {
           // Hent alle enheder fra recordet
           const rooms = Object.values(roomRecord);
+          this.clearMenuItems();
           this.loadRooms(rooms);
         }
       });
+  }
+
+  private clearMenuItems() {
+    if (this.roomMenuItem) {
+      this.roomMenuItem.subItems = [];
+    }
   }
 }
 
