@@ -22,8 +22,7 @@ import {RoomCardComponent} from "./rooms/room/device-card/device-card.component"
     exports: [
         GraphComponent,
         TopbarComponent,
-        RoomCardComponent
     ],
-    declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent, RoomCardComponent]
+    declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent]
 })
 export class HomePageModule {}

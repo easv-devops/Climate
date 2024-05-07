@@ -49,9 +49,7 @@ public class RoomsRepository
             throw new SqlTypeException("Failed to create a room", e);
         }
     }
-    
-    //todo should delete all devices in the room maybe? or what are the status..
-    /**
+
     public bool DeleteRoom(Room room)
     {
         using var connection = new MySqlConnection(_connectionString);
@@ -59,20 +57,15 @@ public class RoomsRepository
         {
             connection.Open();
             string query = @"
-                DELETE FROM climate.Room WHERE Id = @id AND UserId = @UserId;
+                DELETE FROM climate.Room WHERE Id = @id;
                 ";
-            connection.Execute(query, new { id = room.Id, UserId = room.UserId });
-            return true;
+            return connection.Execute(query, new { Id = room.Id }) == 1;
         }
         catch (Exception e)
         {
             throw new SqlTypeException("Failed to delete the specific room", e);
         }
     }
-    */
-
-    
-
 
 
     /**
