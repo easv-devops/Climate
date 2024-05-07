@@ -67,20 +67,64 @@ public class RoomsRepository
         }
     }
 
-    
-    
- 
-    public RoomWithId EditRoom(Room dto)
+
+    /**
+    public Room EditRoom(Room room)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
             string query = @"
-            UPDATE climate.Room 
+                UPDATE climate.Room 
+                SET RoomName = @roomName 
+                WHERE Id = @id 
+                AND UserId = @UserId;
+            ";
+            Room rooms = connection.ExecuteScalar<Room>(query,
+                new { roomName = room.RoomName, id = room.Id, UserId = room.UserId });
+
+            return rooms;
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to update the given room", e);
+        }
+    }
+
+    public Room getRoomById(Room room)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+                SELECT * FROM climate.Room WHERE Id = @id AND UserId = @UserId
+                ";
+            
+            Room specificRoom = connection.QueryFirstOrDefault<Room>(query, new { id = room.Id, UserId = room.UserId });
+            return specificRoom;
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get the specific room", e);
+        }
+    }
+    */
+    public RoomWithId EditRoom(RoomWithId dto)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            UPDATE Room 
             SET RoomName = @roomName 
             WHERE Id = @id;
-            SELECT LAST_INSERT_ID() AS Id, @roomName AS RoomName;
+
+            SELECT Id, RoomName
+            FROM Room
+            WHERE Id = @id;
         ";
 
             // Udfører opdateringsforespørgslen og henter det opdaterede rum

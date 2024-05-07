@@ -34,9 +34,3 @@ public class CreateRoomDto
     [MaxLength(50, ErrorMessage = "Room Name is too long")]
     public required string RoomName { get; set; }
 }
-
-public class Room
-{
-    public required int Id { get; set; }
-    public required string RoomName { get; set; }
-}

@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Security.Authentication;
+using api.ClientEventFilters;
 using api.ServerEventHandlers;
 using api.WebSocket;
 using Fleck;
@@ -11,10 +12,11 @@ namespace api.clientEventHandlers.roomClientHandlers;
 
 public class ClientWantsToEditRoomDto : BaseDto
 {
-    public Room RoomToEdit { get; set; }
+    public RoomWithId RoomToEdit { get; set; }
 }
 
-
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToEditRoom: BaseEventHandler<ClientWantsToEditRoomDto>
 {
     private RoomService _roomService;
