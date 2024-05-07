@@ -9,7 +9,6 @@ import {Page1Component} from "./page1/page1.component";
 import {Page2Component} from "./page2/page2.component";
 import {TopbarComponent} from "./topbar/topbar.component";
 import {GraphComponent} from "./graph/graph.component";
-import {RoomCardComponent} from "./rooms/room/device-card/device-card.component";
 
 
 @NgModule({

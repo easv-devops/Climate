@@ -1,8 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 import {WebSocketConnectionService} from "../../../../web-socket-connection.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Router} from "@angular/router";
 import {Device} from "../../../../../models/Entities";
 
 @Component({
@@ -11,9 +10,8 @@ import {Device} from "../../../../../models/Entities";
   styleUrls: ['./device-card.component.scss'],
 })
 
-export class RoomCardComponent implements OnInit {
+export class DeviceCardComponent implements OnInit {
   @Input() deviceId: number | undefined;
-  idFromRoute: number | undefined;
   private unsubscribe$ = new Subject<void>();
 
   public device!: Device;
@@ -21,12 +19,14 @@ export class RoomCardComponent implements OnInit {
   constructor(private ws: WebSocketConnectionService,
               private router: Router) { }
 
+  ngOnInit(): void {
+    this.subscribeToRoomDevice();
+  }
+
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
-
 
   subscribeToRoomDevice() {
     this.ws.allDevices
@@ -38,10 +38,6 @@ export class RoomCardComponent implements OnInit {
           this.device = deviceRecord[this.deviceId!]
         }
       });
-  }
-
-  ngOnInit(): void {
-    this.subscribeToRoomDevice();
   }
 
   routeToDevice() {

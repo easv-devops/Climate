@@ -9,19 +9,21 @@ import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {HomePageModule} from "../home.module";
 import {CreateRoomComponent} from "./create-room/create-room.component";
 import {ReactiveFormsModule} from "@angular/forms";
-import {RoomCardComponent} from "./room/device-card/device-card.component";
+import {DeviceCardComponent} from "./room/device-card/device-card.component";
 import {EditRoomComponent} from "./edit-room/edit-room.component";
+import {RoomCardComponent} from "./room-card/room-card.component";
 
 
 @NgModule({
-  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, RoomCardComponent, CreateRoomComponent, EditRoomComponent],
+  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, DeviceCardComponent, CreateRoomComponent, EditRoomComponent, RoomCardComponent],
   imports: [
     CommonModule,
     IonicModule,
     RoomsRoutingModule,
     HomePageModule,
     ReactiveFormsModule
-  ]
+  ],
+  exports: [RoomCardComponent]
 })
 export class RoomsModule {
 }

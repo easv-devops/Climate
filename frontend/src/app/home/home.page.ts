@@ -42,7 +42,7 @@ export class HomePage implements OnInit {
     //TODO: Load logged in user's rooms like for devices (max amount?).
 
     for (var r of rooms) {
-      this.addSubItem('Room ' + r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
+      this.addSubItem(r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
     }
     this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
     this.addSubItem('New room', 'rooms/add', this.roomMenuItem!, 'add')

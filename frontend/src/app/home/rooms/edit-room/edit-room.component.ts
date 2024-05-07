@@ -21,19 +21,19 @@ export class EditRoomComponent  implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
               private readonly roomService: RoomService,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute,
+              private readonly router: Router) { }
 
   ngOnInit() {
     this.getRoomFromRoute()
   }
 
   editRoom() {
-    this.roomService.editRoom(this.idFromRoute!, this.roomName.value!)
+    this.roomService.editRoom(this.idFromRoute!, this.roomName.value!);
+    this.router.navigate(["rooms/"+this.idFromRoute]);
   }
-
 
   getRoomFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
-
 }
