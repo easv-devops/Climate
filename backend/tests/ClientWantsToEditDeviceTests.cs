@@ -5,7 +5,7 @@ using api.serverEventModels;
 using tests.WebSocket;
 
 namespace tests;
-public class ClientWantsToEdit
+public class ClientWantsToEditDeviceTests
 {
         
     [SetUp]

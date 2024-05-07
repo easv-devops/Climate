@@ -1,0 +1,28 @@
+<ion-content color="light" class="ion-padding">
+  <div class="ion-text-center" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-card class="ion-padding" id="edit-room-card"
+              style="overflow: hidden; border-radius: 15px; max-width: 500px; width: 90%;">
+      <ion-card-header class="ion-text-center">
+        <h1>Edit Room</h1> <!-- Ændret titel til "Edit Room" -->
+      </ion-card-header>
+      <ion-card-content class="ion-color ion-color-danger">
+        <form (ngSubmit)="editRoom()" [formGroup]="form"> <!-- Ændret submit-funktionen til editRoom() -->
+          <ion-list>
+            <ion-item>
+              <ion-input formControlName="roomName" label="Room Name *" label-placement="stacked"> <!-- Ændret formControlName og label til "Room Name" -->
+              </ion-input>
+            </ion-item>
+            <div *ngIf="roomName.touched && roomName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <ion-text color="danger">Required</ion-text>
+            </div>
+          </ion-list>
+          <div class="ion-text-center ion-padding">
+            <ion-button (click)="editRoom()" size="large" [disabled]="form.controls.roomName.invalid"> <!-- Ændret click-event til editRoom() og disabled-check til form.controls.roomName -->
+              Save Changes <!-- Ændret teksten på knappen til "Save Changes" -->
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
