@@ -50,7 +50,7 @@ public class RoomsRepository
         }
     }
 
-    public bool DeleteRoom(Room room)
+    public bool DeleteRoom(int room)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -59,17 +59,15 @@ public class RoomsRepository
             string query = @"
                 DELETE FROM climate.Room WHERE Id = @id;
                 ";
-            return connection.Execute(query, new { Id = room.Id }) == 1;
+            return connection.Execute(query, new { Id = room }) == 1;
         }
         catch (Exception e)
         {
             throw new SqlTypeException("Failed to delete the specific room", e);
         }
     }
-
     
     
- 
     public RoomWithId EditRoom(Room dto)
     {
         using var connection = new MySqlConnection(_connectionString);

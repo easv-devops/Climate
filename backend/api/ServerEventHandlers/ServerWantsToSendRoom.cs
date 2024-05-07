@@ -35,3 +35,4 @@ public class ServerSendsRoom : BaseDto
 {
     public required RoomWithId Room { get; set; }
 }
+

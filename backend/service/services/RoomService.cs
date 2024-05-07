@@ -26,4 +26,9 @@ public class RoomService
     {
         return _roomsRepository.EditRoom(dto);
     }
+
+    public bool DeleteRoom(int dtoRoomToDelete)
+    {
+        return _roomsRepository.DeleteRoom(dtoRoomToDelete);
+    }
 }
