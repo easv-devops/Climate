@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {RoomService} from "../room/room.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -13,6 +13,7 @@ export class EditRoomComponent  implements OnInit {
   readonly form = this.fb.group({
     roomName: ['', Validators.required]
   });
+
   private idFromRoute?: number;
 
   get roomName() {

@@ -5,7 +5,7 @@ import {AllRoomsComponent} from "./all-rooms/all-rooms.component";
 import {RoomComponent} from "./room/room.component";
 import {CreateRoomComponent} from "./create-room/create-room.component";
 import {EditRoomComponent} from "./edit-room/edit-room.component";
-import {EditDeviceComponent} from "../devices/edit-device/edit-device.component";
+import {CreateDeviceComponent} from "../devices/create-device/create-device.component";
 
 const routes: Routes = [
   {
@@ -16,7 +16,6 @@ const routes: Routes = [
         path: 'add', // Path for creating a room
         component: CreateRoomComponent
       },
-
       {
         path: 'all', // Path for login component (e.g., /auth/login)
         component: AllRoomsComponent
@@ -24,6 +23,10 @@ const routes: Routes = [
       {
         path: ':id', // Path for login component (e.g., /auth/login)
         component: RoomComponent
+      },
+      {
+        path: ':id/device/add', // Path for creating a device
+        component: CreateDeviceComponent
       },
       {
         path: ':id/edit',

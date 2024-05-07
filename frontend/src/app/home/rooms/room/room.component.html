@@ -1,45 +1,43 @@
-
-
-
 <ion-card>
+
   <!-- Header section -->
-  <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
-    <h1 class="climate-color" style="font-size: 48px">{{this.room.RoomName}}</h1>
+  <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0;">
+    <h1 class="climate-color" style="font-size: 48px;">{{ this.room.RoomName }}</h1>
 
     <div>
 
-      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" routerLink="/rooms/{{this.idFromRoute}}/edit">
-        <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" routerLink="/rooms/{{ this.idFromRoute }}/edit">
+        <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px;"></ion-icon>
       </ion-button>
+      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" routerLink="/rooms/{{ this.idFromRoute }}/device/add">
+        <ion-icon slot="start" name="add" class="can-go-back" style="font-size: 48px;"></ion-icon>
+        Add Device
+      </ion-button>
+
     </div>
 
     <ion-button fill="clear" color="dark" shape="round" class="ion-padding">
-      <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px;"></ion-icon>
     </ion-button>
-    <ion-button fill="clear" color="dark" shape="round" class="ion-padding" (click)="deleteRoom()" >
-      <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px" ></ion-icon>
+    <ion-button fill="clear" color="dark" shape="round" class="ion-padding" (click)="deleteRoom()">
+      <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px;"></ion-icon>
     </ion-button>
 
   </div>
+
   <app-graph></app-graph>
 
   <ion-list>
     <div *ngIf="room?.DeviceIds != undefined">
-    <ion-list-header>Devices in Room {{ this.room?.RoomName }}</ion-list-header>
+      <ion-list-header>Devices in Room {{ this.room?.RoomName }}</ion-list-header>
       <app-device-card *ngFor="let deviceId of room?.DeviceIds" [deviceId]="deviceId"></app-device-card>
     </div>
-
   </ion-list>
 
-
-
-  <div class="flexbox">
+  <div class="flexbox" style="margin-top: 20px;">
     <div style="width: 100vw; height: 30vh; margin: 20px;">
       <p>Space for the cool Room-value-cards</p>
-
     </div>
-    <!--app-device-card *ngFor="let device of devices.reverse()">
-    </app-device-card-->
   </div>
 
 </ion-card>

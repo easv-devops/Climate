@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCreateDeviceDto";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
-import {Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 
 @Component({
@@ -15,19 +15,23 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
 
   readonly form = this.fb.group({
     deviceName: ['', Validators.required],
-    roomId: ['', Validators.required]
   });
 
   private unsubscribe$ = new Subject<void>();
+  roomId?: number;
+  private idFromRoute?: number;
 
   constructor(
-      private readonly fb: FormBuilder,
-      private deviceService: DeviceService,
-      public ws: WebSocketConnectionService,
-      private router: Router
+    private readonly fb: FormBuilder,
+    private deviceService: DeviceService,
+    public ws: WebSocketConnectionService,
+    private router: Router,
+    private activatedRoute: ActivatedRoute
+
   ) { }
 
   ngOnInit(): void {
+    this.getRoomFromRoute();
   }
 
   ngOnDestroy(): void {
@@ -39,13 +43,12 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
     return this.form.controls.deviceName;
   }
 
-  get roomId() {
-    return this.form.controls.roomId;
-  }
-
   createDevice() {
+    if (!this.idFromRoute) {
+      console.error('RoomId is not available.');
+      return;
+    }
 
-    //subscribe to the new id
     this.ws.deviceId.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(deviceId => {
@@ -56,9 +59,12 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
 
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
-      //TODO Read real RoomId value from room
-      RoomId: 1 // Hardcoded value for roomId
+      RoomId: this.idFromRoute
     });
     this.deviceService.createDevice(device);
+  }
+
+  getRoomFromRoute() {
+    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
 }
