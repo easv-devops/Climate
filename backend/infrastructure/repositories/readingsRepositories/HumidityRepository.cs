@@ -58,5 +58,24 @@ public class HumidityRepository
             throw new SqlTypeException("Failed to delete Humidity readings", ex);
         }
     }
+    
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"
+                SELECT Timestamp, Humidity AS Value 
+                FROM ReadingHumidity 
+                WHERE DeviceId = @DeviceId;
+                ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve humidity readings from device "+deviceId, e);
+        }
+    }
 }
 

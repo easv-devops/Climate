@@ -41,10 +41,6 @@ public class DeviceService
 
     public DeviceWithIdDto GetDeviceById(int deviceId, int userId)
     {
-        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
-            throw new AuthenticationException
-                ("Only the owner of device #"+deviceId+" has access to this information");
-        
         return _deviceRepository.GetDeviceById(deviceId);
     }
     
@@ -52,10 +48,5 @@ public class DeviceService
     {
         //todo should change room id if it is present in the dto 
         return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
-    }
-
-    public bool IsItUsersDevice(int deviceId, int userId)
-    {
-        return _deviceRepository.IsItUsersDevice(deviceId, userId);
     }
 }

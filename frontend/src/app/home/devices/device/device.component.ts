@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
-import {Device} from "../../../../models/Entities";
+import {Device, DeviceInRoom, SensorDto} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
@@ -21,13 +21,12 @@ export class DeviceComponent implements OnInit {
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               public ws: WebSocketConnectionService,
-
               private deviceService: DeviceService) {
   }
 
   ngOnInit() {
     this.getDeviceFromRoute();
-    this.subscribeToDevice()
+    this.subscribeToDevice();
   }
 
   ngOnDestroy() {

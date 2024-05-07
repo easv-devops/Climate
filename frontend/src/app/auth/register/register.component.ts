@@ -5,7 +5,6 @@ import {AuthService} from "../auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToRegisterDto} from "../../../models/clientRequests";
-import {ClientWantsToGetDevicesByUserIdDto} from "../../../models/ClientWantsToGetDevicesByUserIdDto";
 
 @Component({
   selector: 'app-register',

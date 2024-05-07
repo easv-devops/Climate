@@ -1,4 +1,6 @@
 ﻿using System.Data.SqlTypes;
+using System.Security.Authentication;
+using infrastructure;
 using infrastructure.Models;
 using infrastructure.repositories.readingsRepositories;
 
@@ -9,15 +11,18 @@ public class DeviceReadingsService
     private HumidityRepository _humidityRepository;
     private TemperatureRepository _temperatureRepository;
     private ParticlesRepository _particlesRepository;
+    private DeviceRepository _deviceRepository;
     
     public DeviceReadingsService(
         HumidityRepository humidityRepository,
         TemperatureRepository temperatureRepository,
-        ParticlesRepository particlesRepository)
+        ParticlesRepository particlesRepository,
+        DeviceRepository deviceRepository)
     {
         _humidityRepository = humidityRepository;
         _temperatureRepository = temperatureRepository;
         _particlesRepository = particlesRepository;
+        _deviceRepository = deviceRepository;
     }
     
     public void CreateReadings(DeviceData deviceReadingsDto)
@@ -64,5 +69,25 @@ public class DeviceReadingsService
             throw new SqlTypeException("Failed to delete particle 10.0 readings");
         
         return true;
+    }
+
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId, int userId)
+    {
+        return _temperatureRepository.GetTemperatureReadingsFromDevice(deviceId);
+    }
+    
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId, int userId)
+    {
+        return _humidityRepository.GetHumidityReadingsFromDevice(deviceId);
+    }
+    
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId, int userId)
+    {
+        return _particlesRepository.GetPm25ReadingsFromDevice(deviceId);
+    }
+    
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId, int userId)
+    {
+        return _particlesRepository.GetPm100ReadingsFromDevice(deviceId);
     }
 }

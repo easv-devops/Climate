@@ -132,4 +132,16 @@ public static class StateService
             }
         }
     }
+    
+    public static bool UserHasDevice(Guid userId, int deviceId)
+    {
+        if (!_userToDevice.ContainsKey(userId))
+        {
+            // Brugeren findes ikke i vores system
+            return false;
+        }
+
+        // Tjek om enheden findes i brugerens liste over enheder
+        return _userToDevice[userId].Contains(deviceId);
+    }
 }
