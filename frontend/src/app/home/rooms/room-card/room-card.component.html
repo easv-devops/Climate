@@ -1,12 +1,13 @@
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>
-      <ion-icon name="home" style="font-size: 60px"></ion-icon>
+<ion-card color="light" style="display: flex; flex-direction: column; height: 90%;">
+  <ion-card-header style="background-color: white;">
+    <ion-card-title class="ion-text-center">
+      <ion-icon name="home" style="font-size: 60px;"></ion-icon>
     </ion-card-title>
   </ion-card-header>
 
-  <ion-card-content>
-    <ion-label>
+  <ion-card-content class="ion-text-center"
+                    style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+    <ion-label style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
       {{this.room?.RoomName}}
     </ion-label>
   </ion-card-content>

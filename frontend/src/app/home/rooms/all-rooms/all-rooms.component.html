@@ -5,10 +5,11 @@
   </div>
 
   <!-- Chart section -->
-  <app-graph></app-graph>
+  <!-- app-graph></app-graph -->
 
   <!-- Room Card section -->
-  <div>
-    <app-room-card *ngFor="let room of allRooms" [roomId]="room.Id" routerLink="/rooms/{{room.Id}}"></app-room-card>
+  <div class="ion-margin" style="display: flex; flex-wrap: wrap; align-content: space-evenly">
+    <app-room-card *ngFor="let room of allRooms" [roomId]="room.Id" routerLink="/rooms/{{room.Id}}"
+      style="width: 40vw; max-width: 200px; min-width: 150px"></app-room-card>
   </div>
 </ion-card>
