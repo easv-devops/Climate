@@ -42,7 +42,6 @@ export class EditDeviceComponent  implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log('ngOnDestroy fired fra edit-device');
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
@@ -83,7 +82,6 @@ export class EditDeviceComponent  implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(isEdited => {
         if (isEdited === true) {
-          this.deviceService.updateDevice(this.device!)
           this.router.navigate(['/devices/' + this.idFromRoute]);
           this.ws.setIsDeviceEdited(false);
         }

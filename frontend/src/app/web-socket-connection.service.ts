@@ -12,11 +12,15 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom, Room} from "../models/Entities";
+import {Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
+import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
+import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
+import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
+import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
 import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
 import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGetAllRoomsDto";
 import {
@@ -67,6 +71,18 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
+  private temperatureReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  temperatureReadings: Observable<Record<number, SensorDto[]> | undefined> = this.temperatureReadingsSubject.asObservable();
+
+  private humidityReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  humidityReadings: Observable<Record<number, SensorDto[]> | undefined> = this.humidityReadingsSubject.asObservable();
+
+  private pm25ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm25Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm25ReadingsSubject.asObservable();
+
+  private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
+
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
     this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl);
@@ -77,7 +93,7 @@ export class WebSocketConnectionService {
     this.socketConnection.onmessage = (event) => {
       const data = JSON.parse(event.data) as BaseDto<any>;
       // @ts-ignore
-      this[data.eventType].call(this,data);
+      this[data.eventType].call(this, data);
     }
   }
 
@@ -98,14 +114,13 @@ export class WebSocketConnectionService {
   ServerRegisterUser(dto: ServerRegisterUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
-    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
   }
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
   }
 
-  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto){
+  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto) {
     this.roomDevicesSubject.next(dto.Devices)
   }
 
@@ -195,7 +210,7 @@ export class WebSocketConnectionService {
   //todo skal slette deviceId i allRooms record device-liste
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
-      const devices = { ...this.allDevicesSubject.value };
+      const devices = {...this.allDevicesSubject.value};
       delete devices[dto.Id];
       this.allDevicesSubject.next(devices);
     }
@@ -252,5 +267,61 @@ export class WebSocketConnectionService {
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
     this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
+  }
+
+  ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
+    this.temperatureReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
+
+      if (!temperatureReadingsRecord) {
+        temperatureReadingsRecord = {};
+      }
+
+      temperatureReadingsRecord![dto.DeviceId] = dto.TemperatureReadings;
+
+      // Opdater temperatureReadingsSubject med den opdaterede record
+      this.temperatureReadingsSubject.next(temperatureReadingsRecord);
+    });
+  }
+
+  ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
+    this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
+
+      if (!humidityReadingsRecord) {
+        humidityReadingsRecord = {};
+      }
+
+      humidityReadingsRecord![dto.DeviceId] = dto.HumidityReadings;
+
+      // Opdater humidityReadingsSubject med den opdaterede record
+      this.humidityReadingsSubject.next(humidityReadingsRecord);
+    });
+  }
+
+  ServerSendsPm25Readings(dto: ServerSendsPm25ReadingsDto) {
+    this.pm25Readings.pipe(take(1)).subscribe(pm25ReadingsRecord => {
+
+      if (!pm25ReadingsRecord) {
+        pm25ReadingsRecord = {};
+      }
+
+      pm25ReadingsRecord![dto.DeviceId] = dto.Pm25Readings;
+
+      // Opdater pm25ReadingsSubject med den opdaterede record
+      this.pm25ReadingsSubject.next(pm25ReadingsRecord);
+    });
+  }
+
+  ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
+    this.pm100Readings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
+
+      if (!pm100ReadingsRecord) {
+        pm100ReadingsRecord = {};
+      }
+
+      pm100ReadingsRecord![dto.DeviceId] = dto.Pm100Readings;
+
+      // Opdater pm100ReadingsSubject med den opdaterede record
+      this.pm100ReadingsSubject.next(pm100ReadingsRecord);
+    });
   }
 }

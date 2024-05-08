@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
+import {WebSocketConnectionService} from "../web-socket-connection.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
 
-  constructor( private router: Router) {}
+  constructor( private router: Router, private ws: WebSocketConnectionService) {}
 
   canActivate(): boolean {
     // Tjek om brugeren har en gyldig JWT
@@ -21,8 +22,6 @@ export class AuthGuard implements CanActivate {
 
   //todo temporary logged in method (should be some more)
   isLoggedIn(): boolean {
-    // Tjek om JWT findes i localStorage eller om den er udløbet
-    const jwt = localStorage.getItem('jwt');
-    return !!jwt; // Returner true, hvis JWT findes
+    return !!this.ws.jwt
   }
 }

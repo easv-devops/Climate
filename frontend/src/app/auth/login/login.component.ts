@@ -68,5 +68,4 @@ export class LoginComponent {
   RedirectToForgotPassword() {
     this.router.navigate(['auth/resetpassword']);
   }
-
 }

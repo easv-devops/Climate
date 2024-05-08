@@ -42,12 +42,7 @@ public static class StateService
     
     public static WebSocketMetaData GetClient(Guid clientId)
     {
-        if (_clients.ContainsKey(clientId))
-        {
-            return _clients[clientId];
-        }
-
-        return null;
+        return _clients.GetValueOrDefault(clientId) ?? throw new InvalidOperationException();
     }
 
     public static void AddClient(Guid clientId, IWebSocketConnection connection)
@@ -117,18 +112,18 @@ public static class StateService
     
     public static void AddUserToRoom(int roomId, Guid userId)
     {
-        if (_roomsToUser.ContainsKey(roomId))
+        if (_roomsToUser.TryGetValue(roomId, out var value))
         {
-            _roomsToUser[roomId].Add(userId);
+            value.Add(userId);
         }
         else
         {
             _roomsToUser[roomId] = new List<Guid> { userId };
         }
 
-        if (_userToRoom.ContainsKey(userId))
+        if (_userToRoom.TryGetValue(userId, out var value1))
         {
-            _userToRoom[userId].Add(roomId);
+            value1.Add(roomId);
         }
         else
         {
@@ -138,14 +133,14 @@ public static class StateService
     
     public static List<Guid> GetUsersForRoom(int roomId)
     {
-        return _roomsToUser.ContainsKey(roomId) ? _roomsToUser[roomId] : new List<Guid>();
+        return _roomsToUser.TryGetValue(roomId, out var value) ? value : new List<Guid>();
     }
     
     public static List<Guid> GetUsersForDevice(int deviceId)
     {
-        if (_deviceToUser.ContainsKey(deviceId))
+        if (_deviceToUser.TryGetValue(deviceId, out var userList))
         {
-            return _deviceToUser[deviceId];
+            return userList;
         }
         else
         {
@@ -155,9 +150,9 @@ public static class StateService
 
     public static void AddUserToDevice(int deviceId, Guid userId)
     {
-        if (_deviceToUser.ContainsKey(deviceId))
+        if (_deviceToUser.TryGetValue(deviceId, out var userList))
         {
-            _deviceToUser[deviceId].Add(userId);
+            userList.Add(userId);
         }
         else
         {
@@ -165,9 +160,9 @@ public static class StateService
         }
         
         // Add the device to the user's list of subscribed devices.
-        if (_userToDevice.ContainsKey(userId))
+        if (_userToDevice.TryGetValue(userId, out var deviceList))
         {
-            _userToDevice[userId].Add(deviceId);
+            deviceList.Add(deviceId);
         }
         else
         {
@@ -195,5 +190,17 @@ public static class StateService
                 }
             }
         }
+    }
+    
+    public static bool UserHasDevice(Guid userId, int deviceId)
+    {
+        if (!_userToDevice.TryGetValue(userId, out var deviceList))
+        {
+            // Brugeren findes ikke i vores system
+            return false;
+        }
+
+        // Tjek om enheden findes i brugerens liste over enheder
+        return deviceList.Contains(deviceId);
     }
 }

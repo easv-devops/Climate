@@ -24,41 +24,18 @@ public class DeviceService
     {
         return _deviceRepository.DeleteDevice(Id);
     }
-    
-    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId, int userId)
-    {
-        if(!_deviceRepository.IsItUsersRoom(roomId, userId)) 
-            throw new AuthenticationException
-                ("Only the owner of room #"+roomId+" has access to this information");
-        
-        return _deviceRepository.GetDevicesByRoomId(roomId);
-    }
-    
+
     public IEnumerable<DeviceWithIdDto> GetDevicesByUserId(int userId)
     {
         return _deviceRepository.GetDevicesByUserId(userId);
     }
-
-    public DeviceWithIdDto GetDeviceById(int deviceId, int userId)
-    {
-        if(!_deviceRepository.IsItUsersDevice(deviceId, userId))
-            throw new AuthenticationException
-                ("Only the owner of device #"+deviceId+" has access to this information");
-        
-        return _deviceRepository.GetDeviceById(deviceId);
-    }
     
-    public bool EditDevice(int dtoId, DeviceDto deviceDto)
+    public bool EditDevice(DeviceWithIdDto dto)
     {
         //todo should change room id if it is present in the dto 
-        return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
+        return _deviceRepository.EditDevice(dto);
     }
 
-    public bool IsItUsersDevice(int deviceId, int userId)
-    {
-        return _deviceRepository.IsItUsersDevice(deviceId, userId);
-    }
-    
     public IEnumerable<int> GetDeviceIdsFromRoom(int roomId)
     {
         return _deviceRepository.GetDeviceIdsForRoom(roomId);

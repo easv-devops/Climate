@@ -4,7 +4,7 @@
 <ion-card>
   <!-- Header section -->
   <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
-    <h1 class="climate-color" style="font-size: 48px">{{this.room.RoomName}}</h1>
+    <h1 *ngIf="room" class="climate-color" style="font-size: 48px">{{this.room.RoomName}}</h1>
 
     <div>
 
@@ -21,10 +21,9 @@
     </ion-button>
 
   </div>
-  <app-graph></app-graph>
 
   <!-- Device Card section -->
-  <div class="ion-margin" style="display: flex; flex-wrap: wrap;">
+  <div *ngIf="room" class="ion-margin" style="display: flex; flex-wrap: wrap;">
     <app-device-card *ngFor="let deviceId of room.DeviceIds" [deviceId]="deviceId" routerLink="/devices/{{deviceId}}"
                    style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
     <app-device-card [deviceId]="-1" routerLink="/devices/add"

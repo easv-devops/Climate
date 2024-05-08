@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data.SqlTypes;
+using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
@@ -34,11 +35,14 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     public override Task Handle(ClientWantsToDeleteDeviceDto dto, IWebSocketConnection socket)
     {
         //checks if the user has permission before deleting
-        if (!_deviceService.IsItUsersDevice(dto.Id, StateService.GetClient(socket.ConnectionInfo.Id).User!.Id))
+        var guid = socket.ConnectionInfo.Id;
+
+        if (!StateService.UserHasDevice(guid, dto.Id))
         {
-            throw new AccessViolationException("You do not have permission to delete this device");
+            throw new AuthenticationException("Only the owner of device #"+dto.Id+" has access to this information");
         }
 
+        // Removes readings for the device and then the device itself
         if (!_deviceReadingsService.DeleteAllReadings(dto.Id) || !_deviceService.DeleteDevice(dto.Id))
         {
             throw new SqlTypeException("Something went wrong when deleting device #" + dto.Id);
@@ -53,6 +57,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
             IsDeleted = _deviceService.DeleteDevice(dto.Id),
             Id = dto.Id
         });
+        
         return Task.CompletedTask;
     }
 }

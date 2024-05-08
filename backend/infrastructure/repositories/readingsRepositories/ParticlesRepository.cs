@@ -103,4 +103,42 @@ public class ParticlesRepository
             throw new SqlTypeException("Failed to delete Particle100 readings", ex);
         }
     }
+    
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"
+                SELECT Timestamp, P2_5 AS Value 
+                FROM ReadingParticle2_5 
+                WHERE DeviceId = @DeviceId;
+                ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve pm 2.5 readings from device "+deviceId, e);
+        }
+    }
+    
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            var sql = @"
+                SELECT Timestamp, P10 AS Value 
+                FROM ReadingParticle10 
+                WHERE DeviceId = @DeviceId;
+                ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve pm 10 readings from device "+deviceId, e);
+        }
+    }
 }

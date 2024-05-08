@@ -9,6 +9,11 @@ export class DeviceInRoom {
   DeviceName!: string;
 }
 
+export class SensorDto {
+  Value!: number;
+  TimeStamp!: Date | number;
+}
+
 export class Room {
   Id!: number;
   RoomName!: string;
