@@ -60,41 +60,39 @@ public static class StateService
 
         foreach (var key in clientKeys)
         {
-            if (key == clientId)
+            if (key != clientId) continue;
+            if (_userToDevice.TryGetValue(clientId, out var deviceList))
             {
-                if (_userToDevice.ContainsKey(clientId))
+                // Remove all devices associated with the disconnected user.
+                var devices = deviceList.ToList(); // Create a copy of devices to avoid modifying the collection during iteration
+                foreach (var deviceId in devices)
                 {
-                    // Remove all devices associated with the disconnected user.
-                    var devices = _userToDevice[clientId].ToList(); // Create a copy of devices to avoid modifying the collection during iteration
-                    foreach (var deviceId in devices)
-                    {
-                        RemoveUserFromDevice(deviceId, clientId);
-                    }
-                    // Removes the user from user to device list
-                    _userToDevice.Remove(clientId);
+                    RemoveUserFromDevice(deviceId, clientId);
                 }
-                
-                if (_userToRoom.ContainsKey(clientId))
-                {
-                    var rooms = _userToRoom[clientId].ToList();
-                    foreach (var roomId in rooms)
-                    {
-                        RemoveUserFromRoom(roomId, clientId);
-                    }
-                    _userToRoom.Remove(clientId);
-                }
-                // Remove the client from the clients collection
-                _clients.Remove(clientId);
+                // Removes the user from user to device list
+                _userToDevice.Remove(clientId);
             }
+                
+            if (_userToRoom.TryGetValue(clientId, out var roomList))
+            {
+                var rooms = roomList.ToList();
+                foreach (var roomId in rooms)
+                {
+                    RemoveUserFromRoom(roomId, clientId);
+                }
+                _userToRoom.Remove(clientId);
+            }
+            // Remove the client from the clients collection
+            _clients.Remove(clientId);
         }
     }
     
     public static void RemoveUserFromRoom(int roomId, Guid userId)
     {
-        if (_roomsToUser.ContainsKey(roomId))
+        if (_roomsToUser.TryGetValue(roomId, out var userList))
         {
-            _roomsToUser[roomId].Remove(userId);
-            if (_roomsToUser[roomId].Count == 0)
+            userList.Remove(userId);
+            if (userList.Count == 0)
             {
                 _roomsToUser.Remove(roomId);
             }

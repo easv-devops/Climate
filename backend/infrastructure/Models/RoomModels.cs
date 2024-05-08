@@ -2,11 +2,6 @@
 
 namespace infrastructure.Models;
 
-public class RoomModels
-{
-    
-}
-
 public class RoomWithId
 {
     [Required(ErrorMessage = "Id is required.")]

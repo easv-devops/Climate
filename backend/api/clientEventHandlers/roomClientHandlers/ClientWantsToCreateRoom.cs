@@ -19,8 +19,8 @@ public class ClientWantsToCreateRoomDto : BaseDto
 public class ClientWantsToCreateRoom: BaseEventHandler<ClientWantsToCreateRoomDto>
 {
     
-    private RoomService _roomService;
-    private ServerWantsToSendRoom _serverResponse;
+    private readonly RoomService _roomService;
+    private readonly ServerWantsToSendRoom _serverResponse;
 
     public ClientWantsToCreateRoom(RoomService roomService, ServerWantsToSendRoom serverResponse)
     {

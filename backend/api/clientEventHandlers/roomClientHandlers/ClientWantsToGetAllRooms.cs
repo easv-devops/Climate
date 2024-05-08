@@ -16,7 +16,7 @@ public class ClientWantsToGetAllRoomsDto : BaseDto
 [RequireAuthentication]
 public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoomsDto>
 {
-    private RoomService _roomService;
+    private readonly RoomService _roomService;
 
     public ClientWantsToGetAllRooms(RoomService roomService)
     {

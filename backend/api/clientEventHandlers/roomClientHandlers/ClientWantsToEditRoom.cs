@@ -12,15 +12,15 @@ namespace api.clientEventHandlers.roomClientHandlers;
 
 public class ClientWantsToEditRoomDto : BaseDto
 {
-    public RoomWithId RoomToEdit { get; set; }
+    public required RoomWithId RoomToEdit { get; set; }
 }
 
 [RequireAuthentication]
 [ValidateDataAnnotations]
 public class ClientWantsToEditRoom: BaseEventHandler<ClientWantsToEditRoomDto>
 {
-    private RoomService _roomService;
-    private ServerWantsToSendRoom _serverResponse;
+    private readonly RoomService _roomService;
+    private readonly ServerWantsToSendRoom _serverResponse;
 
     public ClientWantsToEditRoom(RoomService roomService, ServerWantsToSendRoom serverResponse)
     {

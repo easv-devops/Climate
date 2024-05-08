@@ -41,6 +41,6 @@ public class ClientWantsToGetDeviceIdsForRoom: BaseEventHandler<ClientWantsToGet
 
 public class ServerSendsDeviceIdListForRoom : BaseDto
 {
-    public IEnumerable<int> DeviceIds { get; set; }
+    public IEnumerable<int>? DeviceIds { get; set; }
     public int? RoomId { get; set; }
 }

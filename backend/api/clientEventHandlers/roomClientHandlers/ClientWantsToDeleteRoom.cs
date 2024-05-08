@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Data.SqlTypes;
 using System.Net.Sockets;
 using api.ClientEventFilters;
 using api.helpers;
@@ -21,8 +22,8 @@ public class ClientWantsToDeleteRoomDto : BaseDto
 public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDto>
 {
     
-    private RoomService _roomService;
-    private DeviceService _deviceService;
+    private readonly RoomService _roomService;
+    private readonly DeviceService _deviceService;
     private readonly DeviceReadingsService _deviceReadingsService;
     
     public ClientWantsToDeleteRoom(RoomService roomService, DeviceService deviceService, DeviceReadingsService deviceReadingsService)
@@ -42,7 +43,7 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
             _deviceReadingsService.DeleteAllReadings(deviceId);
             if (!_deviceService.DeleteDevice(deviceId))
             {
-                throw new Exception("could not delete device on room");
+                throw new SqlTypeException("could not delete device on room");
             }
         }
 
@@ -50,7 +51,7 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
 
         if (!isRoomDeleted)
         {
-            throw new Exception("could not delete Room");
+            throw new SqlTypeException("could not delete Room");
         }
         
         StateService.RemoveUserFromRoom(dto.RoomToDelete, socket.ConnectionInfo.Id);
