@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Device} from "../../models/Entities";
+import {Device, Room} from "../../models/Entities";
 import {Subject, takeUntil} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
@@ -28,7 +28,7 @@ export class HomePage implements OnInit {
   ngOnInit() {
     this.loadMenu();
     this.subscribeToDevices();
-    this.loadRooms();
+    this.subscribeToRooms();
   }
 
   ngOnDestroy() {
@@ -36,13 +36,16 @@ export class HomePage implements OnInit {
     this.unsubscribe$.complete();
   }
 
-  loadRooms() {
+
+  loadRooms(rooms: Room[]) {
+
     //TODO: Load logged in user's rooms like for devices (max amount?).
-    for (var r of this.ws.AllRooms) {
-      this.addSubItem('Room ' + r.toString(), 'rooms/' + r.toString(), this.roomMenuItem!, 'chevron-forward')
+
+    for (var r of rooms) {
+      this.addSubItem(r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
     }
     this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
-    this.addSubItem('New room', 'rooms/new', this.roomMenuItem!, 'add')
+    this.addSubItem('New room', 'rooms/add', this.roomMenuItem!, 'add')
   }
 
   loadDevices(devices: Device[]) {
@@ -84,7 +87,7 @@ export class HomePage implements OnInit {
     //Creates the Devices accordion (MenuItem)
     this.deviceMenuItem = {
       label: 'Devices',
-      icon: 'fitness',
+      icon: 'radio',
       subItems: []
     }
 
@@ -93,6 +96,25 @@ export class HomePage implements OnInit {
       this.roomMenuItem,
       this.deviceMenuItem
     ];
+  }
+
+  private subscribeToRooms() {
+    this.ws.allRooms
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(roomRecord => {
+        if (roomRecord !== undefined) {
+          // Hent alle enheder fra recordet
+          const rooms = Object.values(roomRecord);
+          this.clearMenuItems();
+          this.loadRooms(rooms);
+        }
+      });
+  }
+
+  private clearMenuItems() {
+    if (this.roomMenuItem) {
+      this.roomMenuItem.subItems = [];
+    }
   }
 }
 

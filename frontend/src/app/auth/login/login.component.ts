@@ -21,7 +21,6 @@ export class LoginComponent {
 
   constructor(private readonly fb: FormBuilder, private authService: AuthService, public ws: WebSocketConnectionService, private router: Router) {
   }
-
   ngOnInit() {
     // Subscribe to jwt observable
     this.ws.jwt.pipe(

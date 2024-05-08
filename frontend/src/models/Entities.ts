@@ -13,3 +13,9 @@ export class SensorDto {
   Value!: number;
   TimeStamp!: Date | number;
 }
+
+export class Room {
+  Id!: number;
+  RoomName!: string;
+  DeviceIds?: number[];
+}

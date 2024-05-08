@@ -62,31 +62,6 @@ public class DeviceRepository
         }
     }
     
-    
-    /**
-     * Gets all devices from a specific room.
-     * Returns a list of devices - can be null if no devices in the room.
-     */
-    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getAllQuery = @"
-                SELECT Id, DeviceName
-                FROM Device 
-                WHERE RoomId = @RoomId;";
-            return connection.Query<DeviceByRoomIdDto>(getAllQuery, new {RoomId = roomId});
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new SqlTypeException("Failed to retrieve device(s) from room "+roomId, e);
-        }
-    }
-    
     /**
      * Gets all devices for logged in user.
      * Returns a list of devices - can be null if user has no devices.
@@ -111,54 +86,8 @@ public class DeviceRepository
             throw new SqlTypeException("Failed to retrieve device(s) for user with id "+userId, e);
         }
     }
-    
-    /**
-     * Gets device from device id.
-     * Returns a device.
-     */
-    public DeviceWithIdDto GetDeviceById(int deviceId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
 
-            string getDeviceByIdQuery = @"
-                SELECT *
-                FROM Device 
-                WHERE Id = @DeviceId;";
-            return connection.QueryFirstOrDefault<DeviceWithIdDto>(getDeviceByIdQuery, new {DeviceId = deviceId}) ?? throw new InvalidOperationException();
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new SqlTypeException("Failed to retrieve device with id "+deviceId, e);
-        }
-    }
-
-    public bool IsItUsersRoom(int roomId, int userId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getAllQuery = @"
-                SELECT Id
-                FROM Room 
-                WHERE Id = @RoomId
-                AND UserId = @UserId;";
-            
-            return connection.QuerySingleOrDefault(getAllQuery, new {UserId = userId, RoomId = roomId}) != null;
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new Exception(e.Message, e);
-        }
-    }
-
-    public bool EditDevice(int dtoId, string deviceDtoDeviceName)
+    public bool EditDevice(DeviceWithIdDto deviceDto)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -167,15 +96,35 @@ public class DeviceRepository
 
             string editDeviceQuery = @"
             UPDATE Device
-            SET DeviceName = @DeviceName
+            SET DeviceName = @DeviceName,
+            RoomId = @RoomId
             WHERE Id = @DeviceId;";
 
-            return connection.Execute(editDeviceQuery, new { DeviceName = deviceDtoDeviceName, DeviceId = dtoId }) > 0;
+            return connection.Execute(editDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId, DeviceId = deviceDto.Id }) > 0;
         }
         catch (Exception e)
         {
             // Handle exceptions, maybe log them
             throw new Exception(e.Message, e);
+        }
+    }
+    
+    public IEnumerable<int> GetDeviceIdsForRoom(int roomId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            SELECT Id
+            FROM Device
+            WHERE RoomId = @RoomId;
+        ";
+            return connection.Query<int>(query, new { RoomId = roomId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get device IDs for room", e);
         }
     }
 }

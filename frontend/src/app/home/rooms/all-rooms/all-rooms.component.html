@@ -1,3 +1,14 @@
-<p>
-  all rooms works!
-</p>
+<ion-card>
+  <!-- Header section -->
+  <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
+    <h1 class="climate-color" style="font-size: 48px">All rooms</h1>
+  </div>
+
+  <!-- Room Card section -->
+  <div class="ion-margin" style="display: flex; flex-wrap: wrap;">
+    <app-room-card *ngFor="let room of allRooms" [roomId]="room.Id" routerLink="/rooms/{{room.Id}}"
+                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-room-card>
+    <app-room-card [roomId]="-1" routerLink="/rooms/add"
+                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-room-card>
+  </div>
+</ion-card>

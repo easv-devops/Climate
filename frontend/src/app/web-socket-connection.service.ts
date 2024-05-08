@@ -12,7 +12,7 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom, SensorDto} from "../models/Entities";
+import {Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
@@ -21,6 +21,13 @@ import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatur
 import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
 import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
 import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
+import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
+import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGetAllRoomsDto";
+import {
+  ServerSendsDeviceIdListForRoomDto
+} from "../models/ServerSendsDeviceIdListForRoomDto";
+import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
+import { ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
 
 
 @Injectable({providedIn: 'root'})
@@ -29,7 +36,6 @@ export class WebSocketConnectionService {
   //Different objects used in the application
   //TODO check for these objects. Make sure they are used or removed
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
-  AllRooms: number[] = [];
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
   private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
@@ -48,11 +54,16 @@ export class WebSocketConnectionService {
   private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
   deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
+  private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
+  allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
+
+
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
 
-  private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
-  roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
+
+  private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
+  allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
 
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
@@ -89,6 +100,7 @@ export class WebSocketConnectionService {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
     this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
+    this.socketConnection.sendDto(new ClientWantsToGetAllRoomsDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
@@ -105,10 +117,6 @@ export class WebSocketConnectionService {
     this.isResetSubject.next(dto.IsReset);
   }
 
-  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto) {
-    this.roomDevicesSubject.next(dto.Devices)
-  }
-
   ServerSendsDevice(dto: DeviceWithIdDto) {
     this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
       if (allDevicesRecord !== undefined) {
@@ -120,6 +128,17 @@ export class WebSocketConnectionService {
         allDevicesRecord[dto.Id] = dto;
         // Opdater allDevicesSubject med den opdaterede liste over enheder
         this.allDevicesSubject.next(allDevicesRecord);
+      }
+    });
+  }
+
+  ServerSendsRoom(dto: ServerSendsRoom) {
+    this.allRooms.pipe(take(1)).subscribe(allRoomsRecord => {
+      if (allRoomsRecord !== undefined) {
+
+        allRoomsRecord[dto.Room.Id] = dto.Room;
+        // Opdater allDevicesSubject med den opdaterede liste over enheder
+        this.allRoomsSubject.next(allRoomsRecord);
       }
     });
   }
@@ -154,6 +173,7 @@ export class WebSocketConnectionService {
   }
 
 
+  //todo skal slette deviceId i allRooms record device-liste
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
       const devices = {...this.allDevicesSubject.value};
@@ -162,6 +182,47 @@ export class WebSocketConnectionService {
     }
   }
 
+  ServerSendsDeviceIdListForRoom(dto: ServerSendsDeviceIdListForRoomDto) {
+
+    //sets all rooms record
+    this.allRooms.pipe(take(1)).subscribe(roomsSnapshot => {
+      if (roomsSnapshot && roomsSnapshot[dto.RoomId]) {
+        // Kopier det aktuelle rum
+        const updatedRoom = { ...roomsSnapshot[dto.RoomId] };
+
+        updatedRoom.DeviceIds = dto.DeviceIds;
+        const updatedRoomsSnapshot = { ...roomsSnapshot, [dto.RoomId]: updatedRoom };
+        // Udsend den opdaterede snapshot
+        this.allRoomsSubject.next(updatedRoomsSnapshot);
+      }
+    });
+  }
+
+  ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
+    var tempListOfRoomIds: number[] = [];
+    this.allRooms.pipe(take(1)).subscribe(allRoomRecord => {
+      if (!allRoomRecord) {
+        allRoomRecord = {};
+      }
+
+      dto.Rooms?.forEach(room => {
+          // Tilføj eller opdater enheden i record
+          allRoomRecord![room.Id] = room;
+        tempListOfRoomIds.push(room.Id)
+        });
+
+      this.allRoomsSubject.next(allRoomRecord);
+    });
+  }
+
+  ServerDeletesRoom(dto: ServerDeletesRoom) {
+    console.log(dto.DeletedRoom)
+    if (dto.DeletedRoom) {
+      const rooms = { ...this.allRoomsSubject.value };
+      delete rooms[dto.DeletedRoom];
+      this.allRoomsSubject.next(rooms);
+    }
+  }
 
   clearDataOnLogout() {
     localStorage.setItem("jwt", ""); // Nulstil JWT i local storage
@@ -170,7 +231,6 @@ export class WebSocketConnectionService {
     this.isDeletedSubject.next(undefined); // Nulstil isDeleted-subjektet
     this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
-    this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
 
@@ -230,5 +290,3 @@ export class WebSocketConnectionService {
     });
   }
 }
-
-

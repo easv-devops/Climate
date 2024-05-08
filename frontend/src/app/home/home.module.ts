@@ -20,10 +20,10 @@ import {NgApexchartsModule} from "ng-apexcharts";
     HomePageRoutingModule,
     NgApexchartsModule
   ],
-  exports: [
-    GraphComponent,
-    TopbarComponent
-  ],
-  declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent]
+    exports: [
+        GraphComponent,
+        TopbarComponent,
+    ],
+    declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent]
 })
 export class HomePageModule {}

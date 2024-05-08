@@ -16,12 +16,12 @@ public class ClientWantsToEditDeviceDto : BaseDto
 {
     [Required(ErrorMessage = "Device Id is required.")]
     [Range(0, int.MaxValue, ErrorMessage = "Device Id is not a valid number")]
-    public int Id { get; set; }
+    public required int Id { get; set; }
     
     [MaxLength(50, ErrorMessage = "Device Name is too long")]
-    public string? DeviceName { get; set; }
+    public required string DeviceName { get; set; }
     [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
-    public int RoomId { get; set; }
+    public required int RoomId { get; set; }
 }
 
 [RequireAuthentication]
@@ -47,8 +47,9 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
             throw new AuthenticationException("You do not have access to edit this device");
         }
         //todo should check if you have access to the device 
-        bool wasEdit = _deviceService.EditDevice(dto.Id, new DeviceDto
+        bool wasEdit = _deviceService.EditDevice(new DeviceWithIdDto
         {
+            Id = dto.Id,
             DeviceName = dto.DeviceName,
             RoomId = dto.RoomId
         });
