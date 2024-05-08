@@ -30,10 +30,10 @@ public class DeviceService
         return _deviceRepository.GetDevicesByUserId(userId);
     }
     
-    public bool EditDevice(int dtoId, DeviceDto deviceDto)
+    public bool EditDevice(DeviceWithIdDto dto)
     {
         //todo should change room id if it is present in the dto 
-        return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
+        return _deviceRepository.EditDevice(dto);
     }
 
     public IEnumerable<int> GetDeviceIdsFromRoom(int roomId)

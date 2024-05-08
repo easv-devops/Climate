@@ -87,7 +87,7 @@ public class DeviceRepository
         }
     }
 
-    public bool EditDevice(int dtoId, string deviceDtoDeviceName)
+    public bool EditDevice(DeviceWithIdDto deviceDto)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
@@ -96,10 +96,11 @@ public class DeviceRepository
 
             string editDeviceQuery = @"
             UPDATE Device
-            SET DeviceName = @DeviceName
+            SET DeviceName = @DeviceName,
+            RoomId = @RoomId
             WHERE Id = @DeviceId;";
 
-            return connection.Execute(editDeviceQuery, new { DeviceName = deviceDtoDeviceName, DeviceId = dtoId }) > 0;
+            return connection.Execute(editDeviceQuery, new { DeviceName = deviceDto.DeviceName, RoomId = deviceDto.RoomId, DeviceId = deviceDto.Id }) > 0;
         }
         catch (Exception e)
         {
