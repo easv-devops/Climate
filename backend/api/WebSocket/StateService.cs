@@ -97,10 +97,10 @@ public static class StateService
                 _roomsToUser.Remove(roomId);
             }
 
-            if (_userToRoom.ContainsKey(userId))
+            if (_userToRoom.TryGetValue(userId, out var roomList))
             {
-                _userToRoom[userId].Remove(roomId);
-                if (_userToRoom[userId].Count == 0)
+                roomList.Remove(roomId);
+                if (roomList.Count == 0)
                 {
                     _userToRoom.Remove(userId);
                 }
