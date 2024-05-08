@@ -16,7 +16,11 @@ export class RoomCardComponent  implements OnInit {
   constructor(private ws: WebSocketConnectionService) { }
 
   ngOnInit() {
-    this.subscribeToRoom();
+    if(this.roomId !== -1) {
+      this.subscribeToRoom();
+    } else {
+      this.newRoomButton();
+    }
   }
 
   ngOnDestroy() {
@@ -34,5 +38,10 @@ export class RoomCardComponent  implements OnInit {
           this.room = roomRecord[this.roomId];
         }
       });
+  }
+
+  private newRoomButton() {
+    this.room = new Room();
+    this.room.RoomName = "New Room";
   }
 }

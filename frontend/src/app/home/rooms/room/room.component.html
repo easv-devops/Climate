@@ -23,23 +23,12 @@
   </div>
   <app-graph></app-graph>
 
-  <ion-list>
-    <div *ngIf="room?.DeviceIds != undefined">
-    <ion-list-header>Devices in Room {{ this.room?.RoomName }}</ion-list-header>
-      <app-device-card *ngFor="let deviceId of room?.DeviceIds" [deviceId]="deviceId"></app-device-card>
-    </div>
-
-  </ion-list>
-
-
-
-  <div class="flexbox">
-    <div style="width: 100vw; height: 30vh; margin: 20px;">
-      <p>Space for the cool Room-value-cards</p>
-
-    </div>
-    <!--app-device-card *ngFor="let device of devices.reverse()">
-    </app-device-card-->
+  <!-- Device Card section -->
+  <div class="ion-margin" style="display: flex; flex-wrap: wrap;">
+    <app-device-card *ngFor="let deviceId of room.DeviceIds" [deviceId]="deviceId" routerLink="/devices/{{deviceId}}"
+                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
+    <app-device-card [deviceId]="-1" routerLink="/devices/add"
+                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
   </div>
 
 </ion-card>
