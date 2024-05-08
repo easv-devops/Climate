@@ -53,6 +53,8 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
             throw new Exception("could not delete Room");
         }
         
+        StateService.RemoveUserFromRoom(dto.RoomToDelete, socket.ConnectionInfo.Id);
+        
         socket.SendDto(new ServerDeletesRoom
 
         {
