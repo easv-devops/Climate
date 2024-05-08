@@ -39,15 +39,14 @@ export class RoomComponent  implements OnInit {
   }
 
   subscribeToRoomDevice() {
+    this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({ RoomId: this.idFromRoute}));
     this.ws.allRooms
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(roomRecord => {
         if (roomRecord !== undefined) {
-          if (roomRecord[this.idFromRoute!].DeviceIds == null){
-            this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({ RoomId: this.idFromRoute}))
-          }
+
           const selectedRoom = roomRecord[this.idFromRoute!];
           //checks if any changes in room from server and updates room and devices
             this.room = selectedRoom;

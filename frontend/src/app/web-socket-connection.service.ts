@@ -129,34 +129,7 @@ export class WebSocketConnectionService {
       if (allDevicesRecord !== undefined) {
 
         if (!allDevicesRecord.hasOwnProperty(dto.Id)) {
-
-          this.allRooms.subscribe(allRoomsRecord => {
-            if (allRoomsRecord![dto.RoomId].DeviceIds !== undefined){
-              allRoomsRecord![dto.RoomId].DeviceIds!.push(dto.Id);
-            }
-          });
           this.deviceIdSubject.next(dto.Id);//if it is a new device the device id is set so create can find it
-        }else {
-          // Device already exists, update its room ID
-          const oldRoomId = allDevicesRecord[dto.Id].RoomId;
-          if (oldRoomId !== dto.RoomId) {
-            // Remove the device from the old room's list of devices
-            this.allRooms.subscribe(allRoomsRecord => {
-              const oldRoomDevices = allRoomsRecord![oldRoomId]?.DeviceIds;
-              if (oldRoomDevices !== undefined) {
-                allRoomsRecord![oldRoomId].DeviceIds = oldRoomDevices.filter(id => id !== dto.Id);
-              }
-            });
-
-            // Add the device to the new room's list of devices
-            this.allRooms.subscribe(allRoomsRecord => {
-              const newRoomDevices = allRoomsRecord![dto.RoomId]?.DeviceIds;
-              if (newRoomDevices !== undefined && !newRoomDevices.includes(dto.Id)) {
-                allRoomsRecord![dto.RoomId].DeviceIds!.push(dto.Id);
-              }
-            });
-          }
-
         }
 
         allDevicesRecord[dto.Id] = dto;
