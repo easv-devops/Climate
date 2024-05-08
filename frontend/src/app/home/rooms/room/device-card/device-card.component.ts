@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../../../web-socket-connection.service";
 import {Router} from "@angular/router";
-import {Device} from "../../../../../models/Entities";
+import {Device, Room} from "../../../../../models/Entities";
 
 @Component({
   selector: 'app-device-card',
@@ -16,11 +16,14 @@ export class DeviceCardComponent implements OnInit {
 
   public device!: Device;
 
-  constructor(private ws: WebSocketConnectionService,
-              private router: Router) { }
+  constructor(private ws: WebSocketConnectionService) { }
 
   ngOnInit(): void {
-    this.subscribeToRoomDevice();
+    if(this.deviceId !== -1) {
+      this.subscribeToRoomDevice();
+    } else {
+      this.newDeviceButton();
+    }
   }
 
   ngOnDestroy() {
@@ -40,7 +43,8 @@ export class DeviceCardComponent implements OnInit {
       });
   }
 
-  routeToDevice() {
-    this.router.navigate(['/devices/' + this.deviceId]);
+  private newDeviceButton() {
+    this.device = new Device();
+    this.device.DeviceName = "New Device";
   }
 }

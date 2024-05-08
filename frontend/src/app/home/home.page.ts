@@ -87,7 +87,7 @@ export class HomePage implements OnInit {
     //Creates the Devices accordion (MenuItem)
     this.deviceMenuItem = {
       label: 'Devices',
-      icon: 'fitness',
+      icon: 'radio',
       subItems: []
     }
 
