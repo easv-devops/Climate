@@ -22,7 +22,7 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
   public allRooms: Room[] | undefined;
-  private selectedRoomId?: number;
+  public selectedRoomId?: number;
 
   constructor(
     private readonly fb: FormBuilder,
