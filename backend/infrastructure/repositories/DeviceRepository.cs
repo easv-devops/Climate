@@ -87,28 +87,6 @@ public class DeviceRepository
         }
     }
 
-    public bool IsItUsersRoom(int roomId, int userId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getAllQuery = @"
-                SELECT Id
-                FROM Room 
-                WHERE Id = @RoomId
-                AND UserId = @UserId;";
-            
-            return connection.QuerySingleOrDefault(getAllQuery, new {UserId = userId, RoomId = roomId}) != null;
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new Exception(e.Message, e);
-        }
-    }
-
     public bool EditDevice(int dtoId, string deviceDtoDeviceName)
     {
         using var connection = new MySqlConnection(_connectionString);

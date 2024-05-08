@@ -27,13 +27,6 @@ export class DeviceService {
     this.ws.socketConnection.sendDto(deleteDeviceDto)
   }
 
-  getDevicesByRoomId(id: number){
-    var dto = new ClientWantsToGetDeviceIdsForRoomDto({
-      RoomId: id
-    });
-    this.ws.socketConnection.sendDto(dto)
-  }
-
   getRoomDevicesObservable(){
     return this.ws.roomDevices;
   }
