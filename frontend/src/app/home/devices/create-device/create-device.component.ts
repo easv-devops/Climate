@@ -4,9 +4,8 @@ import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCrea
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Router} from "@angular/router";
-import {map, Observable, Subject, takeUntil} from "rxjs";
+import {Subject, takeUntil} from "rxjs";
 import {Room} from "../../../../models/Entities";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 @Component({
   selector: 'app-create-device',
@@ -46,20 +45,8 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
     return this.form.controls.deviceName;
   }
 
-  get roomId() {
-    return this.form.controls.roomId;
-  }
-
   createDevice() {
-
-    //subscribe to the new id
-    this.ws.deviceId.pipe(
-      takeUntil(this.unsubscribe$)
-    ).subscribe(deviceId => {
-      if (deviceId) {
-        this.router.navigate(['/devices/' + deviceId]);
-      }
-    });
+    this.router.navigate(['rooms/'+this.selectedRoomId])
 
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
