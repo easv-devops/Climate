@@ -4,18 +4,16 @@
     <h1 class="climate-color" style="font-size: 48px">Device: {{ this.device?.DeviceName }}</h1>
 
     <div>
-
-      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" routerLink="/devices/{{this.idFromRoute}}/edit">
+      <ion-button fill="clear" shape="round" class="ion-padding" routerLink="/devices/{{this.idFromRoute}}/edit">
         <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
       </ion-button>
+      <ion-button fill="clear" shape="round" class="ion-padding">
+        <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" shape="round" class="ion-padding" (click)="deleteDevice()">
+        <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
+      </ion-button>
     </div>
-
-    <ion-button fill="clear" color="dark" shape="round" class="ion-padding">
-      <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
-    </ion-button>
-    <ion-button fill="clear" color="dark" shape="round" class="ion-padding" (click)="deleteDevice()">
-      <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
-    </ion-button>
 
   </div>
   <app-graph></app-graph>

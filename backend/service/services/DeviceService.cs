@@ -24,7 +24,7 @@ public class DeviceService
     {
         return _deviceRepository.DeleteDevice(Id);
     }
-    
+
     public IEnumerable<DeviceWithIdDto> GetDevicesByUserId(int userId)
     {
         return _deviceRepository.GetDevicesByUserId(userId);
@@ -36,11 +36,6 @@ public class DeviceService
         return _deviceRepository.EditDevice(dtoId, deviceDto.DeviceName);
     }
 
-    public bool IsItUsersDevice(int deviceId, int userId)
-    {
-        return _deviceRepository.IsItUsersDevice(deviceId, userId);
-    }
-    
     public IEnumerable<int> GetDeviceIdsFromRoom(int roomId)
     {
         return _deviceRepository.GetDeviceIdsForRoom(roomId);

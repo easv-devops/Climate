@@ -108,29 +108,6 @@ public class DeviceRepository
             throw new Exception(e.Message, e);
         }
     }
-    
-    public bool IsItUsersDevice(int deviceId, int userId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getAllQuery = @"
-                SELECT d.Id
-                FROM Device AS d
-                INNER JOIN Room AS r ON d.RoomId = r.Id
-                WHERE d.Id = @DeviceId
-                AND r.UserId = @UserId;";
-            
-            return connection.QuerySingleOrDefault(getAllQuery, new {UserId = userId, DeviceId = deviceId}) != null;
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new Exception(e.Message, e);
-        }
-    }
 
     public bool EditDevice(int dtoId, string deviceDtoDeviceName)
     {
