@@ -27,10 +27,6 @@ export class DeviceService {
     this.ws.socketConnection.sendDto(deleteDeviceDto)
   }
 
-  getRoomDevicesObservable(){
-    return this.ws.roomDevices;
-  }
-
   editDevice(dto: ClientWantsToEditDeviceDto){
     this.ws.socketConnection.sendDto(dto)
   }

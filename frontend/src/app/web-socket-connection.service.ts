@@ -65,9 +65,6 @@ export class WebSocketConnectionService {
   private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
   allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
 
-  private roomDevicesSubject = new BehaviorSubject<DeviceInRoom[] | undefined>(undefined);
-  roomDevices: Observable<DeviceInRoom[] | undefined> = this.roomDevicesSubject.asObservable();
-
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
@@ -118,10 +115,6 @@ export class WebSocketConnectionService {
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
-  }
-
-  ServerSendsDevicesByRoomId(dto: ServerSendsDevicesByRoomIdDto) {
-    this.roomDevicesSubject.next(dto.Devices)
   }
 
   ServerSendsDevice(dto: DeviceWithIdDto) {
@@ -238,7 +231,6 @@ export class WebSocketConnectionService {
     this.isDeletedSubject.next(undefined); // Nulstil isDeleted-subjektet
     this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
-    this.roomDevicesSubject.next(undefined); // Nulstil roomDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
   }
 
