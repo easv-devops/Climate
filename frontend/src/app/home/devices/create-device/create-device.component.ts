@@ -4,7 +4,9 @@ import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCrea
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Router} from "@angular/router";
-import {Subject, takeUntil} from "rxjs";
+import {map, Observable, Subject, takeUntil} from "rxjs";
+import {Room} from "../../../../models/Entities";
+import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 @Component({
   selector: 'app-create-device',
@@ -15,19 +17,24 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
 
   readonly form = this.fb.group({
     deviceName: ['', Validators.required],
-    roomId: ['', Validators.required]
+    roomId: ['', Validators.required],
   });
 
   private unsubscribe$ = new Subject<void>();
+  public allRooms: Room[] | undefined;
+  private selectedRoomId?: number;
 
   constructor(
-      private readonly fb: FormBuilder,
-      private deviceService: DeviceService,
-      public ws: WebSocketConnectionService,
-      private router: Router
-  ) { }
+    private readonly fb: FormBuilder,
+    private deviceService: DeviceService,
+    public ws: WebSocketConnectionService,
+    private router: Router
+  ) {
+  }
+
 
   ngOnInit(): void {
+    this.subscribeToRooms()
   }
 
   ngOnDestroy(): void {
@@ -57,8 +64,24 @@ export class CreateDeviceComponent implements OnInit, OnDestroy {
     let device = new ClientWantsToCreateDeviceDto({
       DeviceName: this.deviceName.value!,
       //TODO Read real RoomId value from room
-      RoomId: 1 // Hardcoded value for roomId
+      RoomId: this.selectedRoomId // Hardcoded value for roomId
     });
     this.deviceService.createDevice(device);
+  }
+
+  private subscribeToRooms() {
+    this.ws.allRooms
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(roomRecord => {
+        if (roomRecord !== undefined) {
+          // Hent alle enheder fra recordet
+          this.allRooms = Object.values(roomRecord);
+        }
+      });
+  }
+
+  onRoomSelectionChange(event: CustomEvent) {
+    // Gem den valgte værdi, når der sker ændringer i ion-select
+    this.selectedRoomId = event.detail.value;
   }
 }

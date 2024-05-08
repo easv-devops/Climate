@@ -15,9 +15,25 @@
             <div *ngIf="deviceName.touched && deviceName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
               <ion-text color="danger">Required</ion-text>
             </div>
-          </ion-list>
+
+
+            <ion-item style="margin-top: 5%">
+              <ion-select aria-label="Rooms" placeholder="Select a Room For The Device" style="max-width: 85%" (ionChange)="onRoomSelectionChange($event)">
+                <ion-select-option *ngFor="let room of allRooms" [value]="room.Id">{{room.RoomName}}</ion-select-option>
+              </ion-select>
+
+                <ion-button id="click-trigger" fill="clear"><ion-icon name="information-circle-outline"  style="font-size: 25px"></ion-icon></ion-button>
+                <ion-popover trigger="click-trigger" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Choose the room where the device is currently placed. <br> If it's not assigned to a room yet, you can do so Change this later.</ion-content>
+                  </ng-template>
+                </ion-popover>
+              </ion-item>
+            </ion-list>
+
+
           <div class="ion-text-center ion-padding">
-            <ion-button (click)="createDevice()" size="large" [disabled]="form.controls.deviceName.invalid">
+            <ion-button (click)="createDevice()" size="large" [disabled]="form.controls.deviceName.invalid ">
               Create
             </ion-button>
           </div>

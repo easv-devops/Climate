@@ -28,4 +28,6 @@ export class CreateRoomComponent  implements OnInit {
     this.roomService.createRoom(this.roomName.value!)
     this.router.navigate(["rooms/all"])
   }
+
+
 }
