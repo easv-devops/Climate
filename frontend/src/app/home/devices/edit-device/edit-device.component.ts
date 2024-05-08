@@ -4,7 +4,7 @@ import {DeviceService} from "../device.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ClientWantsToEditDeviceDto} from "../../../../models/ClientWantsToEditDeviceDto";
 import {Subject, takeUntil} from "rxjs";
-import {Device} from "../../../../models/Entities";
+import {Device, Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 
 @Component({
@@ -22,6 +22,10 @@ export class EditDeviceComponent  implements OnInit {
   isEdited?: boolean;
   device?: Device;
 
+  public allRooms: Room[] | undefined;
+  public selectedRoomId?: number;
+
+
 
   constructor(private readonly fb: FormBuilder,
               private readonly deviceService: DeviceService,
@@ -33,6 +37,8 @@ export class EditDeviceComponent  implements OnInit {
     this.getDeviceFromRoute();
     this.subscribeToDevice();
     this.subscribeToIsDeviceEdited();
+    this.subscribeToRooms();
+    this.selectedRoomId = this.device?.RoomId
   }
 
   ngOnDestroy() {
@@ -57,7 +63,7 @@ export class EditDeviceComponent  implements OnInit {
     let dto = new ClientWantsToEditDeviceDto({
       Id: this.idFromRoute!,
       DeviceName: this.deviceName.value!,
-      RoomId: 1, //TODO Fix when rooms is ready
+      RoomId: this.selectedRoomId
     });
     this.deviceService.editDevice(dto);
   }
@@ -83,4 +89,22 @@ export class EditDeviceComponent  implements OnInit {
         }
       });
   }
+
+  private subscribeToRooms() {
+    this.ws.allRooms
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(roomRecord => {
+        if (roomRecord !== undefined) {
+          // Hent alle enheder fra recordet
+          this.allRooms = Object.values(roomRecord);
+        }
+      });
+  }
+
+  onRoomSelectionChange(event: CustomEvent) {
+    // Gem den valgte værdi, når der sker ændringer i ion-select
+    this.selectedRoomId = event.detail.value;
+  }
+
+
 }

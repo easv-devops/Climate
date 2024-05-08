@@ -7,7 +7,7 @@ import {DevicesComponent} from "./devices.component";
 import {IonicModule} from "@ionic/angular";
 import {DeviceComponent} from "./device/device.component";
 import {CreateDeviceComponent} from "./create-device/create-device.component";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {EditDeviceComponent} from "./edit-device/edit-device.component";
 
 
@@ -18,7 +18,8 @@ import {EditDeviceComponent} from "./edit-device/edit-device.component";
     DevicesRoutingModule,
     HomePageModule,
     IonicModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class DevicesModule { }
