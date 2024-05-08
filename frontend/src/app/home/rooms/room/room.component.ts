@@ -38,7 +38,6 @@ export class RoomComponent  implements OnInit {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
 
-  //todo load a list of all deviceId into all rooms observable
   subscribeToRoomDevice() {
     this.ws.allRooms
       .pipe(

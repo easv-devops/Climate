@@ -62,31 +62,6 @@ public class DeviceRepository
         }
     }
     
-    
-    /**
-     * Gets all devices from a specific room.
-     * Returns a list of devices - can be null if no devices in the room.
-     */
-    public IEnumerable<DeviceByRoomIdDto> GetDevicesByRoomId(int roomId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getAllQuery = @"
-                SELECT Id, DeviceName
-                FROM Device 
-                WHERE RoomId = @RoomId;";
-            return connection.Query<DeviceByRoomIdDto>(getAllQuery, new {RoomId = roomId});
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new SqlTypeException("Failed to retrieve device(s) from room "+roomId, e);
-        }
-    }
-    
     /**
      * Gets all devices for logged in user.
      * Returns a list of devices - can be null if user has no devices.
@@ -109,30 +84,6 @@ public class DeviceRepository
         {
             // Handle exceptions, maybe log them
             throw new SqlTypeException("Failed to retrieve device(s) for user with id "+userId, e);
-        }
-    }
-    
-    /**
-     * Gets device from device id.
-     * Returns a device.
-     */
-    public DeviceWithIdDto GetDeviceById(int deviceId)
-    {
-        using var connection = new MySqlConnection(_connectionString);
-        try
-        {
-            connection.Open();
-
-            string getDeviceByIdQuery = @"
-                SELECT *
-                FROM Device 
-                WHERE Id = @DeviceId;";
-            return connection.QueryFirstOrDefault<DeviceWithIdDto>(getDeviceByIdQuery, new {DeviceId = deviceId}) ?? throw new InvalidOperationException();
-        }
-        catch (Exception e)
-        {
-            // Handle exceptions, maybe log them
-            throw new SqlTypeException("Failed to retrieve device with id "+deviceId, e);
         }
     }
 

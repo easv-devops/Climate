@@ -117,18 +117,18 @@ public static class StateService
     
     public static void AddUserToRoom(int roomId, Guid userId)
     {
-        if (_roomsToUser.ContainsKey(roomId))
+        if (_roomsToUser.TryGetValue(roomId, out var value))
         {
-            _roomsToUser[roomId].Add(userId);
+            value.Add(userId);
         }
         else
         {
             _roomsToUser[roomId] = new List<Guid> { userId };
         }
 
-        if (_userToRoom.ContainsKey(userId))
+        if (_userToRoom.TryGetValue(userId, out var value1))
         {
-            _userToRoom[userId].Add(roomId);
+            value1.Add(roomId);
         }
         else
         {
@@ -138,7 +138,7 @@ public static class StateService
     
     public static List<Guid> GetUsersForRoom(int roomId)
     {
-        return _roomsToUser.ContainsKey(roomId) ? _roomsToUser[roomId] : new List<Guid>();
+        return _roomsToUser.TryGetValue(roomId, out var value) ? value : new List<Guid>();
     }
     
     public static List<Guid> GetUsersForDevice(int deviceId)
