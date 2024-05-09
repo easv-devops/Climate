@@ -70,9 +70,7 @@ public static class KeyVaultService
             catch (Exception e)
             {
                 // No access, so get connection string Secret for staging db
-                {
-                    connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
-                }
+                connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
                 Console.WriteLine("No access to Keys in Azure KeyVault. " + e);
             }
         }
