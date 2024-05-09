@@ -4,3 +4,13 @@ services:
 
   climate-backend:
     image: midr/climate-backend:prod
+    environment:
+      dbconn: ${dbconnprod}
+      JwtKey: ${JwtKey}
+      
+  mariadb:
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DBPasswordSecretProd}
+      MYSQL_DATABASE: ${DBNameSecretProd}
+      MYSQL_USER: ${DBUserSecretProd}
+      MYSQL_PASSWORD: ${DBPasswordSecretProd}

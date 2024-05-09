@@ -40,7 +40,7 @@ steps:
 
 kind: pipeline
 type: docker
-name: deliver test
+name: deliver staging
 trigger:
   branch:
     - master
@@ -52,7 +52,7 @@ depends_on:
   - integration
 
 steps:    
-  - name: publish test backend
+  - name: publish staging backend
     image: plugins/docker
     settings:
       username:
@@ -64,7 +64,7 @@ steps:
       tags:
         - staging
 
-  - name: publish test frontend
+  - name: publish staging frontend
     image: plugins/docker
     settings:
       username:
@@ -83,10 +83,10 @@ steps:
       - "curl --fail -X GET 'http://74.234.8.67:8080/v1/update' -H 'Authorization: Bearer mytoken'"
       - sleep 10
     depends_on:
-      - publish test backend
-      - publish test frontend
+      - publish staging backend
+      - publish staging frontend
     
-  - name: update test database
+  - name: update staging database
     image: flyway/flyway
     environment:
       DB_NAME:
@@ -117,7 +117,7 @@ trigger:
     exclude:
       - pull_request
 depends_on:
-  - integration
+  - deliver test
 
 steps:
   - name: publish prod backend
@@ -154,20 +154,20 @@ steps:
       - publish prod backend
       - publish prod frontend
 
-#  - name: update prod database
-#    image: flyway/flyway
-#    environment:
-#      DB_NAME:
-#        from_secret: DBNameSecret
-#      DB_USER:
-#        from_secret: DBUserSecret
-#      DB_PASSWORD:
-#        from_secret: DBPasswordSecret #TODO: DBProdPasswordSecret osv.
-#    commands: 
-#      - flyway migrate
-#        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
-#        -user="$DB_USER"
-#        -password="$DB_PASSWORD"
-#        -locations=filesystem:./db/sql
-#    depends_on:
-#      - trigger update
+  - name: update prod database
+    image: flyway/flyway
+    environment:
+      DB_NAME:
+        from_secret: DBNameSecretProd
+      DB_USER:
+        from_secret: DBUserSecretProd
+      DB_PASSWORD:
+        from_secret: DBPasswordSecretProd
+    commands: 
+      - flyway migrate
+        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
+        -user="$DB_USER"
+        -password="$DB_PASSWORD"
+        -locations=filesystem:./db/sql
+    depends_on:
+      - trigger update
