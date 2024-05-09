@@ -7,6 +7,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:production": "ng build --configuration=production --optimization=false",
+    "build:staging": "ng build --configuration=staging --optimization=false",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
