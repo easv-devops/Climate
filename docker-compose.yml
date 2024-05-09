@@ -14,6 +14,8 @@ services:
     build: 
       context: .
       dockerfile: frontend/Dockerfile
+      args:
+        - NG_BUILD_CONFIGURATION=staging
     image: midr/climate-frontend:staging
     ports:
       - "5001:80"
