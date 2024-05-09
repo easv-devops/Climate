@@ -7,9 +7,6 @@ services:
 
   climate-backend:
     image: midr/climate-backend:prod
-    environment:
-      dbconn: ${dbconnprod}
-      JwtKey: ${JwtKey}
       
   mariadb:
     image: mariadb:latest
