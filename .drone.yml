@@ -66,15 +66,12 @@ steps:
 
   - name: publish staging frontend
     image: plugins/docker
-    environment:
-      NG_BUILD_CONFIGURATION: 
-        from_secret: staging
     settings:
       username:
         from_secret: DockerUsername
       password:
         from_secret: DockerPassword
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/docker/staging/Dockerfile
       repo: midr/climate-frontend
       tags:
         - staging
@@ -137,15 +134,12 @@ steps:
 
   - name: publish prod frontend
     image: plugins/docker
-    environment:
-      NG_BUILD_CONFIGURATION:
-        from_secret: production
     settings:
       username:
         from_secret: DockerUsername
       password:
         from_secret: DockerPassword
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/docker/production/Dockerfile
       repo: midr/climate-frontend
       tags:
         - prod

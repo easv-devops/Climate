@@ -1,5 +1,4 @@
-﻿#Hopefully not in use while the frontend/docker/ folders exists ...
-FROM node:20-alpine as angular
+﻿FROM node:20-alpine as angular
 WORKDIR /ng-app
 COPY frontend/package*.json ./
 RUN npm ci

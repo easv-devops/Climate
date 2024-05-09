@@ -2,9 +2,7 @@ services:
   climate-frontend:
     build:
       context: .
-      dockerfile: frontend/Dockerfile
-      args:
-        - NG_BUILD_CONFIGURATION=production
+      dockerfile: frontend/docker/production/Dockerfile
     image: midr/climate-frontend:prod
 
   climate-backend:
