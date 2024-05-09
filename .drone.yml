@@ -66,6 +66,8 @@ steps:
 
   - name: publish staging frontend
     image: plugins/docker
+    environment:
+      NG_BUILD_CONFIGURATION: staging
     settings:
       username:
         from_secret: DockerUsername
@@ -134,6 +136,8 @@ steps:
 
   - name: publish prod frontend
     image: plugins/docker
+    environment:
+      NG_BUILD_CONFIGURATION: production
     settings:
       username:
         from_secret: DockerUsername
