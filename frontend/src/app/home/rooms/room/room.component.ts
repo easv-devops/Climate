@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {filter, map, Subject, switchMap, takeUntil} from "rxjs";
-import {Device, DeviceInRoom, Room} from "../../../../models/Entities";
+import {Subject, takeUntil} from "rxjs";
+import {Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {RoomService} from "./room.service";
 import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
@@ -11,7 +11,7 @@ import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWant
   templateUrl: './room.component.html',
   styleUrls: ['./room.component.scss'],
 })
-export class RoomComponent  implements OnInit {
+export class RoomComponent implements OnInit {
   idFromRoute: number | undefined;
   private unsubscribe$ = new Subject<void>();
 
@@ -39,22 +39,24 @@ export class RoomComponent  implements OnInit {
   }
 
   subscribeToRoomDevice() {
-    this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({ RoomId: this.idFromRoute}));
+    this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({RoomId: this.idFromRoute}));
     this.ws.allRooms
       .pipe(
         takeUntil(this.unsubscribe$)
       )
       .subscribe(roomRecord => {
         if (roomRecord !== undefined) {
-
+          if (roomRecord[this.idFromRoute!].DeviceIds === undefined) {
+            this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({RoomId: this.idFromRoute}))
+          }
           const selectedRoom = roomRecord[this.idFromRoute!];
           //checks if any changes in room from server and updates room and devices
-            this.room = selectedRoom;
-          }
+          this.room = selectedRoom;
+        }
       });
   }
 
-  deleteRoom(){
+  deleteRoom() {
     this.roomService.deleteRoom(this.idFromRoute as number)
     this.router.navigate(["rooms/all"])
   }
