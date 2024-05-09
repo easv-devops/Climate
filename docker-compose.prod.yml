@@ -13,6 +13,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPasswordSecretProd}
+      MARIADB_ROOT_PASSWORD: ${DBPasswordSecretProd}
       MYSQL_DATABASE: ${DBNameSecretProd}
       MYSQL_USER: ${DBUserSecretProd}
       MYSQL_PASSWORD: ${DBPasswordSecretProd}
