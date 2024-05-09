@@ -4,7 +4,10 @@ COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend .
 ARG NG_BUILD_CONFIGURATION
-RUN npm run build:$NG_BUILD_CONFIGURATION
+ENV NG_BUILD_CONFIGURATION $NG_BUILD_CONFIGURATION
+
+RUN echo "Environment: ${NG_BUILD_CONFIGURATION}"
+RUN npm run build-$NG_BUILD_CONFIGURATION
 
 FROM nginx:alpine
 COPY --from=angular /ng-app/www /usr/share/nginx/html
