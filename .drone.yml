@@ -116,8 +116,8 @@ trigger:
   event:
     exclude:
       - pull_request
-#depends_on:
-#  - deliver staging
+depends_on:
+  - deliver staging
 
 steps:
   - name: publish prod backend
