@@ -61,18 +61,20 @@ public static class KeyVaultService
             {
                 var keyType = GetKeyType("isProduction").Result;
                 
-                // Only production VM has access to Keys, so get connection string Secret for production db
                 if (!string.IsNullOrEmpty(keyType))
                 {
+                    // Only production VM has access to Keys, so get connection string Secret for production db
                     connectionString = await GetSecret(EnvVarKeys.dbconnprod.ToString());
+                    return connectionString;
                 }
             }
             catch (Exception e)
             {
-                // No access, so get connection string Secret for staging db
-                connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
                 Console.WriteLine("No access to Keys in Azure KeyVault. " + e);
             }
+            
+            // No access, so get connection string Secret for staging db
+            connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
         }
 
         return connectionString;
