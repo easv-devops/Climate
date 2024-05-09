@@ -32,7 +32,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     environment:
-      ENVIRONMENT: staging
       dbconn: ${dbconn}
       JwtKey: ${JwtKey}
 

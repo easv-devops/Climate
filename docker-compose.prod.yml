@@ -5,7 +5,6 @@ services:
   climate-backend:
     image: midr/climate-backend:prod
     environment:
-      ENVIRONMENT: production
       dbconn: ${dbconnprod}
       JwtKey: ${JwtKey}
       

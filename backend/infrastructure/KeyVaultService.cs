@@ -51,13 +51,9 @@ public static class KeyVaultService
     public static async Task<string>  GetDbConn()
     {
         var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
-        if (string.IsNullOrEmpty(connectionString) && Environment.GetEnvironmentVariable("ENVIRONMENT") == "staging")
+        if (string.IsNullOrEmpty(connectionString))
         {
             connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
-        }
-        if (string.IsNullOrEmpty(connectionString) && Environment.GetEnvironmentVariable("ENVIRONMENT") == "production")
-        {
-            connectionString = await GetSecret("dbconnprod");
         }
 
         return connectionString;
