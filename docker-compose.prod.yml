@@ -14,7 +14,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPasswordSecretProd}
       MARIADB_ROOT_PASSWORD: ${DBPasswordSecretProd}
-      MYSQL_DATABASE: ${DBNameSecretProd}
+      MYSQL_DATABASE: 
       MYSQL_USER: ${DBUserSecretProd}
       MYSQL_PASSWORD: ${DBPasswordSecretProd}
     ports:
