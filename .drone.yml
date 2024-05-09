@@ -165,7 +165,7 @@ steps:
         from_secret: DBPasswordSecretProd
     commands: 
       - flyway migrate
-        -url="jdbc:mariadb://20.67.249.7:3306/$DB_NAME"
+        -url="jdbc:mariadb://20.67.249.7:3306/climate"
         -user="$DB_USER"
         -password="$DB_PASSWORD"
         -locations=filesystem:./db/sql
