@@ -64,7 +64,7 @@ public static class KeyVaultService
             }
             catch (Exception e)
             {
-                Console.WriteLine("No access to Keys in Azure KeyVault.");
+                Console.WriteLine("No access to Keys in Azure KeyVault. " + e);
             }
             
             // Only production VM has access to Keys, so get connection string Secret for production db
@@ -72,7 +72,7 @@ public static class KeyVaultService
             {
                 connectionString = await GetSecret(EnvVarKeys.dbconnprod.ToString());
             }
-            else if (keyType.Equals(""))
+            else if (string.IsNullOrEmpty(keyType))
             // No access, so get connection string Secret for staging db
             {
                 connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
