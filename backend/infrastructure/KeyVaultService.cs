@@ -57,25 +57,23 @@ public static class KeyVaultService
         // If that is null or empty, this must be running on the staging or production VM
         if (string.IsNullOrEmpty(connectionString))
         {
-            string keyType = "";
             try
             {
-                keyType = GetKeyType("isProduction").Result;
+                var keyType = GetKeyType("isProduction").Result;
+                
+                // Only production VM has access to Keys, so get connection string Secret for production db
+                if (!string.IsNullOrEmpty(keyType))
+                {
+                    connectionString = await GetSecret(EnvVarKeys.dbconnprod.ToString());
+                }
             }
             catch (Exception e)
             {
+                // No access, so get connection string Secret for staging db
+                {
+                    connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
+                }
                 Console.WriteLine("No access to Keys in Azure KeyVault. " + e);
-            }
-            
-            // Only production VM has access to Keys, so get connection string Secret for production db
-            if (keyType.Equals("RSA")) 
-            {
-                connectionString = await GetSecret(EnvVarKeys.dbconnprod.ToString());
-            }
-            else if (string.IsNullOrEmpty(keyType))
-            // No access, so get connection string Secret for staging db
-            {
-                connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
             }
         }
 
