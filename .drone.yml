@@ -104,6 +104,13 @@ steps:
     depends_on:
       - trigger update
       
+  - name: performance tests
+    image: grafana/k6
+    commands:
+      - k6 run backend/tests/performance/load.js
+    depends_on:
+      - update staging database
+
   - name: end-to-end tests
     image: testcafe/testcafe
     commands:
