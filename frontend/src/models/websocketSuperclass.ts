@@ -1,8 +1,6 @@
 import {BaseDto} from "./baseDto";
 import {ClientWantsToAuthenticateWithJwt} from "./clientRequests";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import {ClientWantsToGetDevicesByUserIdDto} from "./ClientWantsToGetDevicesByUserIdDto";
-import {ClientWantsToGetAllRoomsDto} from "./roomModels/clientWantsToGetAllRoomsDto";
 
 /**
  * Using Reconnecting WebSocket because if the user loses connection, they don't have to re-type email and password
@@ -32,8 +30,6 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
     //If there is a token, we want to login with it
     if (jwt && jwt != '')
       this.sendDto(new ClientWantsToAuthenticateWithJwt({jwt: jwt}));
-    this.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
-    this.sendDto(new ClientWantsToGetAllRoomsDto({}));
 
     const dto = this.messageQueue.shift();
     if (dto) {

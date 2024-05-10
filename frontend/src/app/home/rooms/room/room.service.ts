@@ -15,14 +15,6 @@ export class RoomService {
   constructor() {
   }
 
-
-  getAllRooms() {
-    this.ws.socketConnection.sendDto(
-      new ClientWantsToGetAllRoomsDto({
-      })
-    )
-  }
-
   //todo send et rigtigt objekt med, men den virker
   createRoom(name: string){
     this.ws.socketConnection.sendDto(new ClientWantsToCreateRoomDto({

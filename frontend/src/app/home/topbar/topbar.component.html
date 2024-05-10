@@ -20,7 +20,7 @@
     <ion-content>
       <ion-item>
         <ion-icon class="climate-color" name="person-circle"></ion-icon>
-        <ion-label class="climate-color ion-margin" style="font-weight: bold">firstName lastName</ion-label>
+        <ion-label *ngIf="user" class="climate-color ion-margin" style="font-weight: bold">{{ user.FirstName }} {{ user.LastName}}</ion-label>
       </ion-item>
       <ion-item routerLink="/user">
         <ion-icon class="climate-color" name="cog"></ion-icon>

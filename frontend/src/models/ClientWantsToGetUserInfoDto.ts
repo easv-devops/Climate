@@ -1,7 +1,6 @@
-import {BaseDto} from "../baseDto";
+import {BaseDto} from "./baseDto";
 
-
-export class ClientWantsToGetAllRoomsDto extends BaseDto<ClientWantsToGetAllRoomsDto> {
+export class ClientWantsToGetUserInfoDto extends BaseDto<ClientWantsToGetUserInfoDto> {
   // Intentionally empty.
   // We need a Dto, but we get the only needed attribute, userId, from the socket connection in backend.
 }
