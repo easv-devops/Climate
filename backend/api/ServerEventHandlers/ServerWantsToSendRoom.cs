@@ -13,11 +13,11 @@ public class ServerWantsToSendRoom
     public bool SendRoomToClient(RoomWithId room)
     {
      
-        var subscribedUserList = StateService.GetUsersForRoom(room.Id);
+        var subscribedUserList = StateService.GetConnectionsForRoom(room.Id);
         
         foreach (var user in subscribedUserList)
         {
-            var connection = StateService.GetClient(user);
+            var connection = StateService.GetConnection(user);
             if (!ReferenceEquals(connection, null))
             {
                 connection.Connection.SendDto(new ServerSendsRoom

@@ -121,5 +121,32 @@ public class UserRepository
             throw new SqlTypeException("Fejl ved hentning af bruger efter id", ex);
         }
     }
+    
+    public FullUserDto GetFullUserById(int userId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            // Definér forespørgslen ved hjælp af joins til at hente alle oplysninger relateret til brugeren
+            string query = @"
+        SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.CountryCode, ci.Number
+        FROM User u
+        LEFT JOIN UserInformation ui ON u.Id = ui.UserId
+        LEFT JOIN ContactInformation ci ON u.Id = ci.UserId
+        LEFT JOIN UserStatus us ON u.Id = us.UserId
+        WHERE u.Id = @UserId";
+
+            // Udfør forespørgslen ved hjælp af Dapper og hent brugeroplysningerne
+            var user = connection.QueryFirstOrDefault<FullUserDto>(query, new { UserId = userId });
+
+            return user;
+        }
+        catch (Exception ex)
+        {
+            // Håndter undtagelser, måske log dem
+            throw new SqlTypeException("Fejl ved hentning af bruger efter id", ex);
+        }
+    }
 
 }

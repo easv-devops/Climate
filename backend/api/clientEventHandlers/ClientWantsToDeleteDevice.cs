@@ -37,7 +37,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
         //checks if the user has permission before deleting
         var guid = socket.ConnectionInfo.Id;
 
-        if (!StateService.UserHasDevice(guid, dto.Id))
+        if (!StateService.ConnectionHasDevice(guid, dto.Id))
         {
             throw new AuthenticationException("Only the owner of device #"+dto.Id+" has access to this information");
         }
@@ -49,7 +49,7 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
         }
         
         //removes the device from stateService
-        StateService.RemoveUserFromDevice(dto.Id, socket.ConnectionInfo.Id);
+        StateService.RemoveConnectionFromDevice(dto.Id, socket.ConnectionInfo.Id);
         
         //return the is deleted bool
         socket.SendDto(new ServerSendsDeviceDeletionStatus

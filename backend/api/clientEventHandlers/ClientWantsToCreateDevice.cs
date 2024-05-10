@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
-using api.helpers;
+using api.ServerEventHandlers;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
@@ -25,10 +25,12 @@ public class ClientWantsToCreateDeviceDto : BaseDto
 public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDeviceDto>
     {
         private readonly DeviceService _deviceService;
+        private readonly ServerWantsToSendDevice _serverWantsToSendDevice;
         
-        public ClientWantsToCreateDevice(DeviceService deviceService)
+        public ClientWantsToCreateDevice(DeviceService deviceService, ServerWantsToSendDevice serverWantsToSendDevice)
         {
             _deviceService = deviceService;
+            _serverWantsToSendDevice = serverWantsToSendDevice;
         }
 
 
@@ -40,14 +42,15 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                 RoomId = dto.RoomId
             });
             
-            StateService.AddUserToDevice(response.Id, socket.ConnectionInfo.Id);
+            StateService.AddConnectionToDevice(response.Id, socket.ConnectionInfo.Id);
             
-            socket.SendDto(new ServerSendsDevice
+            _serverWantsToSendDevice.SendDeviceToClient(new DeviceWithIdDto
             {
+                Id = response.Id,
                 DeviceName = response.DeviceName,
-                RoomId = response.RoomId,
-                Id = response.Id
+                RoomId = response.RoomId
             });
+            
             return Task.CompletedTask;
         }
     }

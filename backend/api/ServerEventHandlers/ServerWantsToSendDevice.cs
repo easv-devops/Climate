@@ -11,12 +11,12 @@ public class ServerWantsToSendDevice
 {
     public bool SendDeviceToClient(DeviceWithIdDto device)
     {
-        var subscribedUserList = StateService.GetUsersForDevice(device.Id);
+        var subscribedUserList = StateService.GetConnectionsForDevice(device.Id);
 
 
         foreach (var user in subscribedUserList)
         {
-            var connection = StateService.GetClient(user);
+            var connection = StateService.GetConnection(user);
             if (!ReferenceEquals(connection, null))
             {
                 connection.Connection.SendDto(new ServerSendsDevice

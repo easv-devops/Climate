@@ -63,6 +63,7 @@ public static class Startup
         //todo lav en metode der finder dem her af sig selv..
         builder.Services.AddSingleton<ServerWantsToSendDevice>();
         builder.Services.AddSingleton<ServerWantsToSendRoom>();
+        builder.Services.AddSingleton<ServerWantsToSendUser>();
 
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
@@ -75,8 +76,8 @@ public static class Startup
         
         server.Start(socket =>
         {
-            socket.OnOpen = () => StateService.AddClient(socket.ConnectionInfo.Id, socket);
-            socket.OnClose = () => StateService.RemoveClient(socket.ConnectionInfo.Id);
+            socket.OnOpen = () => StateService.AddConnection(socket.ConnectionInfo.Id, socket);
+            socket.OnClose = () => StateService.RemoveConnection(socket.ConnectionInfo.Id);
             socket.OnMessage = async message =>
             {
                 try

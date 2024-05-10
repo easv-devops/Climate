@@ -31,7 +31,7 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
         
         var guid = socket.ConnectionInfo.Id;
 
-        if (!StateService.UserHasDevice(guid, dto.DeviceId))
+        if (!StateService.ConnectionHasDevice(guid, dto.DeviceId))
         {
             throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
         }

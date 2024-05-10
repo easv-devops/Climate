@@ -30,7 +30,7 @@ public class ClientWantsToEditRoom: BaseEventHandler<ClientWantsToEditRoomDto>
     
     public override Task Handle(ClientWantsToEditRoomDto dto, IWebSocketConnection socket)
     {
-        var users =StateService.GetUsersForRoom(dto.RoomToEdit.Id);
+        var users =StateService.GetConnectionsForRoom(dto.RoomToEdit.Id);
 
         if (!users.Contains(socket.ConnectionInfo.Id))
         {

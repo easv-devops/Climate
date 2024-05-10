@@ -73,8 +73,8 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         var token = _tokenService.IssueJwt(user.Id);
 
         //add user information and validates user to state service for later use
-        StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
-        StateService.GetClient(socket.ConnectionInfo.Id).User = user;
+        StateService.GetConnection(socket.ConnectionInfo.Id).IsAuthenticated = true;
+        StateService.GetConnection(socket.ConnectionInfo.Id).User = user;
 
         //return JWT to client 
         socket.SendDto(new ServerAuthenticatesUser { Jwt = await token });

@@ -45,8 +45,8 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         if (!validated) throw new AuthenticationException("Wrong credentials!");
 
         //authenticates and sets user information in state service for later use
-        StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
-        StateService.GetClient(socket.ConnectionInfo.Id).User = user;
+        StateService.GetConnection(socket.ConnectionInfo.Id).IsAuthenticated = true;
+        StateService.GetConnection(socket.ConnectionInfo.Id).User = user;
 
         //sends the JWT token to the client
         socket.SendDto(new ServerAuthenticatesUser

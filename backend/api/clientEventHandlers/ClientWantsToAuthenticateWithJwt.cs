@@ -38,8 +38,8 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
         EndUser user = _authService.GetUserById(Int32.Parse(claims["sub"]));
        
         
-        StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
-        StateService.GetClient(socket.ConnectionInfo.Id).User = user;
+        StateService.GetConnection(socket.ConnectionInfo.Id).IsAuthenticated = true;
+        StateService.GetConnection(socket.ConnectionInfo.Id).User = user;
         
         socket.SendDto(new ServerAuthenticatesUser
         {

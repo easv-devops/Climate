@@ -23,182 +23,243 @@ public class WebSocketMetaData
 public static class StateService
 {
     //holds the connections
-    private static readonly Dictionary<Guid, WebSocketMetaData> _clients = new();
+    private static readonly Dictionary<Guid, WebSocketMetaData> Connections = new();
     
-    //holds the device and the users that wants updates on that device
-    private static readonly Dictionary<int, List<Guid>> _deviceToUser = new();
+    //holds the device and the connections that wants updates on that device
+    private static readonly Dictionary<int, List<Guid>> DeviceToConnections = new();
     
-    //used for getting all devices a user is subscribed to (used to empty _deviceToUser dictionary when client disconnect)
-    private static readonly Dictionary<Guid, List<int>> _userToDevice = new();
+    //used for getting all devices a connection is subscribed to (used to empty DeviceToConnections dictionary when client disconnects)
+    private static readonly Dictionary<Guid, List<int>> ConnectionToDevices = new();
 
     
-    //holds the roomId and the users that wants updates on that room
-    private static readonly Dictionary<int, List<Guid>> _roomsToUser = new();
+    //holds the roomId and the connections that wants updates on that room
+    private static readonly Dictionary<int, List<Guid>> RoomToConnections = new();
     
-    //used for getting all rooms a user is subscribed to (used to empty _roomsToUser dictionary when client disconnect)
-    private static readonly Dictionary<Guid, List<int>> _userToRoom = new();
+    //used for getting all rooms a connection is subscribed to (used to empty RoomToConnections dictionary when client disconnects)
+    private static readonly Dictionary<Guid, List<int>> ConnectionToRooms = new();
 
     
+    //holds the user and the connections that wants updates on that user
+    private static readonly Dictionary<int, List<Guid>> UserToConnections = new();
     
-    public static WebSocketMetaData GetClient(Guid clientId)
+    //used for getting all users a connection is subscribed to (used to empty UserToConnections dictionary when client disconnects)
+    private static readonly Dictionary<Guid, List<int>> ConnectionToUsers = new();
+    
+    
+    public static WebSocketMetaData GetConnection(Guid connectionId)
     {
-        return _clients.GetValueOrDefault(clientId) ?? throw new InvalidOperationException();
+        return Connections.GetValueOrDefault(connectionId) ?? throw new InvalidOperationException();
     }
 
-    public static void AddClient(Guid clientId, IWebSocketConnection connection)
+    public static void AddConnection(Guid connectionId, IWebSocketConnection connection)
     {
-        _clients.TryAdd(clientId, new WebSocketMetaData(connection));
+        Connections.TryAdd(connectionId, new WebSocketMetaData(connection));
     }
     
     /**
-     * removes the client and all current subscribes to rooms and devises
+     * removes the connection and all current subscribes to rooms and devices
      */
-    public static void RemoveClient(Guid clientId)
+    public static void RemoveConnection(Guid connectionId)
     {
-        // Create a copy of client keys to avoid modifying the collection during iteration
-        var clientKeys = _clients.Keys.ToList();
+        // Create a copy of connection keys to avoid modifying the collection during iteration
+        var connectionKeys = Connections.Keys.ToList();
 
-        foreach (var key in clientKeys)
+        foreach (var key in connectionKeys)
         {
-            if (key != clientId) continue;
-            if (_userToDevice.TryGetValue(clientId, out var deviceList))
+            if (key != connectionId) continue;
+            if (ConnectionToDevices.TryGetValue(connectionId, out var deviceList))
             {
-                // Remove all devices associated with the disconnected user.
+                // Remove all devices associated with the closed connection.
                 var devices = deviceList.ToList(); // Create a copy of devices to avoid modifying the collection during iteration
                 foreach (var deviceId in devices)
                 {
-                    RemoveUserFromDevice(deviceId, clientId);
+                    RemoveConnectionFromDevice(deviceId, connectionId);
                 }
-                // Removes the user from user to device list
-                _userToDevice.Remove(clientId);
+                // Removes the connection from connection to device list
+                ConnectionToDevices.Remove(connectionId);
             }
                 
-            if (_userToRoom.TryGetValue(clientId, out var roomList))
+            if (ConnectionToRooms.TryGetValue(connectionId, out var roomList))
             {
                 var rooms = roomList.ToList();
                 foreach (var roomId in rooms)
                 {
-                    RemoveUserFromRoom(roomId, clientId);
+                    RemoveConnectionFromRoom(roomId, connectionId);
                 }
-                _userToRoom.Remove(clientId);
+                ConnectionToRooms.Remove(connectionId);
             }
-            // Remove the client from the clients collection
-            _clients.Remove(clientId);
+            
+            if (ConnectionToUsers.TryGetValue(connectionId, out var userList))
+            {
+                var users = userList.ToList();
+                foreach (var userId in users)
+                {
+                    RemoveConnectionFromUser(userId, connectionId);
+                }
+                ConnectionToUsers.Remove(connectionId);
+            }
+            
+            // Remove the connection from the connections collection
+            Connections.Remove(connectionId);
         }
     }
     
-    public static void RemoveUserFromRoom(int roomId, Guid userId)
+    public static void RemoveConnectionFromRoom(int roomId, Guid connectionId)
     {
-        if (_roomsToUser.TryGetValue(roomId, out var userList))
+        if (RoomToConnections.TryGetValue(roomId, out var connectionList))
         {
-            userList.Remove(userId);
-            if (userList.Count == 0)
+            connectionList.Remove(connectionId);
+            if (connectionList.Count == 0)
             {
-                _roomsToUser.Remove(roomId);
+                RoomToConnections.Remove(roomId);
             }
 
-            if (_userToRoom.TryGetValue(userId, out var roomList))
+            if (ConnectionToRooms.TryGetValue(connectionId, out var roomList))
             {
                 roomList.Remove(roomId);
                 if (roomList.Count == 0)
                 {
-                    _userToRoom.Remove(userId);
+                    ConnectionToRooms.Remove(connectionId);
                 }
             }
         }
     }
     
-    public static void AddUserToRoom(int roomId, Guid userId)
+    public static void AddConnectionToRoom(int roomId, Guid connectionId)
     {
-        if (_roomsToUser.TryGetValue(roomId, out var value))
+        if (RoomToConnections.TryGetValue(roomId, out var connectionList))
         {
-            value.Add(userId);
+            connectionList.Add(connectionId);
         }
         else
         {
-            _roomsToUser[roomId] = new List<Guid> { userId };
+            RoomToConnections[roomId] = new List<Guid> { connectionId };
         }
 
-        if (_userToRoom.TryGetValue(userId, out var value1))
+        if (ConnectionToRooms.TryGetValue(connectionId, out var roomList))
         {
-            value1.Add(roomId);
+            roomList.Add(roomId);
         }
         else
         {
-            _userToRoom[userId] = new List<int> { roomId };
+            ConnectionToRooms[connectionId] = new List<int> { roomId };
         }
     }
     
-    public static List<Guid> GetUsersForRoom(int roomId)
+    public static List<Guid> GetConnectionsForRoom(int roomId)
     {
-        return _roomsToUser.TryGetValue(roomId, out var value) ? value : new List<Guid>();
+        return RoomToConnections.TryGetValue(roomId, out var connectionList) ? connectionList : new List<Guid>();
     }
     
-    public static List<Guid> GetUsersForDevice(int deviceId)
+    public static List<Guid> GetConnectionsForDevice(int deviceId)
     {
-        if (_deviceToUser.TryGetValue(deviceId, out var userList))
-        {
-            return userList;
-        }
-        else
-        {
-            return new List<Guid>(); // Return en tom liste hvis der ikke er nogen brugere for enheden endnu
-        }
+        // Return en tom liste hvis der ikke er nogen connections for enheden endnu
+        return DeviceToConnections.TryGetValue(deviceId, out var connectionList) ? connectionList : new List<Guid>(); 
     }
 
-    public static void AddUserToDevice(int deviceId, Guid userId)
+    public static void AddConnectionToDevice(int deviceId, Guid connectionId)
     {
-        if (_deviceToUser.TryGetValue(deviceId, out var userList))
+        if (DeviceToConnections.TryGetValue(deviceId, out var connectionList))
         {
-            userList.Add(userId);
+            connectionList.Add(connectionId);
         }
         else
         {
-            _deviceToUser[deviceId] = new List<Guid> { userId };
+            DeviceToConnections[deviceId] = new List<Guid> { connectionId };
         }
         
-        // Add the device to the user's list of subscribed devices.
-        if (_userToDevice.TryGetValue(userId, out var deviceList))
+        // Add the device to the connection's list of subscribed devices.
+        if (ConnectionToDevices.TryGetValue(connectionId, out var deviceList))
         {
             deviceList.Add(deviceId);
         }
         else
         {
-            _userToDevice[userId] = new List<int> { deviceId };
+            ConnectionToDevices[connectionId] = new List<int> { deviceId };
         }
     }
 
-    public static void RemoveUserFromDevice(int deviceId, Guid userId)
+    public static void RemoveConnectionFromDevice(int deviceId, Guid connectionId)
     {
-        if (_deviceToUser.ContainsKey(deviceId))
+        if (DeviceToConnections.ContainsKey(deviceId))
         {
-            _deviceToUser[deviceId].Remove(userId);
-            if (_deviceToUser[deviceId].Count == 0)
+            DeviceToConnections[deviceId].Remove(connectionId);
+            if (DeviceToConnections[deviceId].Count == 0)
             {
-                _deviceToUser.Remove(deviceId);
+                DeviceToConnections.Remove(deviceId);
             }
             
-            // Remove the device from the user's list of subscribed devices.
-            if (_userToDevice.ContainsKey(userId))
+            // Remove the device from the connection's list of subscribed devices.
+            if (ConnectionToDevices.ContainsKey(connectionId))
             {
-                _userToDevice[userId].Remove(deviceId);
-                if (_userToDevice[userId].Count == 0)
+                ConnectionToDevices[connectionId].Remove(deviceId);
+                if (ConnectionToDevices[connectionId].Count == 0)
                 {
-                    _userToDevice.Remove(userId);
+                    ConnectionToDevices.Remove(connectionId);
                 }
             }
         }
     }
     
-    public static bool UserHasDevice(Guid userId, int deviceId)
+    public static bool ConnectionHasDevice(Guid connectionId, int deviceId)
     {
-        if (!_userToDevice.TryGetValue(userId, out var deviceList))
+        if (!ConnectionToDevices.TryGetValue(connectionId, out var deviceList))
         {
-            // Brugeren findes ikke i vores system
+            // Forbindelsen findes ikke i vores system
             return false;
         }
 
-        // Tjek om enheden findes i brugerens liste over enheder
+        // Tjek om enheden findes i forbindelsens liste over enheder
         return deviceList.Contains(deviceId);
+    }
+    
+    public static List<Guid> GetConnectionsForUser(int userId)
+    {
+        // Return en tom liste hvis der ikke er nogen connections for brugeren
+        return UserToConnections.TryGetValue(userId, out var connectionList) ? connectionList : new List<Guid>(); 
+    }
+    
+    public static void AddConnectionToUser(int userId, Guid connectionId)
+    {
+        if (UserToConnections.TryGetValue(userId, out var connectionList))
+        {
+            connectionList.Add(connectionId);
+        }
+        else
+        {
+            UserToConnections[userId] = new List<Guid> { connectionId };
+        }
+        
+        // Add the user to the connection's list of subscribed users.
+        if (ConnectionToUsers.TryGetValue(connectionId, out var userList))
+        {
+            userList.Add(userId);
+        }
+        else
+        {
+            ConnectionToUsers[connectionId] = new List<int> { userId };
+        }
+    }
+    
+    public static void RemoveConnectionFromUser(int userId, Guid connectionId)
+    {
+        if (UserToConnections.ContainsKey(userId))
+        {
+            UserToConnections[userId].Remove(connectionId);
+            if (UserToConnections[userId].Count == 0)
+            {
+                UserToConnections.Remove(userId);
+            }
+            
+            // Remove the user from the connection's list of subscribed users.
+            if (ConnectionToUsers.TryGetValue(connectionId, out List<int>? userList))
+            {
+                userList.Remove(userId);
+                if (userList.Count == 0)
+                {
+                    ConnectionToUsers.Remove(connectionId);
+                }
+            }
+        }
     }
 }

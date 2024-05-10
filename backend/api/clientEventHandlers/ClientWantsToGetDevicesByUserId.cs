@@ -26,7 +26,7 @@ public class ClientWantsToGetDevicesByUserId : BaseEventHandler<ClientWantsToGet
     }
     public override Task Handle(ClientWantsToGetDevicesByUserIdDto getDevicesByUserIdDto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+        var userId = StateService.GetConnection(socket.ConnectionInfo.Id).User.Id;
         var devices = _deviceService.GetDevicesByUserId(userId);
         
         socket.SendDto(new ServerSendsDevicesByUserId
@@ -36,7 +36,7 @@ public class ClientWantsToGetDevicesByUserId : BaseEventHandler<ClientWantsToGet
         
         foreach (var device in devices)
         {
-            StateService.AddUserToDevice(device.Id, socket.ConnectionInfo.Id);
+            StateService.AddConnectionToDevice(device.Id, socket.ConnectionInfo.Id);
         }
         
         return Task.CompletedTask;

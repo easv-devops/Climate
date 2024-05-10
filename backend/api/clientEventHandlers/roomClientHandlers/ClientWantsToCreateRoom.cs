@@ -30,7 +30,7 @@ public class ClientWantsToCreateRoom: BaseEventHandler<ClientWantsToCreateRoomDt
     
     public override Task Handle(ClientWantsToCreateRoomDto dto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
+        var userId = StateService.GetConnection(socket.ConnectionInfo.Id).User!.Id;
 
         var room = new CreateRoomDto()
         {
@@ -40,7 +40,7 @@ public class ClientWantsToCreateRoom: BaseEventHandler<ClientWantsToCreateRoomDt
         
         var createdRoom = _roomService.CreateRoom(room);
 
-        StateService.AddUserToRoom(createdRoom.Id, socket.ConnectionInfo.Id);
+        StateService.AddConnectionToRoom(createdRoom.Id, socket.ConnectionInfo.Id);
         
         _serverResponse.SendRoomToClient(createdRoom);
         
