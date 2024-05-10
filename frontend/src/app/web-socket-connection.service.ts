@@ -99,8 +99,6 @@ export class WebSocketConnectionService {
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
-    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
-    this.socketConnection.sendDto(new ClientWantsToGetAllRoomsDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
@@ -216,7 +214,6 @@ export class WebSocketConnectionService {
   }
 
   ServerDeletesRoom(dto: ServerDeletesRoom) {
-    console.log(dto.DeletedRoom)
     if (dto.DeletedRoom) {
       const rooms = { ...this.allRoomsSubject.value };
       delete rooms[dto.DeletedRoom];

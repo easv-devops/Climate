@@ -63,6 +63,7 @@ export class GraphComponent implements OnInit {
     this.getDeviceFromRoute();
     this.initChart();
 
+
     // Request all the readings data
     this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
     this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
@@ -159,6 +160,7 @@ export class GraphComponent implements OnInit {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(readings => {
         if (readings) {
+
           // Find series to update
           let series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
@@ -176,6 +178,7 @@ export class GraphComponent implements OnInit {
             // Update time range option
             this.setTimeRange(this.activeOptionButton);
           }
+        }else {
         }
       });
   }
