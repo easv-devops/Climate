@@ -99,6 +99,8 @@ export class WebSocketConnectionService {
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
+    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
+    this.socketConnection.sendDto(new ClientWantsToGetAllRoomsDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {

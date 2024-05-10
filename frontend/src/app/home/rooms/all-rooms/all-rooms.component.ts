@@ -22,7 +22,6 @@ export class AllRoomsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.roomService.getAllRooms();
     this.subscribeToAllRooms();
   }
 
