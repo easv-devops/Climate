@@ -103,6 +103,13 @@ steps:
           -locations=filesystem:./db/sql
     depends_on:
       - trigger update
+      
+  - name: end-to-end tests
+    image: testcafe/testcafe
+    commands:
+      - testcafe firefox:headless ./backend/tests/e2e/login.js
+    depends_on:
+      - update staging database
         
 ---
 
