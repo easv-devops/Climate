@@ -103,6 +103,4 @@ export class EditDeviceComponent  implements OnInit {
     // Gem den valgte værdi, når der sker ændringer i ion-select
     this.selectedRoomId = event.detail.value;
   }
-
-
 }

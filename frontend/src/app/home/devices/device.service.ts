@@ -39,6 +39,7 @@ export class DeviceService {
     var dto = new ClientWantsToGetTemperatureReadingsDto({
       DeviceId: id
     });
+
     this.ws.socketConnection.sendDto(dto)
   }
 

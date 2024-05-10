@@ -22,6 +22,6 @@ export class AuthGuard implements CanActivate {
 
   //todo temporary logged in method (should be some more)
   isLoggedIn(): boolean {
-    return !!this.ws.jwt
+    return !!localStorage.getItem("jwt");
   }
 }
