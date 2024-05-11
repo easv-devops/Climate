@@ -12,8 +12,7 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
-import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
+import {Device, Room, SensorDto} from "../models/Entities";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
@@ -23,11 +22,11 @@ import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
 import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
 import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
 import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGetAllRoomsDto";
-import {
-  ServerSendsDeviceIdListForRoomDto
-} from "../models/ServerSendsDeviceIdListForRoomDto";
+import {ServerSendsDeviceIdListForRoomDto} from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
-import { ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {FullUserDto, ServerSendsUser} from "../models/ServerSendsUser";
+import {ClientWantsToGetUserInfoDto} from "../models/ClientWantsToGetUserInfoDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -57,6 +56,8 @@ export class WebSocketConnectionService {
   private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
   allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
 
+  private userSubject = new BehaviorSubject<FullUserDto | undefined>(undefined);
+  user: Observable<FullUserDto | undefined> = this.userSubject.asObservable();
 
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
@@ -99,6 +100,9 @@ export class WebSocketConnectionService {
   ServerAuthenticatesUser(dto: ServerAuthenticatesUserDto) {
     localStorage.setItem("jwt", dto.Jwt!);
     this.jwtSubject.next(dto.Jwt);
+    this.socketConnection.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
+    this.socketConnection.sendDto(new ClientWantsToGetAllRoomsDto({}));
+    this.socketConnection.sendDto(new ClientWantsToGetUserInfoDto({}));
   }
 
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
@@ -113,6 +117,13 @@ export class WebSocketConnectionService {
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
+  }
+
+  ServerSendsUser(dto: ServerSendsUser) {
+    this.user.pipe(take(1)).subscribe(user => {
+      user = dto.User;
+      this.userSubject.next(user);
+    });
   }
 
   ServerSendsDevice(dto: DeviceWithIdDto) {
@@ -229,6 +240,7 @@ export class WebSocketConnectionService {
     this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
+    this.userSubject.next(undefined); // Nulstil allUsers-subjektet
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {

@@ -19,7 +19,7 @@ public class ServerWantsToSendUser
             {
                 connection.Connection.SendDto(new ServerSendsUser()
                 {
-                    FullUserDto = new FullUserDto()
+                    User = new FullUserDto()
                     {
                         Id = userDto.Id,
                         Email = userDto.Email,
@@ -38,5 +38,5 @@ public class ServerWantsToSendUser
 
 public class ServerSendsUser : BaseDto
 {
-    public required FullUserDto FullUserDto { get; set; }
+    public required FullUserDto User { get; set; }
 }
