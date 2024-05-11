@@ -22,10 +22,12 @@ public class EndUser
  */
 public class FullUserDto
 {
-    public required int Id { get; set; }
-    [Required] public required string FullName { get; set; }
+    [Required] public required int Id { get; set; }
     [Required, EmailAddress] public required string Email { get; set; }
-    [Required, Timestamp] public required DateTime Created { get; set; }
+    [Required] public required string FirstName { get; set; }
+    [Required] public required string LastName { get; set; }
+    [Required] public required string CountryCode { get; set; }
+    [Required] public required string Number { get; set; }
 }
 
 /**

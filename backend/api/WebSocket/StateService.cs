@@ -37,6 +37,12 @@ public static class StateService
     
     //used for getting all rooms a user is subscribed to (used to empty _roomsToUser dictionary when client disconnect)
     private static readonly Dictionary<Guid, List<int>> _userToRoom = new();
+    
+    //holds the user and the connections that wants updates on that user
+    private static readonly Dictionary<int, List<Guid>> UserToConnections = new();
+    
+    //used for getting the user a connection is subscribed to (used to empty UserToConnections dictionary when client disconnects)
+    private static readonly Dictionary<Guid, int> ConnectionToUser = new();
 
     
     
@@ -82,6 +88,14 @@ public static class StateService
                 }
                 _userToRoom.Remove(clientId);
             }
+            
+            if (ConnectionToUser.TryGetValue(clientId, out var userId))
+            {
+                RemoveConnectionFromUser(userId, clientId);
+                
+                ConnectionToUser.Remove(clientId);
+            }
+            
             // Remove the client from the clients collection
             _clients.Remove(clientId);
         }
@@ -200,5 +214,44 @@ public static class StateService
 
         // Tjek om enheden findes i brugerens liste over enheder
         return deviceList.Contains(deviceId);
+    }
+    
+    public static List<Guid> GetConnectionsForUser(int userId)
+    {
+        // Return en tom liste hvis der ikke er nogen connections for brugeren
+        return UserToConnections.TryGetValue(userId, out var connectionList) ? connectionList : new List<Guid>(); 
+    }
+
+    public static void AddConnectionToUser(int userId, Guid connectionId)
+    {
+        if (UserToConnections.TryGetValue(userId, out var connectionList))
+        {
+            if (!connectionList.Contains(connectionId))
+            {
+                connectionList.Add(connectionId);
+            }
+        }
+        else
+        {
+            UserToConnections[userId] = new List<Guid> { connectionId };
+        }
+        
+        // Sets the user as the connection's subscribed user.
+        ConnectionToUser[connectionId] = userId;
+    }
+
+    public static void RemoveConnectionFromUser(int userId, Guid connectionId)
+    {
+        if (UserToConnections.TryGetValue(userId, out List<Guid>? connectionList))
+        {
+            connectionList.Remove(connectionId);
+            if (connectionList.Count == 0)
+            {
+                UserToConnections.Remove(userId);
+            }
+        }
+
+        // Remove the connection from the ConnectionToUser dictionary.
+        ConnectionToUser.Remove(connectionId);
     }
 }
