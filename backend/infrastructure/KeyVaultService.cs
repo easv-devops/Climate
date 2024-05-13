@@ -33,7 +33,7 @@ public static class KeyVaultService
         catch (Exception e)
         {
             Console.WriteLine($"Error occurred while retrieving connection string from Azure Key Vault: {e.Message}");
-            throw new NullReferenceException(e.Message, e);
+            throw new InvalidOperationException(e.Message, e);
         }
     }
 
