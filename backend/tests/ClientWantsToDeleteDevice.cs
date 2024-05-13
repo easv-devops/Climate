@@ -28,8 +28,6 @@ public class ClientWantsToDeleteDevice
             password = password
         });
         
-        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
-        
         await ws.DoAndAssert(new ClientWantsToDeleteDeviceDto
         {
             Id = id
