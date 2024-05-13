@@ -29,7 +29,9 @@ export default function () {
             // Fjern outcommenting ved fejlsøgning
             // console.log('Message received:', data);
             const response = JSON.parse(data);
-            check(response, { 'EventType is ServerAuthenticatesUser': (resp) => resp.eventType === 'ServerAuthenticatesUser' });
+            // Expecting first response from login to be ServerReturnsAllRooms 
+            // (happens as ClientWantsToAuthenticate.cs calls ServerWantsToInitUser.cs)
+            check(response, { 'EventType is ServerReturnsAllRooms': (resp) => resp.eventType === 'ServerReturnsAllRooms' });
             socket.close();
         });
         socket.on('close', function () {
