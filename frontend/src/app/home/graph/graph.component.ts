@@ -63,9 +63,11 @@ export class GraphComponent implements OnInit {
     this.getDeviceFromRoute();
     this.initChart();
 
+    const now: Date = new Date();
+    const oneMonthAgo: Date = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
 
     // Request all the readings data
-    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!);
+    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneMonthAgo, now);
     this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
     this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
     this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
@@ -83,6 +85,7 @@ export class GraphComponent implements OnInit {
   }
 
   initChart(): void {
+
     this.chartOptions = {
       series: [{data: []}],
       chart: {
@@ -122,6 +125,9 @@ export class GraphComponent implements OnInit {
         }
       }
     };
+    //sets the standard historical range
+    this.setTimeRange('1m')
+
   }
 
   setTimeRange(range: string): void {
@@ -191,22 +197,70 @@ export class GraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
+        this.fetchDataFromLastTimestampToNow('Temperature');
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
+        this.fetchDataFromLastTimestampToNow('Humidity');
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
+        this.fetchDataFromLastTimestampToNow('PM 2.5');
+        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
+
+        this.fetchDataFromLastTimestampToNow('Temperature');
+        this.fetchDataFromLastTimestampToNow('Humidity');
+        this.fetchDataFromLastTimestampToNow('PM 2.5');
+        this.fetchDataFromLastTimestampToNow('PM 10');
+
         break;
       default:
         console.error('Invalid option:', option);
     }
   }
+
+  // Metode til at hente data fra det seneste tidspunkt i grafen og frem til nu
+  fetchDataFromLastTimestampToNow(seriesName: string) {
+    // Find den aktuelle serie baseret på navnet
+    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+
+    if (series && series.data.length > 0) {
+      // Find det seneste tidspunkt i serien
+      const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
+
+      // Opret starttidspunkt som det seneste tidspunkt i grafen
+      const startTime = new Date(lastTimestamp + 10);
+
+      // Opret sluttidspunkt som nuværende tidspunkt
+      const endTime = new Date();
+
+      // Hent data fra det seneste tidspunkt til nu
+      switch (seriesName) {
+        case 'Temperature':
+          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
+          break;
+          /**
+        case 'Humidity':
+          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
+          break;
+        case 'PM 2.5':
+          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
+          break;
+        case 'PM 10':
+          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
+          break;
+          */
+        default:
+          console.error('Invalid series name:', seriesName);
+      }
+    }
+  }
+
 }

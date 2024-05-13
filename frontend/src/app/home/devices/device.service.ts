@@ -35,9 +35,11 @@ export class DeviceService {
     return this.ws.isDeviceEdited
   }
 
-  getTemperatureByDeviceId(id: number) {
+  getTemperatureByDeviceId(id: number, start: Date, end: Date) {
     var dto = new ClientWantsToGetTemperatureReadingsDto({
-      DeviceId: id
+      DeviceId: id,
+      StartTime: start,
+      EndTime: end
     });
 
     this.ws.socketConnection.sendDto(dto)

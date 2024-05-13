@@ -233,17 +233,41 @@ export class WebSocketConnectionService {
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
     this.temperatureReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
-
       if (!temperatureReadingsRecord) {
         temperatureReadingsRecord = {};
       }
 
-      temperatureReadingsRecord![dto.DeviceId] = dto.TemperatureReadings;
+      // Hent de eksisterende læsninger for det givne DeviceId
+      let existingReadings = temperatureReadingsRecord![dto.DeviceId] || [];
 
-      // Opdater temperatureReadingsSubject med den opdaterede record
+      // Hvis der allerede er eksisterende læsninger for dette DeviceId
+      if (existingReadings.length > 0) {
+        console.log(  Object.keys(temperatureReadingsRecord).length)
+        // Find timestamps for det sidste element i de eksisterende læsninger og det første element i de nye læsninger
+        const lastExistingTimestamp = existingReadings[existingReadings.length - 1].TimeStamp;
+        const firstNewTimestamp = dto.TemperatureReadings[0].TimeStamp;
+
+        // Hvis det første element i de nye læsninger er nyere end det sidste element i de eksisterende læsninger
+        if (new Date(firstNewTimestamp) > new Date(lastExistingTimestamp)) {
+          // Tilføj de nye læsninger først til de eksisterende læsninger
+          existingReadings = dto.TemperatureReadings.concat(existingReadings);
+        } else {
+          // Ellers tilføj de nye læsninger til sidst i de eksisterende læsninger
+          existingReadings = existingReadings.concat(dto.TemperatureReadings);
+        }
+      } else {
+        // Hvis der ikke findes eksisterende læsninger for dette DeviceId, tilføj de nye læsninger direkte
+        existingReadings = dto.TemperatureReadings;
+      }
+
+      // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
+      temperatureReadingsRecord![dto.DeviceId] = existingReadings;
+
+      // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
       this.temperatureReadingsSubject.next(temperatureReadingsRecord);
     });
   }
+
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
