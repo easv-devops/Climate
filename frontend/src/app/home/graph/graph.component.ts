@@ -43,7 +43,6 @@ export type ChartOptions = {
 })
 export class GraphComponent implements OnInit {
   idFromRoute: number | undefined;
-  @ViewChild("chart", {static: false}) chart!: ChartComponent;
   chartOptions: any = {};
   public activeOptionButton = "1d";
 
@@ -165,15 +164,25 @@ export class GraphComponent implements OnInit {
         this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
 
 
-        // Update chartOptions with new x-axis range
-        this.chartOptions = {
-            ...this.chartOptions,
-            xaxis: {
-                ...this.chartOptions.xaxis,
-                min: minTime,
-                max: maxTime
-            }
-        }
+        this.ws.temperatureReadings.pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (!readings)
+                    return
+
+                if (readings[this.idFromRoute!]){
+
+                    // Update chartOptions with new x-axis range
+                    this.chartOptions = {
+                        ...this.chartOptions,
+                        xaxis: {
+                            ...this.chartOptions.xaxis,
+                            min: minTime,
+                            max: maxTime
+                        }
+                    }
+                }
+            });
+
     }
 
 
@@ -203,9 +212,6 @@ export class GraphComponent implements OnInit {
                             series = { name: seriesName, data: newSeries };
                             this.chartOptions.series.push(series);
                         }
-
-                        // Reassign chart data to trigger re-render
-                        this.chart.updateOptions({ series: this.chartOptions.series });
 
                         // Update time range option
                         this.setTimeRange(this.activeOptionButton);

@@ -233,9 +233,9 @@ export class WebSocketConnectionService {
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
     this.temperatureReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
-      if (!temperatureReadingsRecord) {
-        temperatureReadingsRecord = {};
-      }
+      // Initialiser temperatureReadingsRecord til et tomt objekt, hvis det er null eller udefineret
+      temperatureReadingsRecord = temperatureReadingsRecord || {};
+
       // Hent de eksisterende læsninger for det givne DeviceId
       let existingReadings = temperatureReadingsRecord[dto.DeviceId] || [];
 
@@ -248,12 +248,11 @@ export class WebSocketConnectionService {
       // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
       temperatureReadingsRecord[dto.DeviceId] = existingReadings;
 
-      if (temperatureReadingsRecord){
-        // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
-        this.temperatureReadingsSubject.next(temperatureReadingsRecord);
-      }
+      // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
+      this.temperatureReadingsSubject.next(temperatureReadingsRecord);
     });
   }
+
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
