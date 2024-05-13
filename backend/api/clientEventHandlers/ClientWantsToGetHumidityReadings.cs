@@ -14,6 +14,10 @@ public class ClientWantsToGetHumidityReadingsDto : BaseDto
 {
     [Required(ErrorMessage = "Device Id is required")]
     public int DeviceId { get; set; }
+    
+    public DateTime? StartTime { get; set; }
+    
+    public DateTime? EndTime { get; set; }
 }
 
 [RequireAuthentication]
@@ -37,7 +41,7 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
         }
         
         var readings =
-            _deviceReadingsService.GetHumidityReadingsFromDevice(dto.DeviceId);
+            _deviceReadingsService.GetHumidityReadingsFromDevice(dto.DeviceId, dto.StartTime, dto.EndTime);
         
         socket.SendDto(new ServerSendsHumidityReadings()
         {

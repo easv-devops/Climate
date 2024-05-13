@@ -69,23 +69,23 @@ public class DeviceReadingsService
         return true;
     }
 
-    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
-        return _temperatureRepository.GetTemperatureReadingsFromDevice(deviceId);
+        return _temperatureRepository.GetTemperatureReadingsFromDevice( deviceId,  startTime, endTime);
     }
     
-    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
-        return _humidityRepository.GetHumidityReadingsFromDevice(deviceId);
+        return _humidityRepository.GetHumidityReadingsFromDevice(deviceId, startTime, endTime);
     }
     
-    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
-        return _particlesRepository.GetPm25ReadingsFromDevice(deviceId);
+        return _particlesRepository.GetPm25ReadingsFromDevice(deviceId, startTime, endTime);
     }
     
-    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
-        return _particlesRepository.GetPm100ReadingsFromDevice(deviceId);
+        return _particlesRepository.GetPm100ReadingsFromDevice(deviceId, startTime, endTime);
     }
 }

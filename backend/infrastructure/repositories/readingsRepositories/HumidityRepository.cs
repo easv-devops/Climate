@@ -59,23 +59,34 @@ public class HumidityRepository
         }
     }
     
-    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetHumidityReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
+        
             var sql = @"
-                SELECT Timestamp, Humidity AS Value 
-                FROM ReadingHumidity 
-                WHERE DeviceId = @DeviceId;
-                ";
-            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+            SELECT 
+                Timestamp AS TimeStamp,
+                Humidity AS Value 
+            FROM 
+                ReadingHumidity 
+            WHERE 
+                DeviceId = @deviceId
+                AND Timestamp >= @startTime
+                AND Timestamp <= @endTime
+            ORDER BY 
+                Timestamp;
+        ";
+
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId, StartTime = startTime, EndTime = endTime });
         }
         catch (Exception e)
         {
-            throw new SqlTypeException("Failed to retrieve humidity readings from device "+deviceId, e);
+            throw new SqlTypeException("Failed to retrieve humidity readings from device " + deviceId, e);
         }
     }
+
 }
 
