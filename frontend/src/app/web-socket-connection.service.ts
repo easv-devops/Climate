@@ -236,38 +236,22 @@ export class WebSocketConnectionService {
       if (!temperatureReadingsRecord) {
         temperatureReadingsRecord = {};
       }
-
       // Hent de eksisterende læsninger for det givne DeviceId
-      let existingReadings = temperatureReadingsRecord![dto.DeviceId] || [];
+      let existingReadings = temperatureReadingsRecord[dto.DeviceId] || [];
 
-      // Hvis der allerede er eksisterende læsninger for dette DeviceId
-      if (existingReadings.length > 0) {
-        console.log(  Object.keys(temperatureReadingsRecord).length)
-        // Find timestamps for det sidste element i de eksisterende læsninger og det første element i de nye læsninger
-        const lastExistingTimestamp = existingReadings[existingReadings.length - 1].TimeStamp;
-        const firstNewTimestamp = dto.TemperatureReadings[0].TimeStamp;
+      // Tilføj de nye læsninger til de eksisterende læsninger
+      existingReadings = existingReadings.concat(dto.TemperatureReadings);
 
-        // Hvis det første element i de nye læsninger er nyere end det sidste element i de eksisterende læsninger
-        if (new Date(firstNewTimestamp) > new Date(lastExistingTimestamp)) {
-          // Tilføj de nye læsninger først til de eksisterende læsninger
-          existingReadings = dto.TemperatureReadings.concat(existingReadings);
-        } else {
-          // Ellers tilføj de nye læsninger til sidst i de eksisterende læsninger
-          existingReadings = existingReadings.concat(dto.TemperatureReadings);
-        }
-      } else {
-        // Hvis der ikke findes eksisterende læsninger for dette DeviceId, tilføj de nye læsninger direkte
-        existingReadings = dto.TemperatureReadings;
-      }
+      // Sortér læsningerne efter tidspunkt
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
 
       // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
-      temperatureReadingsRecord![dto.DeviceId] = existingReadings;
+      temperatureReadingsRecord[dto.DeviceId] = existingReadings;
 
       // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
       this.temperatureReadingsSubject.next(temperatureReadingsRecord);
     });
   }
-
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {

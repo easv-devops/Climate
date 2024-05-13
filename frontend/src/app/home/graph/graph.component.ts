@@ -45,7 +45,7 @@ export class GraphComponent implements OnInit {
   idFromRoute: number | undefined;
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   chartOptions: any = {};
-  public activeOptionButton = "all";
+  public activeOptionButton = "1d";
   ws: WebSocketConnectionService;
   deviceService: DeviceService;
   activatedRoute: ActivatedRoute;
@@ -64,10 +64,11 @@ export class GraphComponent implements OnInit {
     this.initChart();
 
     const now: Date = new Date();
-    const oneMonthAgo: Date = new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000);
+    const oneDayAgo: Date = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
+
 
     // Request all the readings data
-    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneMonthAgo, now);
+    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
     this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
     this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
     this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
@@ -112,7 +113,7 @@ export class GraphComponent implements OnInit {
       },
       tooltip: {
         x: {
-          format: "dd MMM yyyy"
+          format: "hh:mm  dd-MMM yyyy"
         }
       },
       fill: {
@@ -126,68 +127,96 @@ export class GraphComponent implements OnInit {
       }
     };
     //sets the standard historical range
-    this.setTimeRange('1m')
+    this.setTimeRange('1d')
 
   }
 
-  setTimeRange(range: string): void {
-    const updateOptionsData: { [key: string]: { xaxis?: { min?: number; max?: number } } } = {
-      "1d": {
-        xaxis: {min: new Date().getTime() - (24 * 60 * 60 * 1000), max: new Date().getTime()}
-      },
-      "1m": {
-        xaxis: {min: new Date().getTime() - (30 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
-      },
-      "6m": {
-        xaxis: {min: new Date().getTime() - (6 * 30 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
-      },
-      "1y": {
-        xaxis: {min: new Date().getTime() - (365 * 24 * 60 * 60 * 1000), max: new Date().getTime()}
-      },
-      "all": {
-        xaxis: {min: undefined, max: undefined}
-      }
-    };
+    setTimeRange(range: string): void {
+        const now = new Date().getTime();
+        let minTime: number | undefined;
+        let maxTime: number | undefined;
 
-    this.chartOptions = {
-      ...this.chartOptions,
-      xaxis: {
-        ...this.chartOptions.xaxis,
-        ...(updateOptionsData[range]?.xaxis || {}) // Apply range updates or keep existing values
-      }
-    };
-  }
+        switch (range) {
+            case "1d":
+                minTime = now - (24 * 60 * 60 * 1000);
+                maxTime = now;
+                break;
+            case "1m":
+                minTime = now - (30 * 24 * 60 * 60 * 1000);
+                maxTime = now;
+                break;
+            case "6m":
+                minTime = now - (6 * 30 * 24 * 60 * 60 * 1000);
+                maxTime = now;
+                break;
+            case "1y":
+                minTime = now - (365 * 24 * 60 * 60 * 1000);
+                maxTime = now;
+                break;
+            case "all":
+                // undefined minTime and maxTime will reset the zoom
+                break;
+            default:
+                console.error("Invalid range:", range);
+        }
 
-  /* Method to subscribe to the selected reading */
+        // Call fetchOlderReadingsIfNeeded for each reading type
+        this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
+        this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
+        this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
+        this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
+
+        // Update chartOptions with new x-axis range
+        this.chartOptions = {
+            ...this.chartOptions,
+            xaxis: {
+                ...this.chartOptions.xaxis,
+                min: minTime,
+                max: maxTime
+            }
+        };
+    }
+
+
+
+
+    /* Method to subscribe to the selected reading */
   /* Call by passing the observable and series name as parameters, like this: */
   /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature') */
-  subscribeToReadings(observable: Observable<Record<number, SensorDto[]> | undefined>, seriesName: string) {
-    observable
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(readings => {
-        if (readings) {
+    subscribeToReadings(observable: Observable<Record<number, SensorDto[]> | undefined>, seriesName: string) {
+        observable
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (readings) {
+                    // Find series to update
+                    let series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
-          // Find series to update
-          let series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+                    const data = readings[this.idFromRoute!];
+                    if (data && data.length > 0) {
+                        const newSeries = data.map((reading: SensorDto) => ({
+                            x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
+                            y: reading.Value
+                        }));
 
-          const data = readings[this.idFromRoute!];
-          if (data && data.length > 0) {
-            const newSeries = data.map((reading: SensorDto) => ({
-              x: new Date(reading.TimeStamp).getTime(), // Convert timestamp to milliseconds
-              y: reading.Value
-            }));
+                        // Update the series with new data
+                        if (series) {
+                            series.data = newSeries;
+                        } else {
+                            series = { name: seriesName, data: newSeries };
+                            this.chartOptions.series.push(series);
+                        }
 
-            // Update the series with new data
-            series = { name: seriesName, data: newSeries };
-            this.chartOptions.series.push(series);
+                        // Reassign chart data to trigger re-render
+                        this.chart.updateOptions({ series: this.chartOptions.series });
 
-            // Update time range option
-            this.setTimeRange(this.activeOptionButton);
-          }
-        }else {
-        }
-      });
-  }
+                        // Update time range option
+                        this.setTimeRange(this.activeOptionButton);
+                    }
+                }
+            });
+    }
+
+
 
   updateGraph(option: string) {
     // Clear existing chart data & subscriptions
@@ -197,7 +226,7 @@ export class GraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
-        this.fetchDataFromLastTimestampToNow('Temperature');
+        this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
@@ -232,13 +261,10 @@ export class GraphComponent implements OnInit {
     const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
     if (series && series.data.length > 0) {
-      // Find det seneste tidspunkt i serien
+        
       const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
-      // Opret starttidspunkt som det seneste tidspunkt i grafen
-      const startTime = new Date(lastTimestamp + 10);
-
-      // Opret sluttidspunkt som nuværende tidspunkt
+      const startTime = new Date(lastTimestamp);
       const endTime = new Date();
 
       // Hent data fra det seneste tidspunkt til nu
@@ -263,4 +289,38 @@ export class GraphComponent implements OnInit {
     }
   }
 
+    fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {
+        // Find den aktuelle serie baseret på navnet
+        const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+
+        if (series && series.data.length > 0) {
+            // Find det første tidspunkt i serien
+            const firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
+
+            // Hvis starttidspunktet er tidligere end det første timestamp i listen
+            if (startTime.getTime() < firstTimestamp) {
+                // Hent data fra starttidspunktet til det første timestamp i listen
+                switch (seriesName) {
+                    case 'Temperature':
+                        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+                        break;
+                        /**
+                    case 'Humidity':
+                        this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+                        break;
+                    case 'PM 2.5':
+                        this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+                        break;
+                    case 'PM 10':
+                        this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+                        break;
+                    default:
+                        console.error('Invalid series name:', seriesName);
+                        break;
+                        */
+                }
+
+            }
+        }
+    }
 }
