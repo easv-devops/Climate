@@ -14,9 +14,9 @@ public class ClientWantsToRegisterTests
         FlywayDbTestRebuilder.ExecuteMigrations();
         Startup.Start(null, Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()));    }
     
-    [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "+45", TestName = "Valid")]
-    [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "+44", TestName = "Invalid password")]
-    [TestCase("fewia.com", "156812333", "234567890", "John", "Doe", "+80", TestName = "invalid email")]
+    [TestCase("user102111@example.com", "12345678", "234567890", "John", "Doe", "DK", TestName = "Valid")]
+    [TestCase("user50@example.com", "5",  "234567890", "John", "Doe", "DK", TestName = "Invalid password")]
+    [TestCase("fewia.com", "156812333", "234567890", "John", "Doe", "DK", TestName = "invalid email")]
     public async Task RegisterTest(string email, string password,  string phone, string firstName, string lastName, string countryCode)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
