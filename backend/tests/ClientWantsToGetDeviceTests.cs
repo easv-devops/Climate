@@ -27,7 +27,6 @@ public class ClientWantsToGetDeviceTests
             password = password
         });
 
-
         //Act
         await ws.DoAndAssert(new ClientWantsToGetDevicesByUserIdDto()
             {
@@ -37,8 +36,10 @@ public class ClientWantsToGetDeviceTests
             {
                 return fromServer.Count(dto =>
                 {
+                    Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
+                        serverEvent => serverEvent.eventType == nameof(ServerSendsDevicesByUserId)));
                     return dto.eventType == nameof(ServerSendsDevicesByUserId);
-                }) == 1;
+                }) == 2; // Expecting 2 ServerSendsDevicesByUserId as ClientWantsToSignInDto triggers the first
             }
         );
     }

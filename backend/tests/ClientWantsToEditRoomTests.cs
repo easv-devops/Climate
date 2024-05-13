@@ -30,8 +30,6 @@ public class ClientWantsToEditRoomTests
             password = password
         });
         
-        ws.Send(new ClientWantsToGetAllRoomsDto(){});
-        
         var room = new RoomWithId
         {
             Id = roomId,
@@ -49,6 +47,8 @@ public class ClientWantsToEditRoomTests
                 switch (testName)
                 {
                     case "Valid":
+                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
+                            serverEvent => serverEvent.eventType == nameof(ServerSendsRoom)));
                         return dto.eventType == nameof(ServerSendsRoom);
                 
                     case "NameTooLong":

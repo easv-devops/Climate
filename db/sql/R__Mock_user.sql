@@ -7,8 +7,8 @@ INSERT INTO UserInformation (UserId, FirstName, LastName)
 VALUES (1, 'John', 'Doe');
 
 -- Insert contact information
-INSERT INTO ContactInformation (UserId, CountryCode, Number)
-VALUES (1, '+1', '1234567890');
+INSERT INTO ContactInformation (UserId, IsoCode, Number)
+VALUES (1, 'DK', '1234567890');
 
 -- Insert user status
 INSERT INTO UserStatus (UserId, BanTimestamp)
