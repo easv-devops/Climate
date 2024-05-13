@@ -12,12 +12,20 @@ CREATE TABLE UserInformation (
     FOREIGN KEY (UserId) REFERENCES User(Id)
 );
 
+-- Create CountryCode table
+CREATE TABLE CountryCode (
+    Country VARCHAR(255),
+    CountryCode VARCHAR(10),
+    IsoCode VARCHAR(10) PRIMARY KEY
+);
+
 -- Create ContactInformation table
 CREATE TABLE ContactInformation (
     UserId                      INT PRIMARY KEY,
-    CountryCode                 VARCHAR(5),
+    IsoCode                     VARCHAR(5),
     Number                      VARCHAR(20),
-    FOREIGN KEY (UserId) REFERENCES User(Id)
+    FOREIGN KEY (UserId) REFERENCES User(Id),
+    FOREIGN KEY (IsoCode) REFERENCES CountryCode(IsoCode)
 );
 
 -- Create UserStatus table
