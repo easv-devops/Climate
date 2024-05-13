@@ -248,8 +248,10 @@ export class WebSocketConnectionService {
       // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
       temperatureReadingsRecord[dto.DeviceId] = existingReadings;
 
-      // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
-      this.temperatureReadingsSubject.next(temperatureReadingsRecord);
+      if (temperatureReadingsRecord){
+        // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
+        this.temperatureReadingsSubject.next(temperatureReadingsRecord);
+      }
     });
   }
 

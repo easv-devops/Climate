@@ -46,17 +46,13 @@ export class GraphComponent implements OnInit {
   @ViewChild("chart", {static: false}) chart!: ChartComponent;
   chartOptions: any = {};
   public activeOptionButton = "1d";
-  ws: WebSocketConnectionService;
-  deviceService: DeviceService;
-  activatedRoute: ActivatedRoute;
+
+
   private unsubscribe$ = new Subject<void>();
 
-  constructor(ws: WebSocketConnectionService,
-              deviceService: DeviceService,
-              activatedRoute: ActivatedRoute,) {
-    this.ws = ws;
-    this.deviceService = deviceService;
-    this.activatedRoute = activatedRoute;
+  constructor(private ws: WebSocketConnectionService,
+              private deviceService: DeviceService,
+              private activatedRoute: ActivatedRoute,) {
   }
 
   ngOnInit(): void {
@@ -69,12 +65,14 @@ export class GraphComponent implements OnInit {
 
     // Request all the readings data
     this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-    this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
-    this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+    //this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
+    //this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
+    //this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
 
-    this.updateGraph('temperature'); // Showing temperature as default
+      this.updateGraph('temperature'); // Showing temperature as default
+
   }
+
 
   ngOnDestroy() {
     this.unsubscribe$.next();
@@ -131,6 +129,7 @@ export class GraphComponent implements OnInit {
 
   }
 
+
     setTimeRange(range: string): void {
         const now = new Date().getTime();
         let minTime: number | undefined;
@@ -156,8 +155,7 @@ export class GraphComponent implements OnInit {
             case "all":
                 // undefined minTime and maxTime will reset the zoom
                 break;
-            default:
-                console.error("Invalid range:", range);
+
         }
 
         // Call fetchOlderReadingsIfNeeded for each reading type
@@ -165,6 +163,7 @@ export class GraphComponent implements OnInit {
         this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
+
 
         // Update chartOptions with new x-axis range
         this.chartOptions = {
@@ -174,13 +173,12 @@ export class GraphComponent implements OnInit {
                 min: minTime,
                 max: maxTime
             }
-        };
+        }
     }
 
 
 
-
-    /* Method to subscribe to the selected reading */
+  /* Method to subscribe to the selected reading */
   /* Call by passing the observable and series name as parameters, like this: */
   /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature') */
     subscribeToReadings(observable: Observable<Record<number, SensorDto[]> | undefined>, seriesName: string) {
@@ -226,7 +224,7 @@ export class GraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
-        this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
+        //this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
@@ -250,8 +248,7 @@ export class GraphComponent implements OnInit {
         this.fetchDataFromLastTimestampToNow('PM 10');
 
         break;
-      default:
-        console.error('Invalid option:', option);
+
     }
   }
 
@@ -261,10 +258,13 @@ export class GraphComponent implements OnInit {
     const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
     if (series && series.data.length > 0) {
-        
+      // Find det seneste tidspunkt i serien
       const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
+      // Opret starttidspunkt som det seneste tidspunkt i grafen
       const startTime = new Date(lastTimestamp);
+
+      // Opret sluttidspunkt som nuværende tidspunkt
       const endTime = new Date();
 
       // Hent data fra det seneste tidspunkt til nu
@@ -283,8 +283,7 @@ export class GraphComponent implements OnInit {
           this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
           break;
           */
-        default:
-          console.error('Invalid series name:', seriesName);
+
       }
     }
   }
