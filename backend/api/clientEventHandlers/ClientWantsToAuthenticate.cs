@@ -2,6 +2,7 @@
 using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
+using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
@@ -25,13 +26,17 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
 {
     private readonly AuthService _authService;
     private readonly TokenService _tokenService;
+    private readonly ServerWantsToInitUser _userHandler;
+
 
     public ClientWantsToAuthenticate(
         AuthService authService,
-        TokenService tokenService)
+        TokenService tokenService,
+        ServerWantsToInitUser userHandler)
     {
         _authService = authService;
         _tokenService = tokenService;
+        _userHandler = userHandler;
     }
 
     public override async Task Handle(ClientWantsToSignInDto request, IWebSocketConnection socket)
@@ -48,6 +53,8 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
 
+        _userHandler.InitUser(socket);
+        
         //sends the JWT token to the client
         socket.SendDto(new ServerAuthenticatesUser
         {

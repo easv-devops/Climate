@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using Fleck;
 using lib;
@@ -15,6 +16,8 @@ public class ClientWantsToGetDeviceIdsForRoomDto : BaseDto
 }
 
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToGetDeviceIdsForRoom: BaseEventHandler<ClientWantsToGetDeviceIdsForRoomDto>
 {
     private readonly DeviceService _deviceService;

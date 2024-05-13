@@ -32,8 +32,6 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
     //If there is a token, we want to login with it
     if (jwt && jwt != '')
       this.sendDto(new ClientWantsToAuthenticateWithJwt({jwt: jwt}));
-    this.sendDto(new ClientWantsToGetDevicesByUserIdDto({}));
-    this.sendDto(new ClientWantsToGetAllRoomsDto({}));
 
     const dto = this.messageQueue.shift();
     if (dto) {
