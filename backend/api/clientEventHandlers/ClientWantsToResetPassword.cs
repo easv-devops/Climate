@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using Fleck;
 using infrastructure.Models;
@@ -14,6 +15,8 @@ public class ClientWantsToResetPasswordDto : BaseDto
     public string Email { get; set; }
 }
 
+
+[ValidateDataAnnotations]
 public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPasswordDto>
 {
     private readonly AuthService _authService;

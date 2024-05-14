@@ -28,8 +28,6 @@ public class ClientWantsToGetReadingsTests
             password = password
         });
         
-        ws.Send(new ClientWantsToGetDevicesByUserIdDto{ });
-
         //Act
         await ws.DoAndAssert(new ClientWantsToGetTemperatureReadingsDto
             {

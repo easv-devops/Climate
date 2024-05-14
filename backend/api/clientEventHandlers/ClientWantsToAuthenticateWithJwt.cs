@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
@@ -22,13 +23,16 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
     
     private readonly AuthService _authService;
     private readonly TokenService _tokenService;
+    private readonly ServerWantsToInitUser _userHandler;
 
     public ClientWantsToAuthenticateWithJwt(
         AuthService authService,
-        TokenService tokenService)
+        TokenService tokenService,
+        ServerWantsToInitUser userHandler)
     {
         _authService = authService;
         _tokenService = tokenService;
+        _userHandler = userHandler;
     }
     public override async Task Handle(ClientWantsToAuthenticateWithJwtDto dto, IWebSocketConnection socket)
     {
@@ -40,6 +44,10 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
         
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
+        
+        //maps the users devices and rooms in stateService.
+    
+        _userHandler.InitUser(socket);
         
         socket.SendDto(new ServerAuthenticatesUser
         {

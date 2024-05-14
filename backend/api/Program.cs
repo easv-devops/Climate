@@ -64,6 +64,7 @@ public static class Startup
         builder.Services.AddSingleton<ServerWantsToSendDevice>();
         builder.Services.AddSingleton<ServerWantsToSendRoom>();
         builder.Services.AddSingleton<ServerWantsToSendUser>();
+        builder.Services.AddSingleton<ServerWantsToInitUser>();
 
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());
@@ -89,6 +90,7 @@ public static class Startup
                     Console.WriteLine(e);
                     //error handler
                     //todo should have a logger that logs the error so we can se it when deployed 
+                    //todo handle what errors the client should se and what should belogged in backend in prod
                     if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))
                     {
                         socket.SendDto(new ServerSendsErrorMessageToClient()
