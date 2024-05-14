@@ -121,7 +121,7 @@ export class WebSocketConnectionService {
 
   ServerSendsUser(dto: ServerSendsUser) {
     this.user.pipe(take(1)).subscribe(user => {
-      user = dto.User;
+      user = dto.UserDto;
       this.userSubject.next(user);
     });
   }

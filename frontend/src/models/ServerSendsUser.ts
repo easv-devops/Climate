@@ -1,7 +1,7 @@
 import {BaseDto} from "./baseDto";
 
 export class ServerSendsUser extends BaseDto<ServerSendsUser>  {
-  User!: FullUserDto;
+  UserDto!: FullUserDto;
 }
 
 export class FullUserDto {
