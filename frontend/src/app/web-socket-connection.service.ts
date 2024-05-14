@@ -256,43 +256,69 @@ export class WebSocketConnectionService {
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
+      // Initialize humidityReadingsRecord to an empty object if it's null or undefined
+      humidityReadingsRecord = humidityReadingsRecord || {};
 
-      if (!humidityReadingsRecord) {
-        humidityReadingsRecord = {};
-      }
+      // Get the existing readings for the given DeviceId
+      let existingReadings = humidityReadingsRecord[dto.DeviceId] || [];
 
-      humidityReadingsRecord![dto.DeviceId] = dto.HumidityReadings;
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.HumidityReadings);
 
-      // Opdater humidityReadingsSubject med den opdaterede record
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update humidityReadingsRecord with the updated readings for the specific DeviceId
+      humidityReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Update humidityReadingsSubject with the updated humidityReadingsRecord
       this.humidityReadingsSubject.next(humidityReadingsRecord);
     });
   }
 
   ServerSendsPm25Readings(dto: ServerSendsPm25ReadingsDto) {
     this.pm25Readings.pipe(take(1)).subscribe(pm25ReadingsRecord => {
+      // Initialize pm25ReadingsRecord to an empty object if it's null or undefined
+      pm25ReadingsRecord = pm25ReadingsRecord || {};
 
-      if (!pm25ReadingsRecord) {
-        pm25ReadingsRecord = {};
-      }
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm25ReadingsRecord[dto.DeviceId] || [];
 
-      pm25ReadingsRecord![dto.DeviceId] = dto.Pm25Readings;
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm25Readings);
 
-      // Opdater pm25ReadingsSubject med den opdaterede record
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update pm25ReadingsRecord with the updated readings for the specific DeviceId
+      pm25ReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Update pm25ReadingsSubject with the updated pm25ReadingsRecord
       this.pm25ReadingsSubject.next(pm25ReadingsRecord);
     });
   }
 
+
   ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
     this.pm100Readings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
+      // Initialize pm100ReadingsRecord to an empty object if it's null or undefined
+      pm100ReadingsRecord = pm100ReadingsRecord || {};
 
-      if (!pm100ReadingsRecord) {
-        pm100ReadingsRecord = {};
-      }
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm100ReadingsRecord[dto.DeviceId] || [];
 
-      pm100ReadingsRecord![dto.DeviceId] = dto.Pm100Readings;
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm100Readings);
 
-      // Opdater pm100ReadingsSubject med den opdaterede record
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
+      pm100ReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100ReadingsSubject.next(pm100ReadingsRecord);
     });
   }
+
 }

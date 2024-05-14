@@ -33,9 +33,12 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
     if (jwt && jwt != '')
       this.sendDto(new ClientWantsToAuthenticateWithJwt({jwt: jwt}));
 
-    const dto = this.messageQueue.shift();
-    if (dto) {
-      this.send(JSON.stringify(dto));
-    }
+    this.messageQueue.forEach( dto => {
+      if (dto) {
+        this.send(JSON.stringify(dto));
+      }
+    })
+    this.messageQueue = []
+
   }
 }

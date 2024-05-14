@@ -45,6 +45,7 @@ export class GraphComponent implements OnInit {
   idFromRoute: number | undefined;
   chartOptions: any = {};
   public activeOptionButton = "1d";
+  public activeTimeInterval?: number;
 
 
   private unsubscribe$ = new Subject<void>();
@@ -59,19 +60,20 @@ export class GraphComponent implements OnInit {
     this.initChart();
 
     const now: Date = new Date();
-    const oneDayAgo: Date = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
-
+    const oneDayAgo: Date = new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000);
+    const twoDayAgo: Date = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
 
     // Request all the readings data
     this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    //this.deviceService.getHumidityByDeviceId(this.idFromRoute!);
-    //this.deviceService.getPm25ByDeviceId(this.idFromRoute!);
-    //this.deviceService.getPm100ByDeviceId(this.idFromRoute!);
+    this.deviceService.getHumidityByDeviceId(this.idFromRoute!, oneDayAgo, now);
+    this.deviceService.getPm25ByDeviceId(this.idFromRoute!, oneDayAgo, now);
+    this.deviceService.getPm100ByDeviceId(this.idFromRoute!, oneDayAgo, now);
 
-      this.updateGraph('temperature'); // Showing temperature as default
 
+    this.updateGraph('temperature'); // Showing temperature as default
+      // Update time range option
+      this.setTimeRange("1d");
   }
-
 
   ngOnDestroy() {
     this.unsubscribe$.next();
@@ -123,8 +125,7 @@ export class GraphComponent implements OnInit {
         }
       }
     };
-    //sets the standard historical range
-    this.setTimeRange('1d')
+
 
   }
 
@@ -134,21 +135,27 @@ export class GraphComponent implements OnInit {
         let minTime: number | undefined;
         let maxTime: number | undefined;
 
+        this.activeOptionButton = range;
+
         switch (range) {
             case "1d":
-                minTime = now - (24 * 60 * 60 * 1000);
+                this.activeTimeInterval = 24 * 60 * 60 * 1000;
+                minTime = now - (this.activeTimeInterval );
                 maxTime = now;
                 break;
             case "1m":
-                minTime = now - (30 * 24 * 60 * 60 * 1000);
+                this.activeTimeInterval = 30 * 24 * 60 * 60 * 1000;
+                minTime = now - (this.activeTimeInterval);
                 maxTime = now;
                 break;
             case "6m":
-                minTime = now - (6 * 30 * 24 * 60 * 60 * 1000);
+                this.activeTimeInterval = 6 * 30 * 24 * 60 * 60 * 1000;
+                minTime = now - (this.activeTimeInterval);
                 maxTime = now;
                 break;
             case "1y":
-                minTime = now - (365 * 24 * 60 * 60 * 1000);
+                this.activeTimeInterval = 365 * 24 * 60 * 60 * 1000;
+                minTime = now - (this.activeTimeInterval);
                 maxTime = now;
                 break;
             case "all":
@@ -157,6 +164,7 @@ export class GraphComponent implements OnInit {
 
         }
 
+        //todo check what reading the is currently watched and only update that one.. se metode under for nem subscribe
         // Call fetchOlderReadingsIfNeeded for each reading type
         this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
@@ -183,9 +191,63 @@ export class GraphComponent implements OnInit {
                 }
             });
 
+        this.ws.humidityReadings.pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (!readings)
+                    return
+
+                if (readings[this.idFromRoute!]){
+
+                    // Update chartOptions with new x-axis range
+                    this.chartOptions = {
+                        ...this.chartOptions,
+                        xaxis: {
+                            ...this.chartOptions.xaxis,
+                            min: minTime,
+                            max: maxTime
+                        }
+                    }
+                }
+            });
+
+        this.ws.pm25Readings.pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (!readings)
+                    return
+
+                if (readings[this.idFromRoute!]){
+
+                    // Update chartOptions with new x-axis range
+                    this.chartOptions = {
+                        ...this.chartOptions,
+                        xaxis: {
+                            ...this.chartOptions.xaxis,
+                            min: minTime,
+                            max: maxTime
+                        }
+                    }
+                }
+            });
+
+        this.ws.pm100Readings.pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (!readings)
+                    return
+
+                if (readings[this.idFromRoute!]){
+
+                    // Update chartOptions with new x-axis range
+                    this.chartOptions = {
+                        ...this.chartOptions,
+                        xaxis: {
+                            ...this.chartOptions.xaxis,
+                            min: minTime,
+                            max: maxTime
+                        }
+                    }
+                }
+            });
     }
-
-
 
   /* Method to subscribe to the selected reading */
   /* Call by passing the observable and series name as parameters, like this: */
@@ -212,15 +274,10 @@ export class GraphComponent implements OnInit {
                             series = { name: seriesName, data: newSeries };
                             this.chartOptions.series.push(series);
                         }
-
-                        // Update time range option
-                        this.setTimeRange(this.activeOptionButton);
                     }
                 }
             });
     }
-
-
 
   updateGraph(option: string) {
     // Clear existing chart data & subscriptions
@@ -230,12 +287,13 @@ export class GraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
-        //this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
+        this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
         this.fetchDataFromLastTimestampToNow('Humidity');
-        break;
+        this.setTimeRange(this.activeOptionButton)
+          break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
@@ -252,7 +310,6 @@ export class GraphComponent implements OnInit {
         this.fetchDataFromLastTimestampToNow('Humidity');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
-
         break;
 
     }
@@ -264,10 +321,8 @@ export class GraphComponent implements OnInit {
     const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
     if (series && series.data.length > 0) {
-      // Find det seneste tidspunkt i serien
-      const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
-      // Opret starttidspunkt som det seneste tidspunkt i grafen
+      const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
       const startTime = new Date(lastTimestamp);
 
       // Opret sluttidspunkt som nuværende tidspunkt
@@ -278,7 +333,6 @@ export class GraphComponent implements OnInit {
         case 'Temperature':
           this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
           break;
-          /**
         case 'Humidity':
           this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
           break;
@@ -288,8 +342,6 @@ export class GraphComponent implements OnInit {
         case 'PM 10':
           this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
           break;
-          */
-
       }
     }
   }
@@ -301,7 +353,6 @@ export class GraphComponent implements OnInit {
         if (series && series.data.length > 0) {
             // Find det første tidspunkt i serien
             const firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
-
             // Hvis starttidspunktet er tidligere end det første timestamp i listen
             if (startTime.getTime() < firstTimestamp) {
                 // Hent data fra starttidspunktet til det første timestamp i listen
@@ -309,7 +360,6 @@ export class GraphComponent implements OnInit {
                     case 'Temperature':
                         this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
                         break;
-                        /**
                     case 'Humidity':
                         this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
                         break;
@@ -322,9 +372,7 @@ export class GraphComponent implements OnInit {
                     default:
                         console.error('Invalid series name:', seriesName);
                         break;
-                        */
                 }
-
             }
         }
     }
