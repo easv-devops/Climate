@@ -298,24 +298,18 @@ export class WebSocketConnectionService {
     });
   }
 
-
   ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
     this.pm100Readings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
       // Initialize pm100ReadingsRecord to an empty object if it's null or undefined
       pm100ReadingsRecord = pm100ReadingsRecord || {};
-
       // Get the existing readings for the given DeviceId
       let existingReadings = pm100ReadingsRecord[dto.DeviceId] || [];
-
       // Add the new readings to the existing readings
       existingReadings = existingReadings.concat(dto.Pm100Readings);
-
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
-
       // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
       pm100ReadingsRecord[dto.DeviceId] = existingReadings;
-
       // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100ReadingsSubject.next(pm100ReadingsRecord);
     });

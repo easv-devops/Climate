@@ -1,17 +1,17 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {
-  ApexAnnotations,
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexDataLabels,
-  ApexFill,
-  ApexMarkers,
-  ApexStroke,
-  ApexTitleSubtitle,
-  ApexTooltip,
-  ApexXAxis,
-  ApexYAxis,
-  ChartComponent
+    ApexAnnotations,
+    ApexAxisChartSeries,
+    ApexChart,
+    ApexDataLabels,
+    ApexFill,
+    ApexMarkers,
+    ApexStroke,
+    ApexTitleSubtitle,
+    ApexTooltip,
+    ApexXAxis,
+    ApexYAxis,
+    ChartComponent
 } from "ng-apexcharts";
 import {SensorDto} from "../../../models/Entities";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
@@ -21,113 +21,113 @@ import {ActivatedRoute} from "@angular/router";
 
 
 export type ChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  dataLabels: ApexDataLabels;
-  markers: ApexMarkers;
-  title: ApexTitleSubtitle;
-  fill: ApexFill;
-  yaxis: ApexYAxis;
-  xaxis: ApexXAxis;
-  tooltip: ApexTooltip;
-  stroke: ApexStroke;
-  annotations: ApexAnnotations;
-  colors: any;
-  toolbar: any;
+    series: ApexAxisChartSeries;
+    chart: ApexChart;
+    dataLabels: ApexDataLabels;
+    markers: ApexMarkers;
+    title: ApexTitleSubtitle;
+    fill: ApexFill;
+    yaxis: ApexYAxis;
+    xaxis: ApexXAxis;
+    tooltip: ApexTooltip;
+    stroke: ApexStroke;
+    annotations: ApexAnnotations;
+    colors: any;
+    toolbar: any;
 };
 
 @Component({
-  selector: 'app-graph',
-  templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.scss'],
+    selector: 'app-graph',
+    templateUrl: './graph.component.html',
+    styleUrls: ['./graph.component.scss'],
 })
 export class GraphComponent implements OnInit {
-  idFromRoute: number | undefined;
-  chartOptions: any = {};
-  public activeOptionButton = "1d";
-  public activeTimeInterval?: number;
+    idFromRoute: number | undefined;
+    chartOptions: any = {};
+    public activeOptionButton = "1d";
+    public activeTimeInterval?: number;
+    public currentReadingType: string = "temperature";
+
+    private unsubscribe$ = new Subject<void>();
+
+    constructor(private ws: WebSocketConnectionService,
+                private deviceService: DeviceService,
+                private activatedRoute: ActivatedRoute,) {
+    }
+
+    ngOnInit(): void {
+        this.getDeviceFromRoute();
+        this.initChart();
+
+        const now: Date = new Date();
+        const oneDayAgo: Date = new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000);
+        const twoDayAgo: Date = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
+
+        // Request all the readings data
+        this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
+        this.deviceService.getHumidityByDeviceId(this.idFromRoute!, oneDayAgo, now);
+        this.deviceService.getPm25ByDeviceId(this.idFromRoute!, oneDayAgo, now);
+        this.deviceService.getPm100ByDeviceId(this.idFromRoute!, oneDayAgo, now);
+
+        this.updateGraph('temperature'); // Showing temperature as default
+        // Update time range option
+
+        this.setTimeRange("1d");
+    }
+
+    ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
+    getDeviceFromRoute() {
+        this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
+    }
+
+    initChart(): void {
+
+        this.chartOptions = {
+            series: [{data: []}],
+            chart: {
+                type: "area",
+                height: 300
+            },
+            dataLabels: {
+                enabled: false
+            },
+            markers: {
+                size: 0
+            },
+            xaxis: {
+                type: "datetime",
+                tickAmount: 6
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value: number) {
+                        // Format the value as you desire, for example, to show only two decimal places
+                        return value.toFixed(1); // This will round the value to two decimal places
+                    }
+                }
+            },
+            tooltip: {
+                x: {
+                    format: "hh:mm  dd-MMM yyyy"
+                }
+            },
+            fill: {
+                type: "gradient",
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.9,
+                    stops: [0, 100]
+                }
+            }
+        };
 
 
-  private unsubscribe$ = new Subject<void>();
-
-  constructor(private ws: WebSocketConnectionService,
-              private deviceService: DeviceService,
-              private activatedRoute: ActivatedRoute,) {
-  }
-
-  ngOnInit(): void {
-    this.getDeviceFromRoute();
-    this.initChart();
-
-    const now: Date = new Date();
-    const oneDayAgo: Date = new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000);
-    const twoDayAgo: Date = new Date(new Date().getTime() - 1 * 24 * 60 * 60 * 1000);
-
-    // Request all the readings data
-    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getHumidityByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getPm25ByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getPm100ByDeviceId(this.idFromRoute!, oneDayAgo, now);
-
-
-    this.updateGraph('temperature'); // Showing temperature as default
-      // Update time range option
-      this.setTimeRange("1d");
-  }
-
-  ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
-  getDeviceFromRoute() {
-    this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
-  }
-
-  initChart(): void {
-
-    this.chartOptions = {
-      series: [{data: []}],
-      chart: {
-        type: "area",
-        height: 300
-      },
-      dataLabels: {
-        enabled: false
-      },
-      markers: {
-        size: 0
-      },
-      xaxis: {
-        type: "datetime",
-        tickAmount: 6
-      },
-      yaxis: {
-        labels: {
-          formatter: function (value: number) {
-            // Format the value as you desire, for example, to show only two decimal places
-            return value.toFixed(1); // This will round the value to two decimal places
-          }
-        }
-      },
-      tooltip: {
-        x: {
-          format: "hh:mm  dd-MMM yyyy"
-        }
-      },
-      fill: {
-        type: "gradient",
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.9,
-          stops: [0, 100]
-        }
-      }
-    };
-
-
-  }
+    }
 
 
     setTimeRange(range: string): void {
@@ -140,7 +140,7 @@ export class GraphComponent implements OnInit {
         switch (range) {
             case "1d":
                 this.activeTimeInterval = 24 * 60 * 60 * 1000;
-                minTime = now - (this.activeTimeInterval );
+                minTime = now - (this.activeTimeInterval);
                 maxTime = now;
                 break;
             case "1m":
@@ -159,99 +159,49 @@ export class GraphComponent implements OnInit {
                 maxTime = now;
                 break;
             case "all":
-                // undefined minTime and maxTime will reset the zoom
+                this.activeTimeInterval = 20 * 365 * 24 * 60 * 60 * 1000;
+
+                this.fetchOlderReadingsIfNeeded("Temperature", new Date(now - (this.activeTimeInterval)));
+                this.fetchOlderReadingsIfNeeded("Humidity", new Date(now - (this.activeTimeInterval)));
+                this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(now - (this.activeTimeInterval)));
+                this.fetchOlderReadingsIfNeeded("PM 10", new Date(now - (this.activeTimeInterval)));
                 break;
 
         }
 
-        //todo check what reading the is currently watched and only update that one.. se metode under for nem subscribe
-        // Call fetchOlderReadingsIfNeeded for each reading type
-        this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
-        this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
-        this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
-        this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
+        switch (this.currentReadingType) {
+            case "temperature":
+                this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
+                this.submitToHistory(this.ws.temperatureReadings, minTime!, maxTime!);
+                break;
 
+            case "humidity":
+                this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
+                this.submitToHistory(this.ws.humidityReadings, minTime!, maxTime!);
+                break;
 
-        this.ws.temperatureReadings.pipe(takeUntil(this.unsubscribe$))
-            .subscribe(readings => {
-                if (!readings)
-                    return
+            case "pm":
+                this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
+                this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
+                this.submitToHistory(this.ws.pm25Readings, minTime!, maxTime!);
+                this.submitToHistory(this.ws.pm100Readings, minTime!, maxTime!);
+                break;
 
-                if (readings[this.idFromRoute!]){
+            case "all":
+                this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
 
-                    // Update chartOptions with new x-axis range
-                    this.chartOptions = {
-                        ...this.chartOptions,
-                        xaxis: {
-                            ...this.chartOptions.xaxis,
-                            min: minTime,
-                            max: maxTime
-                        }
-                    }
-                }
-            });
-
-        this.ws.humidityReadings.pipe(takeUntil(this.unsubscribe$))
-            .subscribe(readings => {
-                if (!readings)
-                    return
-
-                if (readings[this.idFromRoute!]){
-
-                    // Update chartOptions with new x-axis range
-                    this.chartOptions = {
-                        ...this.chartOptions,
-                        xaxis: {
-                            ...this.chartOptions.xaxis,
-                            min: minTime,
-                            max: maxTime
-                        }
-                    }
-                }
-            });
-
-        this.ws.pm25Readings.pipe(takeUntil(this.unsubscribe$))
-            .subscribe(readings => {
-                if (!readings)
-                    return
-
-                if (readings[this.idFromRoute!]){
-
-                    // Update chartOptions with new x-axis range
-                    this.chartOptions = {
-                        ...this.chartOptions,
-                        xaxis: {
-                            ...this.chartOptions.xaxis,
-                            min: minTime,
-                            max: maxTime
-                        }
-                    }
-                }
-            });
-
-        this.ws.pm100Readings.pipe(takeUntil(this.unsubscribe$))
-            .subscribe(readings => {
-                if (!readings)
-                    return
-
-                if (readings[this.idFromRoute!]){
-
-                    // Update chartOptions with new x-axis range
-                    this.chartOptions = {
-                        ...this.chartOptions,
-                        xaxis: {
-                            ...this.chartOptions.xaxis,
-                            min: minTime,
-                            max: maxTime
-                        }
-                    }
-                }
-            });
+                this.submitToHistory(this.ws.temperatureReadings, minTime!, maxTime!);
+                this.submitToHistory(this.ws.humidityReadings, minTime!, maxTime!);
+                this.submitToHistory(this.ws.pm25Readings, minTime!, maxTime!);
+                this.submitToHistory(this.ws.pm100Readings, minTime!, maxTime!);
+                break;
+        }
     }
 
-  /* Method to subscribe to the selected reading */
-  /* Call by passing the observable and series name as parameters, like this: */
-  /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature') */
+    /* Method to subscribe to the selected reading */
+    /* Call by passing the observable and series name as parameters, like this: */
+
+    /* this.subscribeToReading(this.ws.temperatureReadings, 'Temperature') */
     subscribeToReadings(observable: Observable<Record<number, SensorDto[]> | undefined>, seriesName: string) {
         observable
             .pipe(takeUntil(this.unsubscribe$))
@@ -271,7 +221,7 @@ export class GraphComponent implements OnInit {
                         if (series) {
                             series.data = newSeries;
                         } else {
-                            series = { name: seriesName, data: newSeries };
+                            series = {name: seriesName, data: newSeries};
                             this.chartOptions.series.push(series);
                         }
                     }
@@ -279,72 +229,73 @@ export class GraphComponent implements OnInit {
             });
     }
 
-  updateGraph(option: string) {
-    // Clear existing chart data & subscriptions
-    this.chartOptions.series = [];
-    this.ngOnDestroy();
+    updateGraph(option: string) {
+        // Clear existing chart data & subscriptions
+        this.chartOptions.series = [];
+        this.ngOnDestroy();
+        this.currentReadingType = option
 
-    switch (option) {
-      case 'temperature':
-        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
-        this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
-        break;
-      case 'humidity':
-        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.setTimeRange(this.activeOptionButton)
-          break;
-      case 'pm':
-        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
-        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
-        break;
-      case 'all':
-        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
-        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
-        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
-        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
+        switch (option) {
+            case 'temperature':
+                this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
+                this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
+                break;
+            case 'humidity':
+                this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
+                this.fetchDataFromLastTimestampToNow('Humidity');
+                this.setTimeRange(this.activeOptionButton)
+                break;
+            case 'pm':
+                this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
+                this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
+                this.fetchDataFromLastTimestampToNow('PM 2.5');
+                this.fetchDataFromLastTimestampToNow('PM 10');
+                break;
+            case 'all':
+                this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
+                this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
+                this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5')
+                this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
 
-        this.fetchDataFromLastTimestampToNow('Temperature');
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
-        break;
+                this.fetchDataFromLastTimestampToNow('Temperature');
+                this.fetchDataFromLastTimestampToNow('Humidity');
+                this.fetchDataFromLastTimestampToNow('PM 2.5');
+                this.fetchDataFromLastTimestampToNow('PM 10');
+                break;
 
+        }
     }
-  }
 
-  // Metode til at hente data fra det seneste tidspunkt i grafen og frem til nu
-  fetchDataFromLastTimestampToNow(seriesName: string) {
-    // Find den aktuelle serie baseret på navnet
-    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+    // Metode til at hente data fra det seneste tidspunkt i grafen og frem til nu
+    fetchDataFromLastTimestampToNow(seriesName: string) {
+        // Find den aktuelle serie baseret på navnet
+        const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
 
-    if (series && series.data.length > 0) {
+        if (series && series.data.length > 0) {
 
-      const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
-      const startTime = new Date(lastTimestamp);
+            const lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
+            const startTime = new Date(lastTimestamp);
 
-      // Opret sluttidspunkt som nuværende tidspunkt
-      const endTime = new Date();
+            // Opret sluttidspunkt som nuværende tidspunkt
+            const endTime = new Date();
 
-      // Hent data fra det seneste tidspunkt til nu
-      switch (seriesName) {
-        case 'Temperature':
-          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'Humidity':
-          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 2.5':
-          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 10':
-          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-      }
+            // Hent data fra det seneste tidspunkt til nu
+            switch (seriesName) {
+                case 'Temperature':
+                    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
+                    break;
+                case 'Humidity':
+                    this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
+                    break;
+                case 'PM 2.5':
+                    this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
+                    break;
+                case 'PM 10':
+                    this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
+                    break;
+            }
+        }
     }
-  }
 
     fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {
         // Find den aktuelle serie baseret på navnet
@@ -376,4 +327,28 @@ export class GraphComponent implements OnInit {
             }
         }
     }
+
+
+    submitToHistory(observable: Observable<Record<number, SensorDto[]> | undefined>, minTime: number, maxTime: number) {
+        observable
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(readings => {
+                if (!readings)
+                    return
+
+                if (readings[this.idFromRoute!]) {
+
+                    // Update chartOptions with new x-axis range
+                    this.chartOptions = {
+                        ...this.chartOptions,
+                        xaxis: {
+                            ...this.chartOptions.xaxis,
+                            min: minTime,
+                            max: maxTime
+                        }
+                    }
+                }
+            });
+    }
+
 }
