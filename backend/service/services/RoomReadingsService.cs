@@ -31,15 +31,80 @@ namespace service.services
             foreach (var deviceId in deviceIds)
             {
                 var readings = _deviceReadingsService.GetTemperatureReadingsFromDevice(deviceId, dtoStartTime, dtoEndTime);
-                if (readings != null)
-                {
-                    allReadings.AddRange(readings);
-                }
+                allReadings.AddRange(readings);
             }
             
             return GroupAndAverageReadings(allReadings, intervalMinutes);
         }
         
+        public IEnumerable<SensorDto> GetHumidityReadingsFromRoom(int dtoRoom, DateTime? dtoStartTime, DateTime? dtoEndTime, int intervalMinutes)
+        {
+            var deviceIds = _deviceService.GetDeviceIdsFromRoom(dtoRoom);
+
+            if (deviceIds == null)
+            {
+                throw new ArgumentException("Device list is empty or null");
+            }
+
+            var allReadings = new List<SensorDto>();
+
+            foreach (var deviceId in deviceIds)
+            {
+                var readings = _deviceReadingsService.GetHumidityReadingsFromDevice(deviceId, dtoStartTime, dtoEndTime);
+                if (readings != null)
+                {
+                    allReadings.AddRange(readings);
+                }
+            }
+
+            return GroupAndAverageReadings(allReadings, intervalMinutes);
+        }
+        public IEnumerable<SensorDto> GetPm25ReadingsFromRoom(int dtoRoom, DateTime? dtoStartTime, DateTime? dtoEndTime, int intervalMinutes)
+        {
+            var deviceIds = _deviceService.GetDeviceIdsFromRoom(dtoRoom);
+
+            if (deviceIds == null || !deviceIds.Any())
+            {
+                throw new ArgumentException("Device list is empty or null");
+            }
+
+            var allReadings = new List<SensorDto>();
+
+            foreach (var deviceId in deviceIds)
+            {
+                var readings = _deviceReadingsService.GetPm25ReadingsFromDevice(deviceId, dtoStartTime, dtoEndTime);
+                if (readings != null)
+                {
+                    allReadings.AddRange(readings);
+                }
+            }
+
+            return GroupAndAverageReadings(allReadings, intervalMinutes);
+        }
+
+        public IEnumerable<SensorDto> GetPm100ReadingsFromRoom(int dtoRoom, DateTime? dtoStartTime, DateTime? dtoEndTime, int intervalMinutes)
+        {
+            var deviceIds = _deviceService.GetDeviceIdsFromRoom(dtoRoom);
+
+            if (deviceIds == null || !deviceIds.Any())
+            {
+                throw new ArgumentException("Device list is empty or null");
+            }
+
+            var allReadings = new List<SensorDto>();
+
+            foreach (var deviceId in deviceIds)
+            {
+                var readings = _deviceReadingsService.GetPm100ReadingsFromDevice(deviceId, dtoStartTime, dtoEndTime);
+                if (readings != null)
+                {
+                    allReadings.AddRange(readings);
+                }
+            }
+
+            return GroupAndAverageReadings(allReadings, intervalMinutes);
+        }
+
         //gets the average value for all values in each time interval
         private IEnumerable<SensorDto> GroupAndAverageReadings(IEnumerable<SensorDto> allReadings, int intervalMinutes)
         {
