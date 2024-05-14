@@ -43,9 +43,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,
-              private activatedRoute: ActivatedRoute,) {
-    super(ws, activatedRoute)
-  }
+              private activatedRoute: ActivatedRoute,) {super()}
 
   ngOnInit(): void {
     this.getDeviceFromRoute();
@@ -99,14 +97,6 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
         minTime = now - (this.activeTimeInterval);
         maxTime = now;
         break;
-      case "all":
-        this.activeTimeInterval = 20 * 365 * 24 * 60 * 60 * 1000;
-
-        this.fetchOlderReadingsIfNeeded("Temperature", new Date(now - (this.activeTimeInterval)));
-        this.fetchOlderReadingsIfNeeded("Humidity", new Date(now - (this.activeTimeInterval)));
-        this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(now - (this.activeTimeInterval)));
-        this.fetchOlderReadingsIfNeeded("PM 10", new Date(now - (this.activeTimeInterval)));
-        break;
     }
 
     switch (this.currentReadingType) {
@@ -128,7 +118,11 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
         break;
 
       case "all":
+        this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
+        this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
+        this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
+
         this.submitToHistory(this.ws.temperatureReadings, minTime!, maxTime!);
         this.submitToHistory(this.ws.humidityReadings, minTime!, maxTime!);
         this.submitToHistory(this.ws.pm25Readings, minTime!, maxTime!);
@@ -147,6 +141,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
         this.fetchDataFromLastTimestampToNow('Temperature');//gets readings from last update to now and adds to the graph
+        this.setTimeRange(this.activeOptionButton)
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity')
@@ -158,6 +153,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10')
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
+        this.setTimeRange(this.activeOptionButton)
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature')
@@ -174,10 +170,13 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     }
   }
 
+
+
   // Metode til at hente data fra det seneste tidspunkt i grafen og frem til nu
   fetchDataFromLastTimestampToNow(seriesName: string) {
     // Find den aktuelle serie baseret på navnet
     const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
+
 
     if (series && series.data.length > 0) {
 

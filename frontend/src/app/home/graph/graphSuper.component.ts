@@ -1,8 +1,6 @@
 // base-graph.component.ts
-import {OnInit, OnDestroy, Directive} from '@angular/core';
+import {Directive} from '@angular/core';
 import {Observable, Subject, takeUntil} from 'rxjs';
-import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ActivatedRoute} from "@angular/router";
 import {SensorDto} from "../../../models/Entities";
 
 @Directive()
@@ -14,14 +12,6 @@ export class BaseGraphComponent {
   public currentReadingType: string = "temperature";
 
   protected unsubscribe$ = new Subject<void>();
-  private wsSuper: WebSocketConnectionService;
-  private activatedRouteSuper: ActivatedRoute;
-
-  constructor(ws: WebSocketConnectionService,
-              activatedRouteSuper: ActivatedRoute) {
-    this.wsSuper = ws;
-    this.activatedRouteSuper = activatedRouteSuper
-  }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
