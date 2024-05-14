@@ -13,16 +13,18 @@ public class ServerWantsToInitUser
     
     private readonly RoomService _roomService;
     private readonly DeviceService _deviceService;
+    private readonly UserService _userService;
 
-    public ServerWantsToInitUser(RoomService roomService, DeviceService deviceService)
+    public ServerWantsToInitUser(RoomService roomService, DeviceService deviceService, UserService userService)
     {
         _roomService = roomService;
         _deviceService = deviceService;
+        _userService = userService;
     }
 
     public bool InitUser(IWebSocketConnection socket)
     {
-        return InitRoomMapping(socket) && InitDeviceMapping(socket);
+        return InitRoomMapping(socket) && InitDeviceMapping(socket) && InitUserMapping(socket);
     }
     
     private bool InitRoomMapping(IWebSocketConnection socket)
@@ -63,4 +65,18 @@ public class ServerWantsToInitUser
         return true;//todo check if mapping was succes
     }
     
+    private bool InitUserMapping(IWebSocketConnection socket)
+    {
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+
+        var user = _userService.GetFullUserById(userId);
+        
+        socket.SendDto(new ServerSendsUser
+        {
+            UserDto = user
+        });
+
+        StateService.AddConnectionToUser(user.Id, socket.ConnectionInfo.Id);
+        return true;//todo check if mapping was succes
+    }
 }

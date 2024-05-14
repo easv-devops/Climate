@@ -17,12 +17,12 @@ public class ClientWantsToGetUserInfoDto : BaseDto
 [RequireAuthentication]
 public class ClientWantsToGetUserInfo : BaseEventHandler<ClientWantsToGetUserInfoDto>
 {
-    private readonly AuthService _authService;
+    private readonly UserService _userService;
     private readonly ServerWantsToSendUser _serverResponse;
 
-    public ClientWantsToGetUserInfo(AuthService authService, ServerWantsToSendUser serverWantsToSendUser)
+    public ClientWantsToGetUserInfo(UserService userService, ServerWantsToSendUser serverWantsToSendUser)
     {
-        _authService = authService;
+        _userService = userService;
         _serverResponse = serverWantsToSendUser;
     }
 
@@ -31,7 +31,7 @@ public class ClientWantsToGetUserInfo : BaseEventHandler<ClientWantsToGetUserInf
         var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
 
         //gets user information from db and checks for ban status
-        var user = _authService.GetFullUserById(userId);
+        var user = _userService.GetFullUserById(userId);
 
         StateService.AddConnectionToUser(user.Id, socket.ConnectionInfo.Id);
 

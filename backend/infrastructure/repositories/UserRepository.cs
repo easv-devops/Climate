@@ -133,7 +133,7 @@ public class UserRepository
             connection.Open();
             // Definér forespørgslen ved hjælp af joins til at hente alle oplysninger relateret til brugeren
             string query = @"
-                SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.CountryCode, ci.Number
+                SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.IsoCode AS CountryCode, ci.Number
                 FROM User u
                 LEFT JOIN UserInformation ui ON u.Id = ui.UserId
                 LEFT JOIN ContactInformation ci ON u.Id = ci.UserId
@@ -149,6 +149,56 @@ public class UserRepository
         {
             // Håndter undtagelser, måske log dem
             throw new SqlTypeException("Fejl ved hentning af bruger efter id", ex);
+        }
+    }
+
+    public FullUserDto EditUser(FullUserDto userDto)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+
+            string updateQuery = @"
+            UPDATE User
+            INNER JOIN UserInformation ON User.Id = UserInformation.UserId
+            INNER JOIN ContactInformation ON User.Id = ContactInformation.UserId
+            SET 
+                User.Email = @Email,
+                UserInformation.FirstName = @FirstName,
+                UserInformation.LastName = @LastName,
+                ContactInformation.IsoCode = @CountryCode,
+                ContactInformation.Number = @Number
+            WHERE User.Id = @UserId;";
+
+            // Execute the update query
+            connection.Execute(updateQuery, new
+            {
+                Email = userDto.Email,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName,
+                CountryCode = userDto.CountryCode,
+                Number = userDto.Number,
+                UserId = userDto.Id
+            });
+
+            // After updating, fetch the updated user details
+            string selectQuery = @"
+            SELECT u.Id, u.Email, ui.FirstName, ui.LastName, ci.IsoCode AS CountryCode, ci.Number
+            FROM User u
+            LEFT JOIN UserInformation ui ON u.Id = ui.UserId
+            LEFT JOIN ContactInformation ci ON u.Id = ci.UserId
+            WHERE u.Id = @UserId;";
+
+            var updatedUser = connection.QueryFirstOrDefault<FullUserDto>(selectQuery, new { UserId = userDto.Id });
+
+            // Return the updated user details fetched from the database
+            return updatedUser;
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions, maybe log them
+            throw new SqlTypeException("Error while updating user by id", ex);
         }
     }
 }

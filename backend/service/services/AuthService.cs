@@ -123,9 +123,4 @@ public class AuthService
         return _userRepository.GetUserById(userId);
         
     }
-    
-    public FullUserDto GetFullUserById(int userId)
-    {
-        return _userRepository.GetFullUserById(userId);
-    }
 }
