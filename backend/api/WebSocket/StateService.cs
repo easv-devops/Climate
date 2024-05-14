@@ -8,7 +8,6 @@ namespace api.WebSocket;
  */
 public class WebSocketMetaData
 {
-    
     public IWebSocketConnection Connection { get; set; }
     public bool IsAuthenticated { get; set; } = false;
     public EndUser? User { get; set; }
@@ -17,9 +16,8 @@ public class WebSocketMetaData
     {
         Connection = connection;
     }
-    
-    
 }
+
 public static class StateService
 {
     //holds the connections
@@ -38,7 +36,6 @@ public static class StateService
     //used for getting all rooms a user is subscribed to (used to empty _roomsToUser dictionary when client disconnect)
     private static readonly Dictionary<Guid, List<int>> _userToRoom = new();
 
-    
     
     public static WebSocketMetaData GetClient(Guid clientId)
     {
