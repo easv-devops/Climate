@@ -88,7 +88,6 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
             Email = dto.Email,
             Name = dto.FirstName
         });
-
     }
 }
 
