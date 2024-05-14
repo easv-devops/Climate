@@ -73,6 +73,10 @@ export class EditDeviceComponent  implements OnInit {
       .subscribe(allDevices => {
         if (allDevices) {
           this.device = allDevices[this.idFromRoute!]
+
+          this.form.patchValue({
+            deviceName: this.device.DeviceName
+          });
         }
       });
   }

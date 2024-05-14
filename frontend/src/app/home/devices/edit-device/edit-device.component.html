@@ -8,8 +8,8 @@
       <ion-card-content class="ion-color ion-color-danger">
         <form (ngSubmit)="editDevice()" [formGroup]="form">
           <ion-list>
-            <ion-item>
-              <ion-input formControlName="deviceName" label="Device Name *" label-placement="stacked" placeholder="{{device?.DeviceName}}">
+            <ion-item *ngIf="device">
+              <ion-input formControlName="deviceName" label="Device Name *" label-placement="stacked" [value]="device.DeviceName">
               </ion-input>
             </ion-item>
             <div *ngIf="deviceName.touched && deviceName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
