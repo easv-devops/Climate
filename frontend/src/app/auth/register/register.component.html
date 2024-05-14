@@ -43,6 +43,34 @@
                 <ion-text color="danger">Required</ion-text>
               </div>
 
+
+
+
+
+              <ion-item>
+                <ion-input type="password" formControlName="countryCode" label="Repeat password *" label-placement="stacked"></ion-input>
+              </ion-item>
+              <div class="countryCodeField" *ngIf="(countryCode.touched && (countryCode.invalid))" slot="label"
+                   style="text-align: left; margin-left: 4%;">
+                <ion-text color="danger">select country code</ion-text>
+              </div>
+
+              <ion-item>
+                <ion-label position="stacked">Country Code</ion-label>
+                <ion-select label="Select Country Code" formControlName="Country Code">
+                  <ion-select-option
+                    *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
+                    {{ country.Country }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
+
+
+
+
+
+
+
               <ion-item>
                 <ion-input type="password" formControlName="password" label="Password *" label-placement="stacked">
                 </ion-input>

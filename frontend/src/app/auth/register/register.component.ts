@@ -5,6 +5,7 @@ import {AuthService} from "../auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToRegisterDto} from "../../../models/clientRequests";
+import {CountryCode} from "../../../models/Entities";
 
 @Component({
   selector: 'app-register',
@@ -20,7 +21,11 @@ export class RegisterComponent  implements OnInit {
     password: ['', Validators.required],
     repeatPassword: ['', [Validators.required]],
     phone: ['', Validators.required],
+    countryCode: ['', Validators.required]
   });
+
+  public allCountryCodes: CountryCode[] | undefined;
+
 
   isPasswordSame = false;
 
@@ -79,10 +84,14 @@ export class RegisterComponent  implements OnInit {
     return this.form.controls.repeatPassword;
   }
 
+  get countryCode() {
+    return this.form.controls.countryCode;
+  }
+
   register() {
       let user = new ClientWantsToRegisterDto({
         Email: this.email.value!,
-        CountryCode: "+45",//todo get it from the form control when country code is added
+        CountryCode:this.countryCode.value!, //todo get it from the form control when country code is added
         Phone: this.phone.value!,
         FirstName: this.firstName.value!,
         LastName: this.lastName.value!,

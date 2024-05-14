@@ -12,7 +12,7 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
+import {CountryCode, Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
@@ -58,9 +58,15 @@ export class WebSocketConnectionService {
   allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
 
 
+
+
+  private allCountryCodesSubject = new BehaviorSubject<CountryCode | undefined>(undefined);
+  allCountryCodes: Observable<CountryCode | undefined> = this.allCountryCodesSubject.asObservable();
+
+
+
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
-
 
   private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
   allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
