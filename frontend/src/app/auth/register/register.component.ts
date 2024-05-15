@@ -40,6 +40,8 @@ export class RegisterComponent  implements OnInit {
   }
 
   ngOnInit() {
+    this.subscribeToCountryCodes();
+    this.authService.getCountryCodes();
     // Subscribe to changes in password and repeatPassword fields
     this.form.get('password')!.valueChanges.subscribe(() => this.checkPasswords());
     this.form.get('repeatPassword')!.valueChanges.subscribe(() => this.checkPasswords());
@@ -59,6 +61,16 @@ export class RegisterComponent  implements OnInit {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
+  private subscribeToCountryCodes() {
+    this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
+      countryCodeList => {
+        console.log(countryCodeList)
+        if (countryCodeList){
+          this.allCountryCodes = countryCodeList!
+        }
+      });
+
+}
 
   get firstName() {
     return this.form.controls.firstName;

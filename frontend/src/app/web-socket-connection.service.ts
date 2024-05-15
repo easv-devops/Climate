@@ -28,6 +28,7 @@ import {
 } from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import { ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
 
 
 @Injectable({providedIn: 'root'})
@@ -60,8 +61,8 @@ export class WebSocketConnectionService {
 
 
 
-  private allCountryCodesSubject = new BehaviorSubject<CountryCode | undefined>(undefined);
-  allCountryCodes: Observable<CountryCode | undefined> = this.allCountryCodesSubject.asObservable();
+  private allCountryCodesSubject = new BehaviorSubject<CountryCode[] | undefined>(undefined);
+  allCountryCodes: Observable<CountryCode[] | undefined> = this.allCountryCodesSubject.asObservable();
 
 
 
@@ -99,6 +100,12 @@ export class WebSocketConnectionService {
       this[data.eventType].call(this, data);
     }
   }
+
+  ServerSendsCountryCodes(dto: ServerSendsCountryCodesDto){
+
+    this.allCountryCodesSubject.next(dto.CountryCode)
+  }
+
 
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
@@ -152,6 +159,8 @@ export class WebSocketConnectionService {
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
     this.isDeviceEditedSubject.next(dto.IsEdit)
   }
+
+
 
   ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
 
