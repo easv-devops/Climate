@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using api.ClientEventFilters;
 using api.ServerEventHandlers;
 using api.WebSocket;
 using Fleck;
@@ -13,6 +14,8 @@ public class ClientWantsToEditUserInfoDto : BaseDto
     public required FullUserDto UserDto { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToEditUserInfo : BaseEventHandler<ClientWantsToEditUserInfoDto>
 {
     private readonly UserService _userService;

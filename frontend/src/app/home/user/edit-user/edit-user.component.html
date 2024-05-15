@@ -1,3 +1,69 @@
-<p>
-  edit-user works!
-</p>
+<ion-content color="light" class="ion-padding">
+  <div class="ion-text-center" style="height: 100%; display: flex; justify-content: center; align-items: center;">
+    <ion-card class="ion-padding" id="edit-user-card"
+              style="overflow: hidden; border-radius: 15px; max-width: 500px; width: 90%;">
+      <ion-card-header class="ion-text-center">
+        <h1 class="climate-color">Edit User</h1>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="form">
+          <ion-list *ngIf="user">
+            <ion-item>
+              <ion-input formControlName="email" label="Email *" label-placement="stacked" [value]="user.Email">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="form.controls.email.touched && form.controls.email.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <ion-text color="danger">Required</ion-text>
+            </div>
+
+            <ion-item>
+              <ion-input formControlName="firstName" label="First Name *" label-placement="stacked" [value]="user.FirstName">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <ion-text color="danger">Required</ion-text>
+            </div>
+
+            <ion-item>
+              <ion-input formControlName="lastName" label="Last Name *" label-placement="stacked" [value]="user.LastName">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="form.controls.lastName.touched && form.controls.lastName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <ion-text color="danger">Required</ion-text>
+            </div>
+
+            <!--
+            <ion-item style="margin-top: 5%">
+              <ion-select [(ngModel)]="device.RoomId" aria-label="Rooms" placeholder="Select a Room For The Device" style="max-width: 85%" formControlName="roomId" (ionChange)="onRoomSelectionChange($event)">
+                <ion-select-option *ngFor="let room of allRooms" [value]="room.Id">{{room.RoomName}}</ion-select-option>
+              </ion-select>
+
+              <ion-button id="click-trigger" fill="clear"><ion-icon name="information-circle-outline"  style="font-size: 25px"></ion-icon></ion-button>
+              <ion-popover trigger="click-trigger" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">Choose the room where the device is currently placed. <br> If it's not assigned to a room yet, you can do so Change this later.</ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-item>
+            -->
+
+            <ion-item>
+              <ion-input formControlName="number" label="Phone *" label-placement="stacked" [value]="user.Number">
+              </ion-input>
+            </ion-item>
+            <div *ngIf="form.controls.number.touched && form.controls.number.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <ion-text color="danger">Required. Only allows digits, parenthesis, dashes and spaces</ion-text>
+            </div>
+
+
+          </ion-list>
+          <div class="ion-text-center ion-padding">
+            <ion-button (click)="editUser()" size="large" [disabled]="form.invalid">
+              Edit
+            </ion-button>
+          </div>
+        </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -3,10 +3,8 @@ import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
 
 import {ClientWantsToEditDeviceDto} from "../../../models/ClientWantsToEditDeviceDto";
-import {Device} from "../../../models/Entities";
 
 import {ClientWantsToDeleteDeviceDto} from "../../../models/ClientWantsToDeleteDevice";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
 import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
 import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";

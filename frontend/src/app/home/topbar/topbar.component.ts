@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {FullUserDto} from "../../../models/ServerSendsUser";
+import {PopoverController} from "@ionic/angular";
 
 @Component({
   selector: 'app-topbar',
@@ -14,7 +15,8 @@ export class TopbarComponent implements OnInit {
   user!: FullUserDto;
 
   constructor(private router: Router,
-              private ws: WebSocketConnectionService) {
+              private ws: WebSocketConnectionService,
+              private popoverController: PopoverController) {
   }
 
   ngOnInit() {
@@ -38,7 +40,13 @@ export class TopbarComponent implements OnInit {
       });
   }
 
+  goToUserSettings() {
+    this.popoverController.dismiss();
+    this.router.navigate(['/user']);
+  }
+
   signOut() {
+    this.popoverController.dismiss();
     this.router.navigateByUrl("/auth/login");
     this.ws.clearDataOnLogout();
   }
