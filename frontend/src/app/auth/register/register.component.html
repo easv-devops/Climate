@@ -4,7 +4,7 @@
       <ion-card class="ion-padding" id="register-card"
                 style="overflow: hidden; border-radius: 15px; max-width: 500px; width: 90%;">
         <ion-card-header class="ion-text-center">
-          <h1>Sign up Now</h1>
+          <h1>Sign up now</h1>
         </ion-card-header>
         <ion-card-content class="ion-color ion-color-danger">
           <form (ngSubmit)="register()" [formGroup]="form">
@@ -19,7 +19,8 @@
                 <ion-input formControlName="lastName" label="Last Name *" label-placement="stacked"></ion-input>
               </ion-item>
 
-              <div *ngIf="firstName.touched && firstName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+              <div *ngIf="firstName.touched && firstName.invalid" slot="label"
+                   style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">Required</ion-text>
               </div>
 
@@ -44,26 +45,20 @@
               </div>
 
 
-
               <div class="countryCodeField" *ngIf="(countryCode.touched && (countryCode.invalid))" slot="label"
                    style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">select country code</ion-text>
               </div>
 
               <ion-item>
-                <ion-label position="stacked">CountryCode</ion-label>
-                <ion-select label="Select Country Code" formControlName="countryCode">
+                <ion-label position="stacked">Country Code</ion-label>
+                <ion-select  formControlName="countryCode">
                   <ion-select-option
                     *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
-                    {{ country.Country }}
+                    {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
                   </ion-select-option>
                 </ion-select>
               </ion-item>
-
-
-
-
-
 
 
               <ion-item>
@@ -75,9 +70,11 @@
               </div>
 
               <ion-item>
-                <ion-input type="password" formControlName="repeatPassword" label="Repeat password *" label-placement="stacked"></ion-input>
+                <ion-input type="password" formControlName="repeatPassword" label="Repeat password *"
+                           label-placement="stacked"></ion-input>
               </ion-item>
-              <div class="passwordField" *ngIf="(repeatPassword.touched && (repeatPassword.invalid || !isPasswordSame))" slot="label"
+              <div class="passwordField" *ngIf="(repeatPassword.touched && (repeatPassword.invalid || !isPasswordSame))"
+                   slot="label"
                    style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">Password must match</ion-text>
               </div>
@@ -88,7 +85,7 @@
                 Create account
               </ion-button>
             </div>
-            <p class="ion-text-center">Already hava an account? <a href="/#/auth/login">Login</a></p>
+            <p class="ion-text-center">Already have an account? <a href="/#/auth/login">Login</a></p>
           </form>
 
         </ion-card-content>
