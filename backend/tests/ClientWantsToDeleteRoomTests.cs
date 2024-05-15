@@ -27,8 +27,6 @@ public class ClientWantsToDeleteRoomTests
             password = password
         });
         
-        ws.Send(new ClientWantsToGetAllRoomsDto(){});
-        
         await ws.DoAndAssert(new ClientWantsToDeleteRoomDto()
         {
             RoomToDelete = roomId
@@ -40,6 +38,8 @@ public class ClientWantsToDeleteRoomTests
                 switch (testName)
                 {
                     case "Valid":
+                        Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
+                            serverEvent => serverEvent.eventType == nameof(ServerDeletesRoom)));
                         return dto.eventType == nameof(ServerDeletesRoom);
                     
                     case "Not user's room":

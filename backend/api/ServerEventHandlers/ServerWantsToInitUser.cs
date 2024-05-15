@@ -23,14 +23,10 @@ public class ServerWantsToInitUser
     public bool InitUser(IWebSocketConnection socket)
     {
         return InitRoomMapping(socket) && InitDeviceMapping(socket);
-
     }
-    
     
     private bool InitRoomMapping(IWebSocketConnection socket)
     {
-        
-        
         var user = StateService.GetClient(socket.ConnectionInfo.Id);
         
         var roomList = _roomService.GetAllRooms(user.User!.Id);
