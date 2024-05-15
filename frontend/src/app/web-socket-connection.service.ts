@@ -427,5 +427,4 @@ export class WebSocketConnectionService {
       this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
     });
   }
-
 }
