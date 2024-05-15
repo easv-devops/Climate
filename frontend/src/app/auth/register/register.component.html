@@ -52,7 +52,7 @@
 
               <ion-item>
                 <ion-label position="stacked">Country Code</ion-label>
-                <ion-select  formControlName="countryCode">
+                <ion-select formControlName="countryCode">
                   <ion-select-option
                     *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
                     {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})

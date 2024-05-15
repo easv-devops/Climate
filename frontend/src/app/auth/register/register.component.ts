@@ -12,7 +12,7 @@ import {CountryCode} from "../../../models/Entities";
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent  implements OnInit {
+export class RegisterComponent implements OnInit {
 
   readonly form = this.fb.group({
     firstName: ['', Validators.required],
@@ -25,7 +25,6 @@ export class RegisterComponent  implements OnInit {
   });
 
   public allCountryCodes: CountryCode[] | undefined;
-
 
   isPasswordSame = false;
 
@@ -61,16 +60,17 @@ export class RegisterComponent  implements OnInit {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
+
   private subscribeToCountryCodes() {
     this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
       countryCodeList => {
         console.log(countryCodeList)
-        if (countryCodeList){
+        if (countryCodeList) {
           this.allCountryCodes = countryCodeList!
         }
       });
 
-}
+  }
 
   get firstName() {
     return this.form.controls.firstName;
@@ -101,16 +101,16 @@ export class RegisterComponent  implements OnInit {
   }
 
   register() {
-      let user = new ClientWantsToRegisterDto({
-        Email: this.email.value!,
-        CountryCode:this.countryCode.value!, //todo get it from the form control when country code is added
-        Phone: this.phone.value!,
-        FirstName: this.firstName.value!,
-        LastName: this.lastName.value!,
-        Password: this.password.value!
-      })
-      this.authService.registerUser(user);
-    }
+    let user = new ClientWantsToRegisterDto({
+      Email: this.email.value!,
+      CountryCode: this.countryCode.value!, //todo get it from the form control when country code is added
+      Phone: this.phone.value!,
+      FirstName: this.firstName.value!,
+      LastName: this.lastName.value!,
+      Password: this.password.value!
+    })
+    this.authService.registerUser(user);
+  }
 
   checkPasswords() {
     const password = this.form.get('password')!.value;
