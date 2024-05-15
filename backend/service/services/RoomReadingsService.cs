@@ -128,7 +128,7 @@ namespace service.services
                 })
                 .Select(g => new SensorDto
                 {
-                    TimeStamp = g.Key.ToString("yyyy-MM-ddTHH:mm:ss"),// Erstat med et andet tidsformat, hvis det kræves i frontenden
+                    TimeStamp = g.Key.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture), // Use slashes here
                     Value = g.Average(r => r.Value)
                 })
                 .OrderBy(r => r.TimeStamp)

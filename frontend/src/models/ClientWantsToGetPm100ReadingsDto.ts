@@ -5,3 +5,4 @@ export class ClientWantsToGetPm100ReadingsDto extends BaseDto<ClientWantsToGetPm
   StartTime?: Date;
   EndTime?: Date;
 }
+

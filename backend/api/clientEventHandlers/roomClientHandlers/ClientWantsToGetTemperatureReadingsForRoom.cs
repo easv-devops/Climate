@@ -36,15 +36,13 @@ public class ClientWantsToGetTemperatureReadingsForRoom: BaseEventHandler<Client
     public override Task Handle(ClientWantsToGetTemperatureReadingsForRoomDto dto, IWebSocketConnection socket)
     {
         var guid = socket.ConnectionInfo.Id;
-
+        
         if (!StateService.UserHasRoom(guid, dto.RoomId))
         {
             throw new AuthenticationException("Only the owner of room #"+dto.RoomId+" has access to this information");
         }
         
-        
-        
-        
+
         var readings =
             _roomReadingsService.GetTemperatureReadingsFromRoom(dto.RoomId, dto.StartTime , dto.EndTime, dto.Interval);
         

@@ -1,6 +1,6 @@
 import { Directive } from '@angular/core';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { SensorDto } from "../../../models/Entities";
+import {SensorDto} from "../../../models/Entities";
 
 @Directive()
 export class BaseGraphComponent {
@@ -97,5 +97,4 @@ export class BaseGraphComponent {
         }
       });
   }
-
 }

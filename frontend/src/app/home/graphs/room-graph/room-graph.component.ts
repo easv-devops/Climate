@@ -1,36 +1,26 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { WebSocketConnectionService } from '../../web-socket-connection.service';
-import { DeviceService } from '../devices/device.service';
-import { BaseGraphComponent } from './graphSuper.component';
-import {Observable} from "rxjs";
-import {SensorDto} from "../../../models/Entities";
+import {WebSocketConnectionService} from "../../../web-socket-connection.service";
+import {DeviceService} from "../../devices/device.service";
+import {ActivatedRoute} from "@angular/router";
+import {BaseGraphComponent} from "../graphSuper.component";
+import {RoomService} from "../../rooms/room.service";
 
 @Component({
-  selector: 'app-graph',
-  templateUrl: './graph.component.html',
-  styleUrls: ['./graph.component.scss'],
+  selector: 'app-room-graph',
+  templateUrl: '../graph/graph.component.html'
 })
-export class GraphComponent extends BaseGraphComponent implements OnInit {
+export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
 
   constructor(private ws: WebSocketConnectionService,
-              private deviceService: DeviceService,
+              private roomService: RoomService,
               private activatedRoute: ActivatedRoute) { super(); }
 
   ngOnInit(): void {
     this.getDeviceFromRoute();
     this.initChart();
 
-    const now: Date = new Date();
-    const oneDayAgo: Date = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-
-    this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getHumidityByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getPm25ByDeviceId(this.idFromRoute!, oneDayAgo, now);
-    this.deviceService.getPm100ByDeviceId(this.idFromRoute!, oneDayAgo, now);
-
     this.updateGraph('temperature'); // Show temperature as default
-    this.setTimeRange("1d");
+    this.setTimeRange("1m");
   }
 
   getDeviceFromRoute() {
@@ -38,6 +28,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
   }
 
   setTimeRange(range: string): void {
+    this.ngOnDestroy();
     const now = new Date().getTime();
     let minTime: number | undefined;
     let maxTime: number | undefined;
@@ -69,17 +60,17 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     switch (this.currentReadingType) {
       case "temperature":
         this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
-        this.submitToHistory(this.ws.temperatureReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.temperatureRoomReadings, minTime!, maxTime!);
         break;
       case "humidity":
         this.fetchOlderReadingsIfNeeded("Humidity", new Date(minTime!));
-        this.submitToHistory(this.ws.humidityReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.humidityRoomReadings, minTime!, maxTime!);
         break;
       case "pm":
         this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
-        this.submitToHistory(this.ws.pm25Readings, minTime!, maxTime!);
-        this.submitToHistory(this.ws.pm100Readings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.pm25RoomReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.pm100RoomReadings, minTime!, maxTime!);
         break;
       case "all":
         this.fetchOlderReadingsIfNeeded("Temperature", new Date(minTime!));
@@ -87,10 +78,10 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
         this.fetchOlderReadingsIfNeeded("PM 2.5", new Date(minTime!));
         this.fetchOlderReadingsIfNeeded("PM 10", new Date(minTime!));
 
-        this.submitToHistory(this.ws.temperatureReadings, minTime!, maxTime!);
-        this.submitToHistory(this.ws.humidityReadings, minTime!, maxTime!);
-        this.submitToHistory(this.ws.pm25Readings, minTime!, maxTime!);
-        this.submitToHistory(this.ws.pm100Readings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.temperatureRoomReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.humidityRoomReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.pm25RoomReadings, minTime!, maxTime!);
+        this.submitToHistory(this.ws.pm100RoomReadings, minTime!, maxTime!);
         break;
     }
   }
@@ -102,27 +93,27 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
 
     switch (option) {
       case 'temperature':
-        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
+        this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
         this.fetchDataFromLastTimestampToNow('Temperature');
         this.setTimeRange(this.activeOptionButton);
         break;
       case 'humidity':
-        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
+        this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
         this.fetchDataFromLastTimestampToNow('Humidity');
         this.setTimeRange(this.activeOptionButton);
         break;
       case 'pm':
-        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
-        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
+        this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
+        this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
         this.setTimeRange(this.activeOptionButton);
         break;
       case 'all':
-        this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
-        this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
-        this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
-        this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
+        this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
+        this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
+        this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
+        this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
         this.fetchDataFromLastTimestampToNow('Temperature');
         this.fetchDataFromLastTimestampToNow('Humidity');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
@@ -143,16 +134,16 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
 
       switch (seriesName) {
         case 'Temperature':
-          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
+          this.roomService.getTemperatureByRoomId(this.idFromRoute!, startTime, endTime);
           break;
         case 'Humidity':
-          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
+          this.roomService.getHumidityByRoomId(this.idFromRoute!, startTime, endTime);
           break;
         case 'PM 2.5':
-          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
+          this.roomService.getPm25ByRoomId(this.idFromRoute!, startTime, endTime);
           break;
         case 'PM 10':
-          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
+          this.roomService.getPm100ByRoomId(this.idFromRoute!, startTime, endTime);
           break;
         default:
           console.error('Invalid series name:', seriesName);
@@ -169,26 +160,25 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     }else {
       firstTimestamp = new Date().getTime()
     }
-      if (startTime.getTime() < firstTimestamp!) {
-        switch (seriesName) {
-          case 'Temperature':
-            this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'Humidity':
-            this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'PM 2.5':
-            this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'PM 10':
-            this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          default:
-            console.error('Invalid series name:', seriesName);
-            break;
-        }
+    if (startTime.getTime() < firstTimestamp!) {
+      switch (seriesName) {
+        case 'Temperature':
+          this.roomService.getTemperatureByRoomId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'Humidity':
+          this.roomService.getHumidityByRoomId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'PM 2.5':
+          this.roomService.getPm25ByRoomId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'PM 10':
+          this.roomService.getPm100ByRoomId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        default:
+          console.error('Invalid series name:', seriesName);
+          break;
       }
-
+    }
   }
-}
 
+}
