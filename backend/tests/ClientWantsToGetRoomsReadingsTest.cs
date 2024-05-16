@@ -19,6 +19,7 @@ public class ClientWantsToGetRoomReadingsTest
     }
 
     [TestCase("user@example.com", "12345678", 1, TestName = "Valid")]
+    [TestCase("user@example.com", "12345678", 5, TestName = "Not logged in user's device")]
     public async Task ClientWantsToGetRoomTempTest(string email, string password, int roomId)
     {
         var ws = await new WebSocketTestClient().ConnectAsync();

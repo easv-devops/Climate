@@ -95,19 +95,16 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
         this.fetchDataFromLastTimestampToNow('Temperature');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
         this.fetchDataFromLastTimestampToNow('Humidity');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
@@ -118,9 +115,9 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
         this.fetchDataFromLastTimestampToNow('Humidity');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
-        this.setTimeRange(this.activeOptionButton);
         break;
     }
+    this.setTimeRange(this.activeOptionButton);
   }
 
 

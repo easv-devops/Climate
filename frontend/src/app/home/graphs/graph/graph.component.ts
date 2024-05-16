@@ -96,19 +96,16 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
         this.fetchDataFromLastTimestampToNow('Temperature');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
         this.fetchDataFromLastTimestampToNow('Humidity');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
-        this.setTimeRange(this.activeOptionButton);
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
@@ -119,9 +116,9 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
         this.fetchDataFromLastTimestampToNow('Humidity');
         this.fetchDataFromLastTimestampToNow('PM 2.5');
         this.fetchDataFromLastTimestampToNow('PM 10');
-        this.setTimeRange(this.activeOptionButton);
         break;
     }
+    this.setTimeRange(this.activeOptionButton);
   }
 
   fetchDataFromLastTimestampToNow(seriesName: string) {
