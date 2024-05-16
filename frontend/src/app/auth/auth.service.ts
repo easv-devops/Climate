@@ -3,8 +3,10 @@ import {WebSocketConnectionService} from "../web-socket-connection.service";
 import {
   ClientWantsToAuthenticate,
   ClientWantsToRegisterDto,
-  ClientWantsToResetPassword
+  ClientWantsToResetPassword,
 } from "../../models/clientRequests";
+import {ClientWantsToGetCountryCodeDto} from "../../models/ClientWantsToGetCountryCode";
+
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +38,9 @@ export class AuthService{
     this.ws.socketConnection.sendDto(clientWantsToResetPassword)
   }
 
+  getCountryCodes(){
+    this.ws.socketConnection.sendDto(new ClientWantsToGetCountryCodeDto())
+  }
 
 }
 

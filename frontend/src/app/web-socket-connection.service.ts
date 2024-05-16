@@ -12,7 +12,7 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
+import {CountryCode, Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
 import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
@@ -27,7 +27,8 @@ import {
   ServerSendsDeviceIdListForRoomDto
 } from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
-import { ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
 
 
 @Injectable({providedIn: 'root'})
@@ -57,10 +58,11 @@ export class WebSocketConnectionService {
   private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
   allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
 
+  private allCountryCodesSubject = new BehaviorSubject<CountryCode[] | undefined>(undefined);
+  allCountryCodes: Observable<CountryCode[] | undefined> = this.allCountryCodesSubject.asObservable();
 
   private allDevicesSubject = new BehaviorSubject<Record<number, Device> | undefined>(undefined);
   allDevices: Observable<Record<number, Device> | undefined> = this.allDevicesSubject.asObservable();
-
 
   private allRoomsSubject = new BehaviorSubject<Record<number, Room> | undefined>(undefined);
   allRooms: Observable<Record<number, Room> | undefined> = this.allRoomsSubject.asObservable();
@@ -92,6 +94,10 @@ export class WebSocketConnectionService {
       // @ts-ignore
       this[data.eventType].call(this, data);
     }
+  }
+
+  ServerSendsCountryCodes(dto: ServerSendsCountryCodesDto) {
+    this.allCountryCodesSubject.next(dto.CountryCode)
   }
 
   //All the return objects from the webSocket
@@ -148,7 +154,6 @@ export class WebSocketConnectionService {
   }
 
   ServerSendsDevicesByUserId(dto: ServerSendsDevicesByUserIdDto) {
-
     this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
 
       if (!allDevicesRecord) {
@@ -170,7 +175,6 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(value);
   }
 
-
   //todo skal slette deviceId i allRooms record device-liste
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
@@ -186,17 +190,17 @@ export class WebSocketConnectionService {
     this.allRooms.pipe(take(1)).subscribe(roomsSnapshot => {
       if (roomsSnapshot && roomsSnapshot[dto.RoomId]) {
         // Kopier det aktuelle rum
-        const updatedRoom = { ...roomsSnapshot[dto.RoomId] };
+        const updatedRoom = {...roomsSnapshot[dto.RoomId]};
 
         updatedRoom.DeviceIds = dto.DeviceIds;
-        const updatedRoomsSnapshot = { ...roomsSnapshot, [dto.RoomId]: updatedRoom };
+        const updatedRoomsSnapshot = {...roomsSnapshot, [dto.RoomId]: updatedRoom};
         // Udsend den opdaterede snapshot
         this.allRoomsSubject.next(updatedRoomsSnapshot);
       }
     });
   }
 
-  ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto){
+  ServerReturnsAllRooms(dto: ServerReturnsAllRoomsDto) {
     var tempListOfRoomIds: number[] = [];
     this.allRooms.pipe(take(1)).subscribe(allRoomRecord => {
       if (!allRoomRecord) {
@@ -204,10 +208,10 @@ export class WebSocketConnectionService {
       }
 
       dto.Rooms?.forEach(room => {
-          // Tilføj eller opdater enheden i record
-          allRoomRecord![room.Id] = room;
+        // Tilføj eller opdater enheden i record
+        allRoomRecord![room.Id] = room;
         tempListOfRoomIds.push(room.Id)
-        });
+      });
 
       this.allRoomsSubject.next(allRoomRecord);
     });
@@ -215,7 +219,7 @@ export class WebSocketConnectionService {
 
   ServerDeletesRoom(dto: ServerDeletesRoom) {
     if (dto.DeletedRoom) {
-      const rooms = { ...this.allRoomsSubject.value };
+      const rooms = {...this.allRoomsSubject.value};
       delete rooms[dto.DeletedRoom];
       this.allRoomsSubject.next(rooms);
     }
