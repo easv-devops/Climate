@@ -1,4 +1,5 @@
-﻿using api.clientEventHandlers;
+﻿using System.Security.Authentication;
+using api.clientEventHandlers;
 using api.helpers;
 using api.serverEventModels;
 using api.serverEventModels.roomDtos;
@@ -49,8 +50,8 @@ public class ServerWantsToInitUser
 
     private bool InitDeviceMapping(IWebSocketConnection socket)
     {
-        
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
         var devices = _deviceService.GetDevicesByUserId(userId);
         
         socket.SendDto(new ServerSendsDevicesByUserId
@@ -67,7 +68,7 @@ public class ServerWantsToInitUser
     
     private bool InitUserMapping(IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
 
         var user = _userService.GetFullUserById(userId);
         

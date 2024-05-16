@@ -28,7 +28,7 @@ public class ClientWantsToGetUserInfo : BaseEventHandler<ClientWantsToGetUserInf
 
     public override Task Handle(ClientWantsToGetUserInfoDto dto, IWebSocketConnection socket)
     {
-        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User.Id;
+        var userId = StateService.GetClient(socket.ConnectionInfo.Id).User!.Id;
 
         //gets user information from db and checks for ban status
         var user = _userService.GetFullUserById(userId);
