@@ -137,7 +137,7 @@ namespace service.services
             return groupedReadings;
         }
 
-        private DateTime RoundToNearestInterval(DateTime dateTime, int intervalMinutes)
+        private static DateTime RoundToNearestInterval(DateTime dateTime, int intervalMinutes)
         {
             var totalMinutes = (int)Math.Round(dateTime.TimeOfDay.TotalMinutes / intervalMinutes) * intervalMinutes;
             return dateTime.Date.AddMinutes(totalMinutes);
