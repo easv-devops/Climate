@@ -2,17 +2,6 @@
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\micha\.nuget\packages\uldahlalex.websocket.boilerplate\1.6.0\lib\net8.0\lib.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0046686f_002D4a36_002D4aef_002D836d_002D711db5495e77/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from ClientWantsToGetRoomsReadingsTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;ProjectFile&gt;94C6FD6B-E921-42CE-AE8C-AE82F6E3BFB3/f:ClientWantsToGetRoomsReadingsTest.cs&lt;/ProjectFile&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1df3349d_002D40ae_002D415d_002Dbf26_002Ddd3b5ee1f0d7/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Project Location="C:\Climate\backend\tests" Presentation="&amp;lt;tests&amp;gt;" /&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=ff0df45f_002D6b39_002D49ea_002Db556_002Ddef8a39481e1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ClientWantsToGetRoomsReadingsTest.cs #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;Project Location="C:\Climate\backend\tests" Presentation="&amp;lt;tests&amp;gt;" /&gt;&#xD;
-&lt;/SessionState&gt;</s:String>
-	
-	
-	
-	
-	</wpf:ResourceDictionary>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0338ba93_002D3167_002D4438_002Dbebb_002D9ae8146e6c02/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ClientWantsToAuthenticateTest.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;ProjectFile&gt;94C6FD6B-E921-42CE-AE8C-AE82F6E3BFB3/f:ClientWantsToGetCountryCodeTest.cs&lt;/ProjectFile&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
