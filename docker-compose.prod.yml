@@ -1,6 +1,26 @@
 services:
   climate-frontend:
+    build:
+      context: .
+      dockerfile: frontend/docker/production/Dockerfile
     image: midr/climate-frontend:prod
 
   climate-backend:
     image: midr/climate-backend:prod
+      
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DBPasswordSecretProd}
+      MARIADB_ROOT_PASSWORD: ${DBPasswordSecretProd}
+      MYSQL_DATABASE: climate
+      MYSQL_USER: ${DBUserSecretProd}
+      MYSQL_PASSWORD: ${DBPasswordSecretProd}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb:/var/lib/mysql
+
+volumes:
+  mariadb:

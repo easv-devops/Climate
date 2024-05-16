@@ -13,7 +13,7 @@ services:
   climate-frontend:
     build: 
       context: .
-      dockerfile: frontend/Dockerfile
+      dockerfile: frontend/docker/staging/Dockerfile
     image: midr/climate-frontend:staging
     ports:
       - "5001:80"
@@ -31,16 +31,13 @@ services:
       - mariadb
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    environment:
-      dbconn: ${dbconn}
-      JwtKey: ${JwtKey}
 
   mariadb:
     image: mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DBPasswordSecret}
-      MYSQL_DATABASE: ${DBNameSecret}
+      MYSQL_DATABASE: climate
       MYSQL_USER: ${DBUserSecret}
       MYSQL_PASSWORD: ${DBPasswordSecret}
     ports:

@@ -2,6 +2,7 @@
 using Azure.Core;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Azure.Security.KeyVault.Keys;
 
 namespace infrastructure;
 
@@ -22,6 +23,7 @@ public static class KeyVaultService
         };
 
         var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential(),options);
+        
 
         try
         {
@@ -31,9 +33,8 @@ public static class KeyVaultService
         catch (Exception e)
         {
             Console.WriteLine($"Error occurred while retrieving connection string from Azure Key Vault: {e.Message}");
-            return null;
+            throw new InvalidOperationException(e.Message, e);
         }
-        
     }
 
     public static async Task<string> GetToken()
@@ -48,18 +49,38 @@ public static class KeyVaultService
 
     }
     
-    public static async Task<string>  GetDbConn()
+    public static async Task<string> GetDbConn()
     {
-        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString());
+        // In local development we all have an Environment Variable called dbconn
+        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString()); 
+        
+        // If that is null or empty, this must be running on the staging or production VM
         if (string.IsNullOrEmpty(connectionString))
         {
+            try
+            {
+                var keyType = GetKeyType("isProduction").Result;
+                
+                if (!string.IsNullOrEmpty(keyType))
+                {
+                    // Only production VM has access to Keys, so get connection string Secret for production db
+                    connectionString = await GetSecret(EnvVarKeys.dbconnprod.ToString());
+                    return connectionString;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("No access to Keys in Azure KeyVault. " + e);
+            }
+            
+            // No access, so get connection string Secret for staging db
             connectionString = await GetSecret(EnvVarKeys.dbconn.ToString());
         }
 
         return connectionString;
     }
     
-    public static async Task<string>  GetMailPassword()
+    public static async Task<string> GetMailPassword()
     {
         var mailPassword = Environment.GetEnvironmentVariable(EnvVarKeys.MailPassword.ToString());
         if (string.IsNullOrEmpty(mailPassword))
@@ -70,7 +91,7 @@ public static class KeyVaultService
         return mailPassword;
     }
     
-    public static async Task<string>  GetMqttToken()
+    public static async Task<string> GetMqttToken()
     {
         var mqttToken = Environment.GetEnvironmentVariable(EnvVarKeys.MqttToken.ToString());
         if (string.IsNullOrEmpty(mqttToken))
@@ -79,5 +100,21 @@ public static class KeyVaultService
         }
 
         return mqttToken;
+    }
+    
+    public static async Task<string> GetKeyType(string keyName)
+    {
+        var kvUri = "https://climatekv.vault.azure.net/";
+        var client = new KeyClient(new Uri(kvUri), new DefaultAzureCredential());
+        try
+        {
+            KeyVaultKey key = await client.GetKeyAsync(keyName);
+            return key.KeyType.ToString();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Error occurred while retrieving key from Azure Key Vault: {e.Message}");
+            return null;
+        }
     }
 }

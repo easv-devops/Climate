@@ -13,6 +13,24 @@ public class UserRepository
     {
         _connectionString = connectionString;
     }
+
+    public IEnumerable<CountryCodeDto> GetCountryCodes()
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            SELECT CountryCode, Country, IsoCode
+            FROM CountryCode;";
+            return connection.Query<CountryCodeDto>(query);
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get country codes", e);
+        }
+    }
+    
     
     public EndUser Create(UserRegisterDto dto)
     {
@@ -124,5 +142,4 @@ public class UserRepository
             throw new SqlTypeException("Fejl ved hentning af bruger efter id", ex);
         }
     }
-
 }

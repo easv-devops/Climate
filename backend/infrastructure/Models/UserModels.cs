@@ -38,6 +38,14 @@ public class ShortUserDto
     public required string Name { get; set; }
 }
 
+public class CountryCodeDto
+{
+    public string Country { get; set; }
+    public string CountryCode { get; set; }
+    public string IsoCode { get; set; }
+}
+
+
 public class UserRegisterDto
 {
     [Required(ErrorMessage = "Email is required.")]

@@ -39,7 +39,7 @@ public class ClientWantsToGetRoomsTests
                     Console.WriteLine("Event type: " + dto.eventType + ". Count: " + fromServer.Count(
                         serverEvent => serverEvent.eventType == nameof(ServerReturnsAllRooms)));
                     return dto.eventType == nameof(ServerReturnsAllRooms);
-                }) == 2; // Expecting 2 ServerSendsDevicesByUserId as ClientWantsToSignInDto triggers the first
+                }) == 2; // Expecting 2 ServerReturnsAllRooms as ClientWantsToSignInDto triggers the first
             }
         );
     }
