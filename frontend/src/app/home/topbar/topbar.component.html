@@ -20,11 +20,11 @@
     <ion-content>
       <ion-item>
         <ion-icon class="climate-color" name="person-circle"></ion-icon>
-        <ion-label class="climate-color ion-margin" style="font-weight: bold">firstName lastName</ion-label>
+        <ion-label *ngIf="user" class="climate-color ion-margin" style="font-weight: bold">{{ user.FirstName }} {{ user.LastName}} </ion-label>
       </ion-item>
-      <ion-item routerLink="/user">
+      <ion-item>
         <ion-icon class="climate-color" name="cog"></ion-icon>
-        <ion-button class="climate-color" fill="clear">User Settings</ion-button>
+        <ion-button class="climate-color" fill="clear" (click)="goToUserSettings()">User Settings</ion-button>
       </ion-item>
       <ion-item routerLink="/user/notifications">
         <ion-icon class="climate-color" name="mail-unread"></ion-icon>
@@ -41,6 +41,3 @@
     </ion-content>
   </ng-template>
 </ion-popover>
-
-
-

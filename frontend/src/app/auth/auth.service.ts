@@ -1,4 +1,4 @@
-import {inject, Inject, Injectable} from "@angular/core";
+import {Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
 import {
   ClientWantsToAuthenticate,
@@ -12,18 +12,14 @@ import {ClientWantsToGetCountryCodeDto} from "../../models/ClientWantsToGetCount
   providedIn: 'root'
 })
 export class AuthService{
-  private ws: WebSocketConnectionService = inject(WebSocketConnectionService);
 
-
-  constructor() {
+  constructor(private ws: WebSocketConnectionService) {
   }
-
 
   registerUser(registerDto: ClientWantsToRegisterDto){
     this.ws.socketConnection.sendDto(registerDto)
   }
 
-  //todo
   loginUser(email: string, password: string){
     this.ws.socketConnection.sendDto(
       new ClientWantsToAuthenticate({
@@ -33,7 +29,6 @@ export class AuthService{
     )
   }
 
-
   resetPasswordWithEmail(clientWantsToResetPassword: ClientWantsToResetPassword){
     this.ws.socketConnection.sendDto(clientWantsToResetPassword)
   }
@@ -41,7 +36,6 @@ export class AuthService{
   getCountryCodes(){
     this.ws.socketConnection.sendDto(new ClientWantsToGetCountryCodeDto())
   }
-
 }
 
 

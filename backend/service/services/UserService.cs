@@ -16,4 +16,14 @@ public class UserService
     {
         return _userRepository.GetCountryCodes();
     }
+    
+    public FullUserDto GetFullUserById(int userId)
+    {
+        return _userRepository.GetFullUserById(userId);
+    }
+
+    public FullUserDto EditUser(FullUserDto userDto)
+    {
+        return _userRepository.EditUser(userDto);
+    }
 }

@@ -22,10 +22,24 @@ public class EndUser
  */
 public class FullUserDto
 {
+    [Required(ErrorMessage = "User Id is required")] 
+    [Range(0, int.MaxValue, ErrorMessage = "Id is not a valid number")]
     public required int Id { get; set; }
-    [Required] public required string FullName { get; set; }
-    [Required, EmailAddress] public required string Email { get; set; }
-    [Required, Timestamp] public required DateTime Created { get; set; }
+    [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Email is not valid.")]
+    public required string Email { get; set; }
+    [Required(ErrorMessage = "First name is required.")]
+    [MaxLength(100, ErrorMessage = "Name is too long. Max 100 characters")]
+    public required string FirstName { get; set; }
+    [Required(ErrorMessage = "Last name is required.")]
+    [MaxLength(100, ErrorMessage = "Name is too long. Max 100 characters")]
+    public required string LastName { get; set; }
+    [Required(ErrorMessage = "Country code is required.")]
+    public required string CountryCode { get; set; }
+    [Required(ErrorMessage = "Phone number is required.")]
+    [MaxLength(20, ErrorMessage = "Phone number is too long. Max 20 characters")]
+    [RegularExpression(@"^[0-9() \-]*$", ErrorMessage = "Invalid Phone Number.")] // Accepts digits, parenthesis, dashes and spaces
+    public required string Number { get; set; }
 }
 
 /**

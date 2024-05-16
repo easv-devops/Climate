@@ -12,8 +12,7 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {CountryCode, Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
-import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
+import {CountryCode, Device, Room, SensorDto} from "../models/Entities";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
@@ -21,20 +20,15 @@ import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadi
 import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
 import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
 import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
-import {
-  ServerSendsDeviceIdListForRoomDto
-} from "../models/ServerSendsDeviceIdListForRoomDto";
+import {ServerSendsDeviceIdListForRoomDto} from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
+import {FullUserDto, ServerSendsUser} from "../models/ServerSendsUser";
 import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
-import {
-  ServerSendsTemperatureReadingsForRoom
-} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
-import {
-  ServerSendsHumidityReadingsForRoom
-} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
 import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm25ReadingsForRoom";
+import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
+import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
 
 
 @Injectable({providedIn: 'root'})
@@ -63,6 +57,9 @@ export class WebSocketConnectionService {
 
   private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
   allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
+
+  private userSubject = new BehaviorSubject<FullUserDto | undefined>(undefined);
+  user: Observable<FullUserDto | undefined> = this.userSubject.asObservable();
 
   private allCountryCodesSubject = new BehaviorSubject<CountryCode[] | undefined>(undefined);
   allCountryCodes: Observable<CountryCode[] | undefined> = this.allCountryCodesSubject.asObservable();
@@ -147,6 +144,13 @@ export class WebSocketConnectionService {
 
   ServerResetsPassword(dto: ServerResetsPasswordDto) {
     this.isResetSubject.next(dto.IsReset);
+  }
+
+  ServerSendsUser(dto: ServerSendsUser) {
+    this.user.pipe(take(1)).subscribe(user => {
+      user = dto.UserDto;
+      this.userSubject.next(user);
+    });
   }
 
   ServerSendsDevice(dto: DeviceWithIdDto) {
@@ -261,6 +265,8 @@ export class WebSocketConnectionService {
     this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
+    this.userSubject.next(undefined); // Nulstil allUsers-subjektet
+    this.allCountryCodesSubject.next(undefined); // Nulstil allCountryCodes-subjektet
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
