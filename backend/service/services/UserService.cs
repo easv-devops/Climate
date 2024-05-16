@@ -11,6 +11,11 @@ public class UserService
     {
         _userRepository = userRepository;
     }
+
+    public IEnumerable<CountryCodeDto> GetCountryCodes()
+    {
+        return _userRepository.GetCountryCodes();
+    }
     
     public FullUserDto GetFullUserById(int userId)
     {

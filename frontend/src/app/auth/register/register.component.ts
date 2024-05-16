@@ -5,13 +5,14 @@ import {AuthService} from "../auth.service";
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {ClientWantsToRegisterDto} from "../../../models/clientRequests";
+import {CountryCode} from "../../../models/Entities";
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent  implements OnInit {
+export class RegisterComponent implements OnInit {
 
   readonly form = this.fb.group({
     firstName: ['', Validators.required],
@@ -20,7 +21,10 @@ export class RegisterComponent  implements OnInit {
     password: ['', Validators.required],
     repeatPassword: ['', [Validators.required]],
     phone: ['', Validators.required],
+    countryCode: ['', Validators.required]
   });
+
+  public allCountryCodes: CountryCode[] | undefined;
 
   isPasswordSame = false;
 
@@ -35,6 +39,8 @@ export class RegisterComponent  implements OnInit {
   }
 
   ngOnInit() {
+    this.subscribeToCountryCodes();
+    this.authService.getCountryCodes();
     // Subscribe to changes in password and repeatPassword fields
     this.form.get('password')!.valueChanges.subscribe(() => this.checkPasswords());
     this.form.get('repeatPassword')!.valueChanges.subscribe(() => this.checkPasswords());
@@ -53,6 +59,17 @@ export class RegisterComponent  implements OnInit {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  private subscribeToCountryCodes() {
+    this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
+      countryCodeList => {
+        console.log(countryCodeList)
+        if (countryCodeList) {
+          this.allCountryCodes = countryCodeList!
+        }
+      });
+
   }
 
   get firstName() {
@@ -79,17 +96,21 @@ export class RegisterComponent  implements OnInit {
     return this.form.controls.repeatPassword;
   }
 
+  get countryCode() {
+    return this.form.controls.countryCode;
+  }
+
   register() {
-      let user = new ClientWantsToRegisterDto({
-        Email: this.email.value!,
-        CountryCode: "+45",//todo get it from the form control when country code is added
-        Phone: this.phone.value!,
-        FirstName: this.firstName.value!,
-        LastName: this.lastName.value!,
-        Password: this.password.value!
-      })
-      this.authService.registerUser(user);
-    }
+    let user = new ClientWantsToRegisterDto({
+      Email: this.email.value!,
+      CountryCode: this.countryCode.value!, //todo get it from the form control when country code is added
+      Phone: this.phone.value!,
+      FirstName: this.firstName.value!,
+      LastName: this.lastName.value!,
+      Password: this.password.value!
+    })
+    this.authService.registerUser(user);
+  }
 
   checkPasswords() {
     const password = this.form.get('password')!.value;

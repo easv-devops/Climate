@@ -19,3 +19,9 @@ export class Room {
   RoomName!: string;
   DeviceIds?: number[];
 }
+
+export class CountryCode{
+  CountryCode!: string;
+  IsoCode!: string;
+  Country!: string;
+}
