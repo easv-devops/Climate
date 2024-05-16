@@ -51,8 +51,7 @@
               </div>
 
               <ion-item>
-                <ion-label position="stacked">Country Code</ion-label>
-                <ion-select formControlName="countryCode">
+                <ion-select formControlName="countryCode" label="Country Code *" label-placement="stacked">
                   <ion-select-option
                     *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
                     {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
