@@ -63,4 +63,7 @@ public class ClientWantsToGetRoomsTests
             }
         );
     }
+    
+    
+    
 }

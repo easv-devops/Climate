@@ -55,6 +55,7 @@ public static class Startup
         builder.Services.AddSingleton<DeviceReadingsService>();
         builder.Services.AddSingleton<RoomService>();
         builder.Services.AddSingleton<UserService>();
+        builder.Services.AddSingleton<RoomReadingsService>();
 
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));

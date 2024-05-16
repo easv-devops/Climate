@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 import {Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
-import {RoomService} from "./room.service";
+import {RoomService} from "../room.service";
 import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 
 @Component({

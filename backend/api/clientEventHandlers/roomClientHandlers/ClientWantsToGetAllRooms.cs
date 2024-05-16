@@ -34,7 +34,7 @@ public class ClientWantsToGetAllRooms:  BaseEventHandler<ClientWantsToGetAllRoom
         {
             Rooms = roomList
         });
-
+        
 
         foreach (var room in roomList)
         {

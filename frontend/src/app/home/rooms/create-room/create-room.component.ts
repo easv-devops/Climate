@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {RoomService} from "../room/room.service";
+import {RoomService} from "../room.service";
 import {Router} from "@angular/router";
 
 @Component({
