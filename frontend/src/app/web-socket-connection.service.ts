@@ -12,22 +12,18 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {CountryCode, Device, DeviceInRoom, Room, SensorDto} from "../models/Entities";
-import {ServerSendsDevicesByRoomIdDto} from "../models/ServerSendsDevicesByRoomIdDto";
+import {CountryCode, Device, Room, SensorDto} from "../models/Entities";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
-import {ClientWantsToGetDevicesByUserIdDto} from "../models/ClientWantsToGetDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
 import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
 import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
 import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
 import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
-import {ClientWantsToGetAllRoomsDto} from "../models/roomModels/clientWantsToGetAllRoomsDto";
 import {ServerSendsDeviceIdListForRoomDto} from "../models/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
 import {FullUserDto, ServerSendsUser} from "../models/ServerSendsUser";
-import {ClientWantsToGetUserInfoDto} from "../models/ClientWantsToGetUserInfoDto";
 import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
 
 
@@ -99,9 +95,6 @@ export class WebSocketConnectionService {
     }
   }
 
-  ServerSendsCountryCodes(dto: ServerSendsCountryCodesDto) {
-    this.allCountryCodesSubject.next(dto.CountryCode)
-  }
 
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
@@ -113,6 +106,10 @@ export class WebSocketConnectionService {
   ServerSendsErrorMessageToClient(dto: ServerSendsErrorMessageToClient) {
     const errorMessage = 'Something went wrong. ' + dto.errorMessage;
     this.errorHandlingService.handleError(errorMessage);
+  }
+
+  ServerSendsCountryCodes(dto: ServerSendsCountryCodesDto) {
+    this.allCountryCodesSubject.next(dto.CountryCode)
   }
 
   ServerRegisterUser(dto: ServerRegisterUserDto) {
@@ -244,6 +241,7 @@ export class WebSocketConnectionService {
     this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
     this.userSubject.next(undefined); // Nulstil allUsers-subjektet
+    this.allCountryCodesSubject.next(undefined); // Nulstil allCountryCodes-subjektet
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {

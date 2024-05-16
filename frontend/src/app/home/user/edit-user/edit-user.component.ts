@@ -6,6 +6,8 @@ import {FullUserDto} from "../../../../models/ServerSendsUser";
 import {FormBuilder, Validators} from "@angular/forms";
 import {ClientWantsToEditUserInfoDto} from "../../../../models/ClientWantsToEditUserInfoDto";
 import {UserService} from "../user.service";
+import {CountryCode} from "../../../../models/Entities";
+import {ClientWantsToGetCountryCodeDto} from "../../../../models/ClientWantsToGetCountryCode";
 
 @Component({
   selector: 'app-edit-user',
@@ -15,11 +17,13 @@ import {UserService} from "../user.service";
 export class EditUserComponent  implements OnInit {
   private unsubscribe$ = new Subject<void>();
   user: FullUserDto | undefined;
+  public allCountryCodes: CountryCode[] | undefined;
+
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     firstName: ['', [Validators.required, Validators.maxLength(100)]],
     lastName: ['', [Validators.required, Validators.maxLength(100)]],
-    //countryCode: ['', Validators.required],
+    countryCode: ['', Validators.required],
     number: ['', [Validators.required, Validators.pattern('^[0-9() \\-]*$')]]
   });
 
@@ -30,6 +34,8 @@ export class EditUserComponent  implements OnInit {
 
   ngOnInit() {
     this.subscribeToUser();
+    this.ws.socketConnection.sendDto(new ClientWantsToGetCountryCodeDto());
+    this.subscribeToCountryCodes();
   }
 
   ngOnDestroy() {
@@ -48,24 +54,34 @@ export class EditUserComponent  implements OnInit {
             email: u.Email,
             firstName: u.FirstName,
             lastName: u.LastName,
-            //countryCode: u.CountryCode,
+            countryCode: u.CountryCode,
             number: u.Number
           });
         }
       });
   }
 
+  private subscribeToCountryCodes() {
+    this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
+      countryCodeList => {
+        console.log(countryCodeList)
+        if (countryCodeList) {
+          this.allCountryCodes = countryCodeList!
+        }
+      });
+  }
+
   editUser() {
     if(!this.form.valid) {
-
+      //TODO toast error message
+      return;
     }
     let userDto = new FullUserDto();
     userDto.Id = this.user!.Id;
     userDto.Email = this.form.controls.email.value!;
     userDto.FirstName = this.form.controls.firstName.value!;
     userDto.LastName = this.form.controls.lastName.value!;
-    //userDto.CountryCode = this.form.controls.countryCode.value!;
-    userDto.CountryCode = this.user!.CountryCode;
+    userDto.CountryCode = this.form.controls.countryCode.value!;
     userDto.Number = this.form.controls.number.value!;
 
     let dto = new ClientWantsToEditUserInfoDto({
@@ -74,6 +90,6 @@ export class EditUserComponent  implements OnInit {
 
     this.userService.editUser(dto);
 
-    //TODO redirect
+    this.router.navigate(['rooms/all']);
   }
 }

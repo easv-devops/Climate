@@ -32,20 +32,15 @@
               <ion-text color="danger">Required</ion-text>
             </div>
 
-            <!--
-            <ion-item style="margin-top: 5%">
-              <ion-select [(ngModel)]="device.RoomId" aria-label="Rooms" placeholder="Select a Room For The Device" style="max-width: 85%" formControlName="roomId" (ionChange)="onRoomSelectionChange($event)">
-                <ion-select-option *ngFor="let room of allRooms" [value]="room.Id">{{room.RoomName}}</ion-select-option>
+            <ion-item>
+              <ion-label position="stacked">Country Code</ion-label>
+              <ion-select formControlName="countryCode">
+                <ion-select-option
+                  *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
+                  {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
+                </ion-select-option>
               </ion-select>
-
-              <ion-button id="click-trigger" fill="clear"><ion-icon name="information-circle-outline"  style="font-size: 25px"></ion-icon></ion-button>
-              <ion-popover trigger="click-trigger" triggerAction="click">
-                <ng-template>
-                  <ion-content class="ion-padding">Choose the room where the device is currently placed. <br> If it's not assigned to a room yet, you can do so Change this later.</ion-content>
-                </ng-template>
-              </ion-popover>
             </ion-item>
-            -->
 
             <ion-item>
               <ion-input formControlName="number" label="Phone *" label-placement="stacked" [value]="user.Number">

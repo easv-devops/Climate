@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.ServerEventHandlers;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
@@ -41,15 +42,18 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
 
     private readonly TokenService _tokenService;
     private readonly NotificationService _notificationService;
+    private readonly ServerWantsToInitUser _userHandler;
     
     public ClientWantsToRegister(
         AuthService authService,
         TokenService tokenService,
-        NotificationService notificationService)
+        NotificationService notificationService,
+        ServerWantsToInitUser userHandler)
     {
         _authService = authService;
         _tokenService = tokenService;
         _notificationService = notificationService;
+        _userHandler = userHandler;
     }
 
     public override async Task Handle(ClientWantsToRegisterDto dto, IWebSocketConnection socket)
@@ -76,6 +80,8 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
 
+        _userHandler.InitUser(socket);
+        
         //return JWT to client 
         socket.SendDto(new ServerAuthenticatesUser { Jwt = await token });
         
