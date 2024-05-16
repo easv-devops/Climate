@@ -366,7 +366,6 @@ export class WebSocketConnectionService {
 
       // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
       this.temperatureRoomReadingsSubject.next(temperatureReadingsRecord);
-      console.log(temperatureReadingsRecord)
     });
   }
 
