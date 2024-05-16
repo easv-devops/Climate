@@ -69,6 +69,11 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
+
+  /**
+   * observables for device readings
+   * @private
+   */
   private temperatureReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   temperatureReadings: Observable<Record<number, SensorDto[]> | undefined> = this.temperatureReadingsSubject.asObservable();
 
@@ -80,6 +85,23 @@ export class WebSocketConnectionService {
 
   private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
+
+
+  /**
+   * observables for room readings
+   * @private
+   */
+  private temperatureRoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  temperatureRoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.temperatureRoomReadingsSubject.asObservable();
+
+  private humidityRoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  humidityRoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.humidityRoomReadingsSubject.asObservable();
+
+  private pm25RoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm25RoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.pm25RoomReadingsSubject.asObservable();
+
+  private pm100RoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
+  pm100RoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100RoomReadingsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -94,7 +116,6 @@ export class WebSocketConnectionService {
       this[data.eventType].call(this, data);
     }
   }
-
 
   //All the return objects from the webSocket
   //These methods are triggered from the responses from the backend
@@ -246,57 +267,168 @@ export class WebSocketConnectionService {
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
     this.temperatureReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
+      // Initialiser temperatureReadingsRecord til et tomt objekt, hvis det er null eller udefineret
+      temperatureReadingsRecord = temperatureReadingsRecord || {};
 
-      if (!temperatureReadingsRecord) {
-        temperatureReadingsRecord = {};
-      }
+      // Hent de eksisterende læsninger for det givne DeviceId
+      let existingReadings = temperatureReadingsRecord[dto.DeviceId] || [];
 
-      temperatureReadingsRecord![dto.DeviceId] = dto.TemperatureReadings;
+      // Tilføj de nye læsninger til de eksisterende læsninger
+      existingReadings = existingReadings.concat(dto.TemperatureReadings);
 
-      // Opdater temperatureReadingsSubject med den opdaterede record
+      // Sortér læsningerne efter tidspunkt
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
+      temperatureReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
       this.temperatureReadingsSubject.next(temperatureReadingsRecord);
     });
   }
 
   ServerSendsHumidityReadings(dto: ServerSendsHumidityReadingsDto) {
     this.humidityReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
+      // Initialize humidityReadingsRecord to an empty object if it's null or undefined
+      humidityReadingsRecord = humidityReadingsRecord || {};
 
-      if (!humidityReadingsRecord) {
-        humidityReadingsRecord = {};
-      }
+      // Get the existing readings for the given DeviceId
+      let existingReadings = humidityReadingsRecord[dto.DeviceId] || [];
 
-      humidityReadingsRecord![dto.DeviceId] = dto.HumidityReadings;
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.HumidityReadings);
 
-      // Opdater humidityReadingsSubject med den opdaterede record
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update humidityReadingsRecord with the updated readings for the specific DeviceId
+      humidityReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Update humidityReadingsSubject with the updated humidityReadingsRecord
       this.humidityReadingsSubject.next(humidityReadingsRecord);
     });
   }
 
   ServerSendsPm25Readings(dto: ServerSendsPm25ReadingsDto) {
     this.pm25Readings.pipe(take(1)).subscribe(pm25ReadingsRecord => {
+      // Initialize pm25ReadingsRecord to an empty object if it's null or undefined
+      pm25ReadingsRecord = pm25ReadingsRecord || {};
 
-      if (!pm25ReadingsRecord) {
-        pm25ReadingsRecord = {};
-      }
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm25ReadingsRecord[dto.DeviceId] || [];
 
-      pm25ReadingsRecord![dto.DeviceId] = dto.Pm25Readings;
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm25Readings);
 
-      // Opdater pm25ReadingsSubject med den opdaterede record
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update pm25ReadingsRecord with the updated readings for the specific DeviceId
+      pm25ReadingsRecord[dto.DeviceId] = existingReadings;
+
+      // Update pm25ReadingsSubject with the updated pm25ReadingsRecord
       this.pm25ReadingsSubject.next(pm25ReadingsRecord);
     });
   }
 
   ServerSendsPm100Readings(dto: ServerSendsPm100ReadingsDto) {
     this.pm100Readings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
-
-      if (!pm100ReadingsRecord) {
-        pm100ReadingsRecord = {};
-      }
-
-      pm100ReadingsRecord![dto.DeviceId] = dto.Pm100Readings;
-
-      // Opdater pm100ReadingsSubject med den opdaterede record
+      // Initialize pm100ReadingsRecord to an empty object if it's null or undefined
+      pm100ReadingsRecord = pm100ReadingsRecord || {};
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm100ReadingsRecord[dto.DeviceId] || [];
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm100Readings);
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+      // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
+      pm100ReadingsRecord[dto.DeviceId] = existingReadings;
+      // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100ReadingsSubject.next(pm100ReadingsRecord);
+    });
+  }
+
+  /**
+   * gets readings from room
+   * @param dto
+   * @constructor
+   */
+  ServerSendsTemperatureReadingsForRoom(dto: ServerSendsTemperatureReadingsForRoom) {
+
+    this.temperatureRoomReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
+      temperatureReadingsRecord = temperatureReadingsRecord || {};
+      let existingReadings = temperatureReadingsRecord[dto.RoomId] || [];
+      existingReadings = existingReadings.concat(dto.TemperatureReadings);
+
+      // Sortér læsningerne efter tidspunkt
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Opdater temperatureReadingsRecord med de opdaterede læsninger for det specifikke DeviceId
+      temperatureReadingsRecord[dto.RoomId] = existingReadings;
+
+      // Opdater temperatureReadingsSubject med den opdaterede temperatureReadingsRecord
+      this.temperatureRoomReadingsSubject.next(temperatureReadingsRecord);
+    });
+  }
+
+  ServerSendsHumidityReadingsForRoom(dto: ServerSendsHumidityReadingsForRoom) {
+    this.humidityRoomReadings.pipe(take(1)).subscribe(humidityReadingsRecord => {
+      // Initialize humidityReadingsRecord to an empty object if it's null or undefined
+      humidityReadingsRecord = humidityReadingsRecord || {};
+
+      // Get the existing readings for the given DeviceId
+      let existingReadings = humidityReadingsRecord[dto.RoomId] || [];
+
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.HumidityReadings);
+
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update humidityReadingsRecord with the updated readings for the specific DeviceId
+      humidityReadingsRecord[dto.RoomId] = existingReadings;
+
+      // Update humidityReadingsSubject with the updated humidityReadingsRecord
+      this.humidityRoomReadingsSubject.next(humidityReadingsRecord);
+    });
+  }
+
+  ServerSendsPm25ReadingsForRoom(dto: ServerSendsPm25ReadingsForRoom) {
+    this.pm25RoomReadings.pipe(take(1)).subscribe(pm25ReadingsRecord => {
+      // Initialize pm25ReadingsRecord to an empty object if it's null or undefined
+      pm25ReadingsRecord = pm25ReadingsRecord || {};
+
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm25ReadingsRecord[dto.RoomId] || [];
+
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm25Readings);
+
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+
+      // Update pm25ReadingsRecord with the updated readings for the specific DeviceId
+      pm25ReadingsRecord[dto.RoomId] = existingReadings;
+
+      // Update pm25ReadingsSubject with the updated pm25ReadingsRecord
+      this.pm25RoomReadingsSubject.next(pm25ReadingsRecord);
+    });
+  }
+
+  ServerSendsPm100ReadingsForRoom(dto: ServerSendsPm100ReadingsForRoom) {
+    this.pm100RoomReadings.pipe(take(1)).subscribe(pm100ReadingsRecord => {
+      // Initialize pm100ReadingsRecord to an empty object if it's null or undefined
+      pm100ReadingsRecord = pm100ReadingsRecord || {};
+      // Get the existing readings for the given DeviceId
+      let existingReadings = pm100ReadingsRecord[dto.RoomId] || [];
+      // Add the new readings to the existing readings
+      existingReadings = existingReadings.concat(dto.Pm100Readings);
+      // Sort the readings by timestamp
+      existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
+      // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
+      pm100ReadingsRecord[dto.RoomId] = existingReadings;
+      // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
+      this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
     });
   }
 }

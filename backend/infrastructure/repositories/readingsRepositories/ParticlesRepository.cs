@@ -104,41 +104,61 @@ public class ParticlesRepository
         }
     }
     
-    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId)
+    public IEnumerable<SensorDto> GetPm25ReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
             var sql = @"
-                SELECT Timestamp, P2_5 AS Value 
-                FROM ReadingParticle2_5 
-                WHERE DeviceId = @DeviceId;
-                ";
-            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+            SELECT 
+                Timestamp AS TimeStamp,
+                P2_5 AS Value 
+            FROM 
+                ReadingParticle2_5 
+            WHERE 
+                DeviceId = @deviceId
+                AND Timestamp >= @startTime
+                AND Timestamp <= @endTime
+            ORDER BY 
+                Timestamp;
+        ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId, StartTime = startTime, EndTime = endTime });
         }
         catch (Exception e)
         {
-            throw new SqlTypeException("Failed to retrieve pm 2.5 readings from device "+deviceId, e);
+            throw new SqlTypeException("Failed to retrieve PM2.5 readings from device " + deviceId, e);
         }
     }
+
     
-    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId)
+
+    
+    public IEnumerable<SensorDto> GetPm100ReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
             var sql = @"
-                SELECT Timestamp, P10 AS Value 
-                FROM ReadingParticle10 
-                WHERE DeviceId = @DeviceId;
-                ";
-            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+            SELECT 
+                Timestamp AS TimeStamp,
+                P10 AS Value 
+            FROM 
+                ReadingParticle10 
+            WHERE 
+                DeviceId = @deviceId
+                AND Timestamp >= @startTime
+                AND Timestamp <= @endTime
+            ORDER BY 
+                Timestamp;
+        ";
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId, StartTime = startTime, EndTime = endTime });
         }
         catch (Exception e)
         {
-            throw new SqlTypeException("Failed to retrieve pm 10 readings from device "+deviceId, e);
+            throw new SqlTypeException("Failed to retrieve PM10 readings from device " + deviceId, e);
         }
     }
+
 }

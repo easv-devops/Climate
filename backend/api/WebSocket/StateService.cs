@@ -8,7 +8,6 @@ namespace api.WebSocket;
  */
 public class WebSocketMetaData
 {
-    
     public IWebSocketConnection Connection { get; set; }
     public bool IsAuthenticated { get; set; } = false;
     public EndUser? User { get; set; }
@@ -17,9 +16,8 @@ public class WebSocketMetaData
     {
         Connection = connection;
     }
-    
-    
 }
+
 public static class StateService
 {
     //holds the connections
@@ -31,7 +29,6 @@ public static class StateService
     //used for getting all devices a user is subscribed to (used to empty _deviceToUser dictionary when client disconnect)
     private static readonly Dictionary<Guid, List<int>> _userToDevice = new();
 
-    
     //holds the roomId and the users that wants updates on that room
     private static readonly Dictionary<int, List<Guid>> _roomsToUser = new();
     
@@ -44,8 +41,6 @@ public static class StateService
     //used for getting the user a connection is subscribed to (used to empty UserToConnections dictionary when client disconnects)
     private static readonly Dictionary<Guid, int> ConnectionToUser = new();
 
-    
-    
     public static WebSocketMetaData GetClient(Guid clientId)
     {
         return _clients.GetValueOrDefault(clientId) ?? throw new InvalidOperationException();
@@ -253,5 +248,16 @@ public static class StateService
 
         // Remove the connection from the ConnectionToUser dictionary.
         ConnectionToUser.Remove(connectionId);
+
+        }
+    public static bool UserHasRoom(Guid userId, int dtoRoomId)
+    {
+        if (!_userToRoom.TryGetValue(userId, out var roomList))
+        {
+            // Brugeren findes ikke i vores system
+            return false;
+        }
+        // Tjek om room findes i brugerens liste over room
+        return roomList.Contains(dtoRoomId);
     }
 }

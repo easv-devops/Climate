@@ -33,31 +33,39 @@ export class DeviceService {
     return this.ws.isDeviceEdited
   }
 
-  getTemperatureByDeviceId(id: number) {
+  getTemperatureByDeviceId(id: number, start: Date, end: Date) {
     var dto = new ClientWantsToGetTemperatureReadingsDto({
-      DeviceId: id
+      DeviceId: id,
+      StartTime: start,
+      EndTime: end
     });
 
     this.ws.socketConnection.sendDto(dto)
   }
 
-  getHumidityByDeviceId(id: number) {
+  getHumidityByDeviceId(id: number, start: Date, end: Date) {
     var dto = new ClientWantsToGetHumidityReadingsDto({
-      DeviceId: id
+      DeviceId: id,
+      StartTime: start,
+      EndTime: end
     });
     this.ws.socketConnection.sendDto(dto)
   }
 
-  getPm25ByDeviceId(id: number) {
+  getPm25ByDeviceId(id: number, start: Date, end: Date) {
     var dto = new ClientWantsToGetPm25ReadingsDto({
-      DeviceId: id
+      DeviceId: id,
+      StartTime: start,
+      EndTime: end
     });
     this.ws.socketConnection.sendDto(dto)
   }
 
-  getPm100ByDeviceId(id: number) {
+  getPm100ByDeviceId(id: number, start: Date, end: Date) {
     var dto = new ClientWantsToGetPm100ReadingsDto({
-      DeviceId: id
+      DeviceId: id,
+      StartTime: start,
+      EndTime: end
     });
     this.ws.socketConnection.sendDto(dto)
   }

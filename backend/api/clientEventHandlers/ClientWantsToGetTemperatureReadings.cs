@@ -14,6 +14,11 @@ public class ClientWantsToGetTemperatureReadingsDto : BaseDto
 {
     [Required(ErrorMessage = "Device Id is required")]
     public int DeviceId { get; set; }
+    
+    public DateTime? StartTime { get; set; }
+    
+    public DateTime? EndTime { get; set; }
+
 }
 
 [RequireAuthentication]
@@ -36,7 +41,7 @@ public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsT
         }
         
         var readings =
-            _deviceReadingsService.GetTemperatureReadingsFromDevice(dto.DeviceId);
+            _deviceReadingsService.GetTemperatureReadingsFromDevice(dto.DeviceId, dto.StartTime , dto.EndTime);
         
         socket.SendDto(new ServerSendsTemperatureReadings
         {

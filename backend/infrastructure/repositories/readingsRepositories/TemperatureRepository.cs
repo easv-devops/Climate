@@ -64,22 +64,33 @@ public class TemperatureRepository
         }
     }
 
-    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId)
+    
+    public IEnumerable<SensorDto> GetTemperatureReadingsFromDevice(int deviceId, DateTime? startTime, DateTime? endTime)
     {
         using var connection = new MySqlConnection(_connectionString);
         try
         {
             connection.Open();
+            
             var sql = @"
-                SELECT Timestamp, Temperature AS Value 
-                FROM ReadingTemperature 
-                WHERE DeviceId = @DeviceId;
-                ";
-            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId });
+            SELECT 
+                TIMESTAMP AS TimeStamp,
+                Temperature AS Value
+            FROM 
+                ReadingTemperature 
+            WHERE 
+                DeviceId = @deviceId
+                AND Timestamp >= @startTime
+                AND Timestamp <= @endTime
+            ORDER BY 
+                Timestamp;
+        ";
+
+            return connection.Query<SensorDto>(sql, new { DeviceId = deviceId, StartTime = startTime, EndTime = endTime});
         }
         catch (Exception e)
         {
-            throw new SqlTypeException("Failed to retrieve temperature readings from device "+deviceId, e);
+            throw new SqlTypeException("Failed to retrieve temperature readings from device " + deviceId, e);
         }
     }
 }

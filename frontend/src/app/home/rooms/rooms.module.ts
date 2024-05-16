@@ -12,16 +12,19 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {DeviceCardComponent} from "./room/device-card/device-card.component";
 import {EditRoomComponent} from "./edit-room/edit-room.component";
 import {RoomCardComponent} from "./room-card/room-card.component";
+import {RoomGraphComponent} from "../graphs/room-graph/room-graph.component";
+import {NgApexchartsModule} from "ng-apexcharts";
 
 
 @NgModule({
-  declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, DeviceCardComponent, CreateRoomComponent, EditRoomComponent, RoomCardComponent],
+    declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, DeviceCardComponent, CreateRoomComponent, EditRoomComponent, RoomCardComponent, RoomGraphComponent],
   imports: [
     CommonModule,
     IonicModule,
     RoomsRoutingModule,
     HomePageModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgApexchartsModule
   ],
   exports: [RoomCardComponent]
 })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {RoomService} from "../room/room.service";
+import {RoomService} from "../room.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";

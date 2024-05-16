@@ -14,6 +14,10 @@ public class ClientWantsToGetPm100ReadingsDto : BaseDto
 {
     [Required(ErrorMessage = "Device Id is required")]
     public int DeviceId { get; set; }
+    
+    public DateTime? StartTime { get; set; }
+    
+    public DateTime? EndTime { get; set; }
 }
 
 [RequireAuthentication]
@@ -37,7 +41,7 @@ public class ClientWantsToGetPm100Readings : BaseEventHandler<ClientWantsToGetPm
         }
         
         var readings =
-            _deviceReadingsService.GetPm100ReadingsFromDevice(dto.DeviceId);
+            _deviceReadingsService.GetPm100ReadingsFromDevice(dto.DeviceId, dto.StartTime , dto.EndTime);
         
         socket.SendDto(new ServerSendsPm100Readings()
         {

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {RoomService} from "../room/room.service";
+import {RoomService} from "../room.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
