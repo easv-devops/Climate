@@ -25,6 +25,10 @@ import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
 import {FullUserDto, ServerSendsUser} from "../models/ServerSendsUser";
 import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
+import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm25ReadingsForRoom";
+import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
+import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
+import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
 
 
 @Injectable({providedIn: 'root'})
