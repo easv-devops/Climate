@@ -41,6 +41,9 @@ public static class StateService
     //used for getting the user a connection is subscribed to (used to empty UserToConnections dictionary when client disconnects)
     private static readonly Dictionary<Guid, int> ConnectionToUser = new();
 
+    //used for checking the device range when retrieving new readings from the mqtt listener
+    private static readonly Dictionary<int, DeviceRangeDto> DeviceToSettings = new();
+
     public static WebSocketMetaData GetClient(Guid clientId)
     {
         return _clients.GetValueOrDefault(clientId) ?? throw new InvalidOperationException();
@@ -69,6 +72,7 @@ public static class StateService
                 foreach (var deviceId in devices)
                 {
                     RemoveUserFromDevice(deviceId, clientId);
+                    RemoveDeviceSettings(deviceId);
                 }
                 // Removes the user from user to device list
                 _userToDevice.Remove(clientId);
@@ -259,5 +263,42 @@ public static class StateService
         }
         // Tjek om room findes i brugerens liste over room
         return roomList.Contains(dtoRoomId);
+    }
+    
+    
+    
+    // Add device settings to the dictionary
+    public static void AddDeviceSettings(DeviceRangeDto deviceSettings)
+    {
+        if (deviceSettings == null)
+        {
+            throw new ArgumentNullException(nameof(deviceSettings), "Device settings cannot be null.");
+        }
+
+        if (DeviceToSettings.ContainsKey(deviceSettings.DeviceId))
+        {
+            throw new ArgumentException($"Device with ID {deviceSettings.DeviceId} already exists.");
+        }
+
+        DeviceToSettings.Add(deviceSettings.DeviceId, deviceSettings);
+    }
+
+    // Remove device settings from the dictionary
+    public static bool RemoveDeviceSettings(int deviceId)
+    {
+        return DeviceToSettings.Remove(deviceId);
+    }
+
+    // Get device settings by device ID
+    public static DeviceRangeDto GetDeviceSettings(int deviceId)
+    {
+        if (DeviceToSettings.TryGetValue(deviceId, out var deviceSettings))
+        {
+            return deviceSettings;
+        }
+        else
+        {
+            throw new KeyNotFoundException($"Device with ID {deviceId} not found.");
+        }
     }
 }
