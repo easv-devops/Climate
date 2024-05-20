@@ -4,16 +4,26 @@ import {DeviceService} from "../../devices/device.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-room-graph',
   templateUrl: '../graph/graph.component.html'
 })
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
+  isMobile: boolean | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private roomService: RoomService,
-              private activatedRoute: ActivatedRoute) { super(); }
+              private activatedRoute: ActivatedRoute,
+              private breakpointObserver: BreakpointObserver) {
+    super();
+    this.breakpointObserver.observe([
+      Breakpoints.Handset, Breakpoints.Tablet
+    ]).subscribe(result => {
+      this.isMobile = result.matches;
+    });
+  }
 
   ngOnInit(): void {
     this.getDeviceFromRoute();

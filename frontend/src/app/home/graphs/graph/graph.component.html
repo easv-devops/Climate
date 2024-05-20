@@ -1,5 +1,5 @@
 <!-- Content section -->
-<ion-card style="height: 70vh;">
+<ion-card style="height: 80vh;">
   <ion-split-pane when="sm" contentId="main"> <!-- Show the split-pane when the min-width is 768px -->
     <!-- Stats section -->
     <ion-card>
@@ -35,25 +35,25 @@
           <ion-button fill="outline" (click)="updateGraph('temperature')">
             <div style="display: flex; flex-direction: column; align-items: center;">
               <ion-icon name="thermometer-outline" class="climate-color"></ion-icon>
-              <ion-label class="climate-color">Temperature</ion-label>
+              <ion-label *ngIf="!isMobile" class="climate-color">Temperature</ion-label>
             </div>
           </ion-button>
           <ion-button fill="outline" (click)="updateGraph('humidity')">
             <div style="display: flex; flex-direction: column; align-items: center;">
               <ion-icon name="water-outline" class="climate-color"></ion-icon>
-              <ion-label class="climate-color">Humidity</ion-label>
+              <ion-label *ngIf="!isMobile" class="climate-color">Humidity</ion-label>
             </div>
           </ion-button>
           <ion-button fill="outline" (click)="updateGraph('pm')">
             <div style="display: flex; flex-direction: column; align-items: center;">
               <ion-icon name="logo-tableau" class="climate-color"></ion-icon>
-              <ion-label class="climate-color">Particular Matter</ion-label>
+              <ion-label *ngIf="!isMobile" class="climate-color">Particular Matter</ion-label>
             </div>
           </ion-button>
           <ion-button fill="outline" (click)="updateGraph('all')">
             <div style="display: flex; flex-direction: column; align-items: center;">
               <ion-icon name="bar-chart" class="climate-color"></ion-icon>
-              <ion-label class="climate-color">All</ion-label>
+              <ion-label *ngIf="!isMobile" class="climate-color">All</ion-label>
             </div>
           </ion-button>
         </div>

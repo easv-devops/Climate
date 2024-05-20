@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WebSocketConnectionService } from '../../../web-socket-connection.service';
 import { DeviceService } from '../../devices/device.service';
 import {BaseGraphComponent} from "../graphSuper.component";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 
 @Component({
@@ -11,10 +12,19 @@ import {BaseGraphComponent} from "../graphSuper.component";
   styleUrls: ['./graph.component.scss'],
 })
 export class GraphComponent extends BaseGraphComponent implements OnInit {
+  isMobile: boolean | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,
-              private activatedRoute: ActivatedRoute) { super(); }
+              private activatedRoute: ActivatedRoute,
+              private breakpointObserver: BreakpointObserver) {
+    super();
+    this.breakpointObserver.observe([
+      Breakpoints.Handset, Breakpoints.Tablet
+    ]).subscribe(result => {
+      this.isMobile = result.matches;
+    });
+  }
 
   ngOnInit(): void {
     this.getDeviceFromRoute();
