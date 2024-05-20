@@ -1,5 +1,6 @@
 ﻿using infrastructure;
 using infrastructure.Models;
+using infrastructure.repositories;
 
 namespace service.services;
 
@@ -18,30 +19,52 @@ namespace service.services;
 public class DeviceSettingsService
 {
 
+    private readonly DeviceRangeRepository _deviceRangeRepository;
     private readonly DeviceSettingsRepository _deviceSettingsRepository;
 
-    public DeviceSettingsService(DeviceSettingsRepository deviceSettingsRepository)
+    public DeviceSettingsService(DeviceRangeRepository deviceRangeRepository, DeviceSettingsRepository deviceSettingsRepository)
     {
+        _deviceRangeRepository = deviceRangeRepository;
         _deviceSettingsRepository = deviceSettingsRepository;
     }
 
-    public DeviceSettingsFullDto CreateDeviceSetting(DeviceSettingsFullDto deviceSettings)
+    public DeviceRangeDto CreateRangeSetting(DeviceRangeDto deviceSettings)
     {
-        return _deviceSettingsRepository.Create(deviceSettings);
+        return _deviceRangeRepository.CreateRangeSettings(deviceSettings);
     }
 
-    public bool DeleteDeviceSettings(int deviceId)
+    public bool DeleteRangeSettings(int deviceId)
     {
-        return _deviceSettingsRepository.DeleteSettings(deviceId);
+        return _deviceRangeRepository.DeleteRangeSettings(deviceId);
     }
 
-    public DeviceSettingsFullDto EditDeviceSettings(DeviceSettingsFullDto deviceSettings)
+    public DeviceRangeDto EditRangeSettings(DeviceRangeDto deviceSettings)
+    {
+        return _deviceRangeRepository.EditRangeSettings(deviceSettings);
+    }
+
+    public DeviceRangeDto GetRangeSettings(int deviceId)
+    {
+        return _deviceRangeRepository.GetRangeSettingsFromId(deviceId);
+    }
+
+    public DeviceSettingsDto CreateDeviceSettings(DeviceSettingsDto deviceSettingsDto)
+    {
+        return _deviceSettingsRepository.Create(deviceSettingsDto);
+    }
+
+    public DeviceSettingsDto GetDeviceSettingsFromId(int deviceId)
+    {
+        return _deviceSettingsRepository.GetDeviceSettingsFromId(deviceId);
+    }
+
+    public DeviceSettingsDto EditSettings(DeviceSettingsDto deviceSettings)
     {
         return _deviceSettingsRepository.EditSettings(deviceSettings);
     }
 
-    public DeviceSettingsFullDto GetDeviceSettings(int deviceId)
+    public bool DeleteSettings(int deviceId)
     {
-        return _deviceSettingsRepository.GetDeviceSettingsFromId(deviceId);
+        return _deviceSettingsRepository.DeleteSettings(deviceId);
     }
 }

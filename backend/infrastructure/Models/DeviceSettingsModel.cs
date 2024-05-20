@@ -5,7 +5,7 @@ public class DeviceSettingsModel
     
 }
 
-public class DeviceSettingsFullDto{
+public class DeviceRangeDto{
     public required int DeviceId { get; set; }
     public required int TemperatureMax { get; set; } 
     public required int TemperatureMin { get; set; } 
@@ -13,4 +13,12 @@ public class DeviceSettingsFullDto{
     public required int HumidityMin { get; set; } 
     public required int Particle25 { get; set; } 
     public required int Particle100 { get; set; }
+}
+
+public class DeviceSettingsDto
+{
+    public int DeviceId { get; set; }
+    public int BMP280ReadingInterval { get; set; }
+    public int PMSReadingInterval { get; set; }
+    public int UpdateInterval { get; set; }
 }
