@@ -25,7 +25,7 @@ public class DeviceRangeRepository
 
                 var sql = @"
                     INSERT INTO RangeSettings (DeviceId, TemperatureMin, TemperatureMax, HumidityMin, HumidityMax, Particle25Max, Particle100Max)
-                    VALUES (@DeviceId, @TemperatureMin, @TemperatureMax, @HumidityMin, @HumidityMax, @Particle25, @Particle100)";
+                    VALUES (@DeviceId, @TemperatureMin, @TemperatureMax, @HumidityMin, @HumidityMax, @Particle25Max, @Particle100Max)";
 
                 var affectedRows = connection.Execute(sql, new
                 {

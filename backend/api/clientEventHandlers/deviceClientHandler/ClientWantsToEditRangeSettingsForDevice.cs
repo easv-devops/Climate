@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -14,6 +15,8 @@ public class ClientWantsToEditDeviceRangeDto : BaseDto
     public RangeDto Settings { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToEditRangeSettingsForDevice: BaseEventHandler<ClientWantsToEditDeviceRangeDto>
 {
     private readonly DeviceSettingsService _deviceSettingsService;
