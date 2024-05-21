@@ -10,6 +10,7 @@ import {Page2Component} from "./page2/page2.component";
 import {TopbarComponent} from "./topbar/topbar.component";
 import {GraphComponent} from "./graphs/graph/graph.component";
 import {NgApexchartsModule} from "ng-apexcharts";
+import {LandingPageComponent} from "./landing-page/landing-page.component";
 
 
 @NgModule({
@@ -24,6 +25,6 @@ import {NgApexchartsModule} from "ng-apexcharts";
         GraphComponent,
         TopbarComponent,
     ],
-    declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent]
+    declarations: [HomePage, Page1Component, Page2Component, TopbarComponent, GraphComponent, LandingPageComponent]
 })
 export class HomePageModule {}
