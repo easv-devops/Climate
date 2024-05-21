@@ -16,7 +16,7 @@ import {ClientWantsToGetCountryCodeDto} from "../../../../models/ClientWantsToGe
 })
 export class EditUserComponent  implements OnInit {
   private unsubscribe$ = new Subject<void>();
-  user: FullUserDto | undefined;
+  public user: FullUserDto | undefined;
   public allCountryCodes: CountryCode[] | undefined;
 
   readonly form = this.fb.group({
