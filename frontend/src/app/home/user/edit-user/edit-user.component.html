@@ -8,43 +8,91 @@
       <ion-card-content>
         <form [formGroup]="form">
           <ion-list *ngIf="user">
-            <ion-item>
-              <ion-input formControlName="email" label="Email *" label-placement="stacked" [value]="user.Email">
+            <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+              <ion-input style="align-content: flex-start" formControlName="email" label="Email *" label-placement="stacked" [value]="user.Email">
               </ion-input>
+              <ion-button id="email-popover" fill="clear" style="align-content: flex-end;">
+                <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+              </ion-button>
+              <ion-popover trigger="email-popover" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">Enter a valid email address
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-item>
             <div *ngIf="form.controls.email.touched && form.controls.email.invalid" slot="label" style="text-align: left; margin-left: 4%;">
               <ion-text color="danger">Required</ion-text>
             </div>
 
-            <ion-item>
-              <ion-input formControlName="firstName" label="First Name *" label-placement="stacked" [value]="user.FirstName">
+            <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+              <ion-input style="align-content: flex-start" formControlName="firstName" label="First Name *" label-placement="stacked" [value]="user.FirstName">
               </ion-input>
+              <ion-button id="firstname-popover" fill="clear" style="align-content: flex-end;">
+                <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+              </ion-button>
+              <ion-popover trigger="firstname-popover" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">
+                    Enter your first name. If you have a middle name you can enter it here as well.
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-item>
             <div *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
               <ion-text color="danger">Required</ion-text>
             </div>
 
-            <ion-item>
-              <ion-input formControlName="lastName" label="Last Name *" label-placement="stacked" [value]="user.LastName">
+            <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+              <ion-input style="align-content: flex-start" formControlName="lastName" label="Last Name *" label-placement="stacked" [value]="user.LastName">
               </ion-input>
+              <ion-button id="lastname-popover" fill="clear" style="align-content: flex-end;">
+                <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+              </ion-button>
+              <ion-popover trigger="lastname-popover" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">
+                    Enter your last name.
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-item>
             <div *ngIf="form.controls.lastName.touched && form.controls.lastName.invalid" slot="label" style="text-align: left; margin-left: 4%;">
               <ion-text color="danger">Required</ion-text>
             </div>
 
-            <ion-item>
-              <ion-label position="stacked">Country Code</ion-label>
-              <ion-select formControlName="countryCode">
+            <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+              <ion-select style="align-content: flex-start" formControlName="countryCode" label="Country Code *" label-placement="stacked">
                 <ion-select-option
                   *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
                   {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
                 </ion-select-option>
               </ion-select>
+
+              <ion-button id="cc-popover" fill="clear" style="align-content: flex-end;">
+                <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+              </ion-button>
+              <ion-popover trigger="cc-popover" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">Choose your country code for your phone number.
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-item>
 
-            <ion-item>
-              <ion-input formControlName="number" label="Phone *" label-placement="stacked" [value]="user.Number">
+            <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+              <ion-input style="align-content: flex-start" formControlName="number" label="Phone *" label-placement="stacked" [value]="user.Number">
               </ion-input>
+
+              <ion-button id="number-popover" fill="clear" style="align-content: flex-end;">
+                <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+              </ion-button>
+              <ion-popover trigger="number-popover" triggerAction="click">
+                <ng-template>
+                  <ion-content class="ion-padding">Enter a valid phone number. Only allows digits, parenthesis, dashes and spaces
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
             </ion-item>
             <div *ngIf="form.controls.number.touched && form.controls.number.invalid" slot="label" style="text-align: left; margin-left: 4%;">
               <ion-text color="danger">Required. Only allows digits, parenthesis, dashes and spaces</ion-text>
