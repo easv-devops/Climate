@@ -13,8 +13,7 @@ public class DeviceRangeRepository
     {
         _connectionString = connectionString;
     }
-    
-    
+     
     public RangeDto CreateRangeSettings(RangeDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
@@ -137,7 +136,6 @@ public class DeviceRangeRepository
               {
                   throw new SqlNullValueException("Device settings not found.");
               }
-
               return settings;
           }
           catch (Exception ex)
