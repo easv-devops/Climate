@@ -38,19 +38,17 @@ export class HomePage implements OnInit {
 
 
   loadRooms(rooms: Room[]) {
-
-    //TODO: Load logged in user's rooms like for devices (max amount?).
-
+    this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
+    this.addSubItem('New room', 'rooms/add', this.roomMenuItem!, 'add')
     for (var r of rooms) {
       this.addSubItem(r.RoomName, 'rooms/' + r.Id, this.roomMenuItem!, 'chevron-forward')
     }
-    this.addSubItem('All rooms', 'rooms/all', this.roomMenuItem!, 'grid')
-    this.addSubItem('New room', 'rooms/add', this.roomMenuItem!, 'add')
   }
 
   loadDevices(devices: Device[]) {
+    this.deviceMenuItem!.subItems = [];
+    this.addSubItem('New device', 'devices/add', this.deviceMenuItem!, 'add')
     if (devices) {
-      this.deviceMenuItem!.subItems = [];
       for (const d of devices) {
         this.addSubItem(d.DeviceName, 'devices/' + d.Id, this.deviceMenuItem!, 'chevron-forward');
       }
