@@ -5,6 +5,7 @@ import { HomePage } from './home.page';
 import {Page1Component} from "./page1/page1.component";
 import {Page2Component} from "./page2/page2.component";
 import {LandingPageComponent} from "./landing-page/landing-page.component";
+import {AllRoomsComponent} from "./rooms/all-rooms/all-rooms.component";
 
 const routes: Routes = [
   {
@@ -13,12 +14,9 @@ const routes: Routes = [
     children: [ // Child routes for authentication
 
       {
-        path: 'page1', // Path for login component (e.g., /auth/login)
-        component: Page1Component
-      },
-      {
-        path: 'page2', // Path for login component (e.g., /auth/login)
-        component: Page2Component
+        path: '', // Path for login component (e.g., /auth/login)
+        redirectTo: 'rooms/all',
+        pathMatch: "full"
       },
       {
         path: 'landing', //Path for landing zone
