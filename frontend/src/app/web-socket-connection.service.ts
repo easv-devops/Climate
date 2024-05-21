@@ -267,6 +267,12 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
     this.userSubject.next(undefined); // Nulstil allUsers-subjektet
     this.allCountryCodesSubject.next(undefined); // Nulstil allCountryCodes-subjektet
+    this.allRoomsSubject.next(undefined); // Nulstil allRooms-subjektet
+    this.allRoomsListSubject.next(undefined); // Nulstil allRoomsList-subjektet
+    this.temperatureReadingsSubject.next(undefined); // Nulstil temperatureReadings-subjektet
+    this.humidityReadingsSubject.next(undefined); // Nulstil humidityReadings-subjektet
+    this.pm25ReadingsSubject.next(undefined); // Nulstil pm25Readings-subjektet
+    this.pm100ReadingsSubject.next(undefined); // Nulstil pm100Readings-subjektet
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
