@@ -42,7 +42,7 @@ public static class StateService
     private static readonly Dictionary<Guid, int> ConnectionToUser = new();
 
     //used for checking the device range when retrieving new readings from the mqtt listener
-    private static readonly Dictionary<int, DeviceRangeDto> DeviceToSettings = new();
+    private static readonly Dictionary<int, RangeDto> DeviceToSettings = new();
 
     public static WebSocketMetaData GetClient(Guid clientId)
     {
@@ -268,19 +268,19 @@ public static class StateService
     
     
     // Add device settings to the dictionary
-    public static void AddDeviceSettings(DeviceRangeDto deviceSettings)
+    public static void AddDeviceSettings(RangeDto settings)
     {
-        if (deviceSettings == null)
+        if (settings == null)
         {
-            throw new ArgumentNullException(nameof(deviceSettings), "Device settings cannot be null.");
+            throw new ArgumentNullException(nameof(settings), "Device settings cannot be null.");
         }
 
-        if (DeviceToSettings.ContainsKey(deviceSettings.DeviceId))
+        if (DeviceToSettings.ContainsKey(settings.Id))
         {
-            throw new ArgumentException($"Device with ID {deviceSettings.DeviceId} already exists.");
+            throw new ArgumentException($"Device with ID {settings.Id} already exists.");
         }
 
-        DeviceToSettings.Add(deviceSettings.DeviceId, deviceSettings);
+        DeviceToSettings.Add(settings.Id, settings);
     }
 
     // Remove device settings from the dictionary
@@ -290,7 +290,7 @@ public static class StateService
     }
 
     // Get device settings by device ID
-    public static DeviceRangeDto GetDeviceSettings(int deviceId)
+    public static RangeDto GetDeviceSettings(int deviceId)
     {
         if (DeviceToSettings.TryGetValue(deviceId, out var deviceSettings))
         {

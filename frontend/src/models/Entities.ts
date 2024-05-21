@@ -7,10 +7,10 @@ export class Device {
 }
 
 export class DeviceRangeDto  extends BaseDto<DeviceRangeDto>{
-  DeviceSettings!: DeviceRange;
+  Settings!: DeviceRange;
 }
 export class DeviceRange{
-  DeviceId!: number;
+  Id!: number;
   TemperatureMax!: number;
   TemperatureMin!: number;
   HumidityMax!: number;
@@ -20,10 +20,10 @@ export class DeviceRange{
 }
 
 export class DeviceSettingDto  extends BaseDto<DeviceSettingDto>{
-  DeviceSettings!: DeviceSettings;
+  Settings!: DeviceSettings;
 }
 export class DeviceSettings {
-  DeviceId!: number;
+  Id!: number;
   BMP280ReadingInterval!: number;
   PMSReadingInterval!: number;
   UpdateInterval!: number;

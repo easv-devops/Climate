@@ -3,5 +3,5 @@ import {ClientWantsToEditDeviceDto} from "./ClientWantsToEditDeviceDto";
 import {DeviceRange} from "./Entities";
 
 export class ClientWantsToEditDeviceRangeDto extends BaseDto<ClientWantsToEditDeviceRangeDto>{
- DeviceSettings!: DeviceRange
+ Settings!: DeviceRange
 }

@@ -2,5 +2,5 @@ import {BaseDto} from "./baseDto";
 import {DeviceSettings} from "./Entities";
 
 export class ClientWantsToEditDeviceSettingsDto extends BaseDto<ClientWantsToEditDeviceSettingsDto>{
-  DeviceSettings!: DeviceSettings
+  Settings!: DeviceSettings
 }

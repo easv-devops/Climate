@@ -15,7 +15,7 @@ public class DeviceRangeRepository
     }
     
     
-    public DeviceRangeDto CreateRangeSettings(DeviceRangeDto deviceSettings)
+    public RangeDto CreateRangeSettings(RangeDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
         {
@@ -29,18 +29,18 @@ public class DeviceRangeRepository
 
                 var affectedRows = connection.Execute(sql, new
                 {
-                    deviceSettings.DeviceId,
-                    deviceSettings.TemperatureMin,
-                    deviceSettings.TemperatureMax,
-                    deviceSettings.HumidityMin,
-                    deviceSettings.HumidityMax,
-                    deviceSettings.Particle25Max,
-                    deviceSettings.Particle100Max
+                    DeviceId = settings.Id,
+                    settings.TemperatureMin,
+                    settings.TemperatureMax,
+                    settings.HumidityMin,
+                    settings.HumidityMax,
+                    settings.Particle25Max,
+                    settings.Particle100Max
                 });
 
                 if (affectedRows > 0)
                 {
-                    return deviceSettings;
+                    return settings;
                 }
                 else
                 {
@@ -77,7 +77,7 @@ public class DeviceRangeRepository
         }
     }
 
-  public DeviceRangeDto EditRangeSettings(DeviceRangeDto deviceSettings)
+  public RangeDto EditRangeSettings(RangeDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
         {
@@ -97,18 +97,18 @@ public class DeviceRangeRepository
 
                 var affectedRows = connection.Execute(sql, new
                 {
-                    deviceSettings.DeviceId,
-                    deviceSettings.TemperatureMin,
-                    deviceSettings.TemperatureMax,
-                    deviceSettings.HumidityMin,
-                    deviceSettings.HumidityMax,
-                    deviceSettings.Particle25Max,
-                    deviceSettings.Particle100Max
+                    DeviceId = settings.Id,
+                    settings.TemperatureMin,
+                    settings.TemperatureMax,
+                    settings.HumidityMin,
+                    settings.HumidityMax,
+                    settings.Particle25Max,
+                    settings.Particle100Max
                 });
 
                 if (affectedRows > 0)
                 {
-                    return deviceSettings;
+                    return settings;
                 }
             
                 throw new Exception("No rows were updated.");
@@ -121,29 +121,30 @@ public class DeviceRangeRepository
         }
     }
 
-    public DeviceRangeDto GetRangeSettingsFromId(int deviceId)
-    {
-        using (var connection = new MySqlConnection(_connectionString))
-        {
-            try
-            {
-                connection.Open();
+  public RangeDto GetRangeSettingsFromId(int deviceId)
+  {
+      using (var connection = new MySqlConnection(_connectionString))
+      {
+          try
+          {
+              connection.Open();
 
-                var sql = "SELECT * FROM RangeSettings WHERE DeviceId = @DeviceId";
+              var sql = "SELECT DeviceId AS Id, TemperatureMin, TemperatureMax, HumidityMin, HumidityMax, Particle25Max, Particle100Max FROM RangeSettings WHERE DeviceId = @DeviceId";
 
-                var settings = connection.QuerySingleOrDefault<DeviceRangeDto>(sql, new { DeviceId = deviceId });
+              var settings = connection.QuerySingleOrDefault<RangeDto>(sql, new { DeviceId = deviceId });
 
-                if (settings == null)
-                {
-                    throw new Exception("Device settings not found.");
-                }
+              if (settings == null)
+              {
+                  throw new Exception("Device settings not found.");
+              }
 
-                return settings;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while retrieving the settings.", ex);
-            }
-        }
-    }
+              return settings;
+          }
+          catch (Exception ex)
+          {
+              throw new Exception("An error occurred while retrieving the settings.", ex);
+          }
+      }
+  }
+
 }

@@ -5,5 +5,5 @@ namespace api.serverEventModels;
 
 public class ServerSendsDeviceRangeSettings: BaseDto
 {
-    public DeviceRangeDto DeviceSettings { get; set; }
+    public RangeDto Settings { get; set; }
 }

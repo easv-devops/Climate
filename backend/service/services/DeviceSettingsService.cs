@@ -28,9 +28,9 @@ public class DeviceSettingsService
         _deviceSettingsRepository = deviceSettingsRepository;
     }
 
-    public DeviceRangeDto CreateRangeSetting(DeviceRangeDto deviceSettings)
+    public RangeDto CreateRangeSetting(RangeDto settings)
     {
-        return _deviceRangeRepository.CreateRangeSettings(deviceSettings);
+        return _deviceRangeRepository.CreateRangeSettings(settings);
     }
 
     public bool DeleteRangeSettings(int deviceId)
@@ -38,29 +38,29 @@ public class DeviceSettingsService
         return _deviceRangeRepository.DeleteRangeSettings(deviceId);
     }
 
-    public DeviceRangeDto EditRangeSettings(DeviceRangeDto deviceSettings)
+    public RangeDto EditRangeSettings(RangeDto settings)
     {
-        return _deviceRangeRepository.EditRangeSettings(deviceSettings);
+        return _deviceRangeRepository.EditRangeSettings(settings);
     }
 
-    public DeviceRangeDto GetRangeSettings(int deviceId)
+    public RangeDto GetRangeSettings(int deviceId)
     {
         return _deviceRangeRepository.GetRangeSettingsFromId(deviceId);
     }
 
-    public DeviceSettingsDto CreateDeviceSettings(DeviceSettingsDto deviceSettingsDto)
+    public SettingsDto CreateDeviceSettings(SettingsDto settingsDto)
     {
-        return _deviceSettingsRepository.Create(deviceSettingsDto);
+        return _deviceSettingsRepository.Create(settingsDto);
     }
 
-    public DeviceSettingsDto GetDeviceSettingsFromId(int deviceId)
+    public SettingsDto GetDeviceSettingsFromId(int deviceId)
     {
         return _deviceSettingsRepository.GetDeviceSettingsFromId(deviceId);
     }
 
-    public DeviceSettingsDto EditSettings(DeviceSettingsDto deviceSettings)
+    public SettingsDto EditSettings(SettingsDto settings)
     {
-        return _deviceSettingsRepository.EditSettings(deviceSettings);
+        return _deviceSettingsRepository.EditSettings(settings);
     }
 
     public bool DeleteSettings(int deviceId)

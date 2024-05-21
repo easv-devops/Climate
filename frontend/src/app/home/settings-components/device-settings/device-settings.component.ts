@@ -77,7 +77,7 @@ export class DeviceSettingsComponent implements OnInit, OnDestroy {
 
   createDeviceRangeReading(): DeviceRange {
     return {
-      DeviceId: this.deviceId,
+      Id: this.deviceId,
       TemperatureMin: this.temperatureRange.lower,
       TemperatureMax: this.temperatureRange.upper,
       HumidityMin: this.humidityRange.lower,
@@ -94,7 +94,7 @@ export class DeviceSettingsComponent implements OnInit, OnDestroy {
   onSubmit() {
     if (this.settingsForm.valid) {
       const updatedSettings: DeviceSettings = {
-        DeviceId: this.deviceId,
+        Id: this.deviceId,
         BMP280ReadingInterval: this.settingsForm.value.TemperatureInterval,
         PMSReadingInterval: this.settingsForm.value.ParticleInterval,
         UpdateInterval: this.settingsForm.value.DeviceInterval

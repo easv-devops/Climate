@@ -186,9 +186,8 @@ export class WebSocketConnectionService {
       if (!allDevicesRecord) {
         allDevicesRecord = {};
       }
-
       // Add or update the device range settings in the record
-      allDevicesRecord[dto.DeviceSettings.DeviceId] = dto.DeviceSettings;
+      allDevicesRecord[dto.Settings.Id] = dto.Settings;
 
       // Update allDeviceSettingsSubject with the updated record
       this.allDeviceRangeSettingsSubject.next(allDevicesRecord);
@@ -202,7 +201,7 @@ export class WebSocketConnectionService {
       }
 
       // Add or update the device range settings in the record
-      allDevicesRecord[dto.DeviceSettings.DeviceId] = dto.DeviceSettings;
+      allDevicesRecord[dto.Settings.Id] = dto.Settings;
 
       // Update allDeviceSettingsSubject with the updated record
       this.allDeviceSettingsSubject.next(allDevicesRecord);

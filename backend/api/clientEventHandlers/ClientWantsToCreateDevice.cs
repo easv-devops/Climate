@@ -17,8 +17,8 @@ public class ClientWantsToCreateDeviceDto : BaseDto
     [Required(ErrorMessage = "Room Id is required.")]
     [Range(0, int.MaxValue, ErrorMessage = "Room Id is not a valid number")]
     public int RoomId { get; set; }
-    public DeviceRangeDto? DeviceRange { get; set; }
-    public DeviceSettingsDto? DeviceSettings { get; set; }
+    public RangeDto? DeviceRange { get; set; }
+    public SettingsDto? DeviceSettings { get; set; }
 }
 
 
@@ -44,12 +44,12 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                 RoomId = dto.RoomId
             });
 
-            DeviceRangeDto rangeSettings;
+            RangeDto rangeSettings;
             if (ReferenceEquals(dto.DeviceRange, null)) //sets the range if the users has not selected any
             {
-                rangeSettings = _deviceSettingsService.CreateRangeSetting(new DeviceRangeDto
+                rangeSettings = _deviceSettingsService.CreateRangeSetting(new RangeDto
                 {
-                    DeviceId = response.Id,
+                    Id = response.Id,
                     TemperatureMax = 25,
                     TemperatureMin = 15,
                     HumidityMax = 30,
@@ -67,9 +67,9 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
             
             if (ReferenceEquals(dto.DeviceSettings, null)) //sets the settings if the users has not selected any
             {
-                _deviceSettingsService.CreateDeviceSettings(new DeviceSettingsDto
+                _deviceSettingsService.CreateDeviceSettings(new SettingsDto
                 {
-                    DeviceId = response.Id,
+                    Id = response.Id,
                     BMP280ReadingInterval = 2,
                     PMSReadingInterval = 5,
                     UpdateInterval = 10

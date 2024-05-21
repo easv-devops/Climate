@@ -11,7 +11,7 @@ namespace api.clientEventHandlers;
 
 public class ClientWantsToEditDeviceRangeDto : BaseDto
 {
-    public DeviceRangeDto DeviceSettings { get; set; }
+    public RangeDto Settings { get; set; }
 }
 
 public class ClientWantsToEditRangeSettingsForDevice: BaseEventHandler<ClientWantsToEditDeviceRangeDto>
@@ -26,18 +26,18 @@ public class ClientWantsToEditRangeSettingsForDevice: BaseEventHandler<ClientWan
 
     public override Task Handle(ClientWantsToEditDeviceRangeDto dto, IWebSocketConnection socket)
     {
-        var users = StateService.GetUsersForDevice(dto.DeviceSettings.DeviceId);
+        var users = StateService.GetUsersForDevice(dto.Settings.Id);
         if (!users.Any()) //check if the users has access to device
         {
             throw new AuthenticationException("You do not have access to edit this device");
         }
 
-        var newSettings = _deviceSettingsService.EditRangeSettings(dto.DeviceSettings);
+        var newSettings = _deviceSettingsService.EditRangeSettings(dto.Settings);
 
         //return the is deleted bool
         socket.SendDto(new ServerSendsDeviceRangeSettings
         {
-           DeviceSettings = newSettings
+           Settings = newSettings
         });
         
         return Task.CompletedTask;

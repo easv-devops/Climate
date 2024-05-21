@@ -13,7 +13,7 @@
                    labelPlacement="stacked" label="Temperature"
                    [value]="{ lower: deviceRange.TemperatureMin, upper: deviceRange.TemperatureMax }"
                    [pin]="true"
-                   [min]="0" [max]="40"
+                   [min]="-10" [max]="40"
                    [ticks]="true"
                    (ionChange)="EditDeviceRange()"
         >
@@ -44,6 +44,7 @@
           [(ngModel)]="particle25Max"
           [value]="deviceRange.Particle25Max"
           [pin]="true"
+          [min]="0" [max]="100"
           [min]="0" [max]="100"
           [ticks]="true"
           (ionChange)="EditDeviceRange()"

@@ -85,14 +85,14 @@ export class DeviceService {
 
   editDeviceRange(deviceRange: DeviceRange){
     var dto = new ClientWantsToEditDeviceRangeDto({
-      DeviceSettings: deviceRange
+      Settings: deviceRange
     })
     this.ws.socketConnection.sendDto(dto);
   }
 
   updateDeviceSettings(updatedSettings: DeviceSettings) {
     var dto = new ClientWantsToEditDeviceSettingsDto({
-      DeviceSettings: updatedSettings
+      Settings: updatedSettings
     });
     this.ws.socketConnection.sendDto(dto);
   }

@@ -14,7 +14,7 @@ public class DeviceSettingsRepository
     }
 
     // Create
-    public DeviceSettingsDto Create(DeviceSettingsDto deviceSettings)
+    public SettingsDto Create(SettingsDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
         {
@@ -28,15 +28,15 @@ public class DeviceSettingsRepository
 
                 var affectedRows = connection.Execute(sql, new
                 {
-                    deviceSettings.DeviceId,
-                    deviceSettings.BMP280ReadingInterval,
-                    deviceSettings.PMSReadingInterval,
-                    deviceSettings.UpdateInterval
+                    DeviceId = settings.Id,
+                    settings.BMP280ReadingInterval,
+                    settings.PMSReadingInterval,
+                    settings.UpdateInterval
                 });
 
                 if (affectedRows > 0)
                 {
-                    return deviceSettings;
+                    return settings;
                 }
                 else
                 {
@@ -52,7 +52,7 @@ public class DeviceSettingsRepository
     }
 
     // Read
-    public DeviceSettingsDto GetDeviceSettingsFromId(int deviceId)
+    public SettingsDto GetDeviceSettingsFromId(int deviceId)
     {
         using (var connection = new MySqlConnection(_connectionString))
         {
@@ -60,9 +60,16 @@ public class DeviceSettingsRepository
             {
                 connection.Open();
 
-                var sql = "SELECT * FROM DeviceSettings WHERE DeviceId = @DeviceId";
+                var sql = @"
+                SELECT 
+                    DeviceId AS Id, 
+                    BMP280ReadingInterval, 
+                    PMSReadingInterval, 
+                    UpdateInterval 
+                FROM DeviceSettings 
+                WHERE DeviceId = @DeviceId";
 
-                var settings = connection.QuerySingleOrDefault<DeviceSettingsDto>(sql, new { DeviceId = deviceId });
+                var settings = connection.QuerySingleOrDefault<SettingsDto>(sql, new { DeviceId = deviceId });
 
                 if (settings == null)
                 {
@@ -79,8 +86,8 @@ public class DeviceSettingsRepository
         }
     }
 
-    // Update
-    public DeviceSettingsDto EditSettings(DeviceSettingsDto deviceSettings)
+
+    public SettingsDto EditSettings(SettingsDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
         {
@@ -89,23 +96,23 @@ public class DeviceSettingsRepository
                 connection.Open();
 
                 var sql = @"
-                    UPDATE DeviceSettings
-                    SET BMP280ReadingInterval = @BMP280ReadingInterval,
-                        PMSReadingInterval = @PMSReadingInterval,
-                        UpdateInterval = @UpdateInterval
-                    WHERE DeviceId = @DeviceId";
+                UPDATE DeviceSettings
+                SET BMP280ReadingInterval = @BMP280ReadingInterval,
+                    PMSReadingInterval = @PMSReadingInterval,
+                    UpdateInterval = @UpdateInterval
+                WHERE DeviceId = @DeviceId";
 
                 var affectedRows = connection.Execute(sql, new
                 {
-                    deviceSettings.DeviceId,
-                    deviceSettings.BMP280ReadingInterval,
-                    deviceSettings.PMSReadingInterval,
-                    deviceSettings.UpdateInterval
+                    DeviceId = settings.Id,
+                    settings.BMP280ReadingInterval,
+                    settings.PMSReadingInterval,
+                    settings.UpdateInterval
                 });
 
                 if (affectedRows > 0)
                 {
-                    return deviceSettings;
+                    return settings;
                 }
                 else
                 {
@@ -119,6 +126,7 @@ public class DeviceSettingsRepository
             }
         }
     }
+
 
     // Delete
     public bool DeleteSettings(int deviceId)
