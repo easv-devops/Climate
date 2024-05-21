@@ -5,6 +5,7 @@ import {Device, DeviceInRoom, SensorDto} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
+import {AlertController} from "@ionic/angular";
 
 
 @Component({
@@ -18,10 +19,14 @@ export class DeviceComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
 
 
+
+
+
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               public ws: WebSocketConnectionService,
-              private deviceService: DeviceService) {
+              private deviceService: DeviceService,
+              private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -58,7 +63,6 @@ export class DeviceComponent implements OnInit {
     let deviceToDelete = new ClientWantsToDeleteDevice({
       Id: deviceIdToDelete,
     });
-
     this.deviceService.deleteDevice(deviceToDelete);
 
     const roomId = this.device?.RoomId;
@@ -68,4 +72,27 @@ export class DeviceComponent implements OnInit {
       console.error('Room ID not found for the device');
     }
   }
+
+
+  async presentDeleteDeviceAlert() {
+    const alert = await this.alertController.create({
+      header: 'You are about to delete: ' + this.device?.DeviceName,
+      message: 'Are you sure?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.deleteDevice();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+
 }
