@@ -1,0 +1,159 @@
+<div style="display: flex; flex-direction: column; align-items: center" *ngIf="deviceRange">
+  <ion-card id="settingsCard" style="width: 90%; padding: 5% 10% 10% 10%;">
+    <ion-card-header style="padding-bottom: 5%">
+      <ion-card-title style="text-align: center">Settings</ion-card-title>
+    </ion-card-header>
+
+    <ion-list>
+      <ion-card-subtitle style="padding-bottom: 3%">Range settings</ion-card-subtitle>
+
+      <ion-item>
+        <ion-range aria-label="Dual Knobs Range" [dualKnobs]="true" [(ngModel)]="temperatureRange"
+                   style="font-size: 20px"
+                   labelPlacement="stacked" label="Temperature"
+                   [value]="{ lower: deviceRange.TemperatureMin, upper: deviceRange.TemperatureMax }"
+                   [pin]="true"
+                   [min]="-10" [max]="40"
+                   [ticks]="true"
+                   (ionChange)="EditDeviceRange()"
+        >
+          <ion-icon slot="start" name="snow-outline"></ion-icon>
+          <ion-icon slot="end" name="sunny-outline"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <ion-item>
+        <ion-range aria-label="Dual Knobs Range" [dualKnobs]="true" [(ngModel)]="humidityRange"
+                   style="font-size: 20px"
+                   labelPlacement="stacked" label="Humidity"
+                   [value]="{ lower: deviceRange.HumidityMin, upper: deviceRange.HumidityMax }"
+                   [pin]="true"
+                   [min]="0" [max]="100"
+                   [ticks]="true"
+                   (ionChange)="EditDeviceRange()"
+        >
+          <ion-icon slot="start" name="water-outline"></ion-icon>
+          <ion-icon slot="end" name="water"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <ion-item>
+        <ion-range
+          style="font-size: 20px"
+          labelPlacement="stacked" label="Particles 2.5 pr 1000"
+          [(ngModel)]="particle25Max"
+          [value]="deviceRange.Particle25Max"
+          [pin]="true"
+          [min]="0" [max]="100"
+          [min]="0" [max]="100"
+          [ticks]="true"
+          (ionChange)="EditDeviceRange()"
+        >
+          <ion-icon slot="start"></ion-icon>
+          <ion-icon slot="end" name="water"></ion-icon>
+        </ion-range>
+      </ion-item>
+
+      <ion-item>
+        <ion-range aria-label="Dual Knobs Range"
+                   style="font-size: 20px"
+                   labelPlacement="stacked" label="Particles 10 pr 1000"
+                   [(ngModel)]="particle100Max"
+                   [value]="deviceRange.Particle100Max"
+                   [pin]="true"
+                   [min]="0" [max]="100"
+                   [ticks]="true"
+                   (ionChange)="EditDeviceRange()"
+        >
+          <ion-icon slot="start"></ion-icon>
+          <ion-icon slot="end" name="water"></ion-icon>
+        </ion-range>
+      </ion-item>
+    </ion-list>
+
+    <ion-list>
+      <ion-accordion-group>
+        <ion-accordion value="first">
+          <ion-item slot="header" color="light">
+            <ion-card-header>Edit Device</ion-card-header>
+          </ion-item>
+          <div class="ion-padding" slot="content">
+            <ion-item>
+              <ion-button fill="clear" shape="round" routerLink="/devices/{{this.deviceId}}/edit">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
+                  <ion-label>Edit Device Info</ion-label>
+                </div>
+              </ion-button>
+            </ion-item>
+
+            <ion-item>
+              <ion-button color="danger" shape="round" (click)="deleteDevice()" style="--background-hover: #f50505; transition: background-color 0.3s ease;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
+                  <ion-label>Delete Device</ion-label>
+                </div>
+              </ion-button>
+            </ion-item>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-list>
+
+    <ion-list>
+      <ion-accordion-group>
+        <ion-accordion value="first">
+          <ion-item slot="header" color="light">
+            <ion-card-header>Advanced Settings</ion-card-header>
+          </ion-item>
+          <div class="ion-padding" slot="content" *ngIf="advancedSettings">
+            <ion-card-subtitle style="padding-bottom: 3%; padding-top: 2%">
+              Adjusting the settings to update more frequently can lead to increased power consumption on the device. Please consider this before making changes, as higher update rates may significantly reduce battery life and increase energy usage.
+            </ion-card-subtitle>
+            <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+              <ion-item>
+                <ion-input
+                  value="{{advancedSettings.BMP280ReadingInterval}}"
+                  formControlName="TemperatureInterval"
+                  label="Temperature and Humidity Reading interval (Minutes)"
+                  label-placement="stacked"
+                  type="number"
+                ></ion-input>
+                <div *ngIf="settingsForm.get('TemperatureInterval')?.touched && settingsForm.get('TemperatureInterval')?.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                  <ion-text color="danger">Required. Only allows digits.</ion-text>
+                </div>
+              </ion-item>
+              <ion-item>
+                <ion-input
+                  value="{{advancedSettings.PMSReadingInterval}}"
+                  formControlName="ParticleInterval"
+                  label="Particle 2.5 and 10 Reading interval (Minutes)"
+                  label-placement="stacked"
+                  type="number"
+                ></ion-input>
+                <div *ngIf="settingsForm.get('ParticleInterval')?.touched && settingsForm.get('ParticleInterval')?.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                  <ion-text color="danger">Required. Only allows digits.</ion-text>
+                </div>
+              </ion-item>
+              <ion-item>
+                <ion-input
+                  value="{{advancedSettings.UpdateInterval}}"
+                  formControlName="DeviceInterval"
+                  label="Device Update Interval (Minutes)"
+                  label-placement="stacked"
+                  type="number"
+                ></ion-input>
+                <div *ngIf="settingsForm.get('DeviceInterval')?.touched && settingsForm.get('DeviceInterval')?.invalid" slot="label" style="text-align: left; margin-left: 4%;">
+                  <ion-text color="danger">Required. Only allows digits.</ion-text>
+                </div>
+              </ion-item>
+              <div style="display: flex; justify-content: center; margin-top: 3%">
+                <ion-button [disabled]="!settingsForm.valid" type="submit">Edit Information</ion-button>
+              </div>
+            </form>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-list>
+  </ion-card>
+</div>

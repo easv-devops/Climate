@@ -12,7 +12,15 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {CountryCode, Device, Room, SensorDto} from "../models/Entities";
+import {
+  CountryCode,
+  Device,
+  DeviceRange,
+  DeviceRangeDto, DeviceSettingDto,
+  DeviceSettings,
+  Room,
+  SensorDto
+} from "../models/Entities";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
@@ -55,9 +63,6 @@ export class WebSocketConnectionService {
   private deviceIdSubject = new BehaviorSubject<number | undefined>(undefined);
   deviceId: Observable<number | undefined> = this.deviceIdSubject.asObservable();
 
-  private allRoomsListSubject = new BehaviorSubject<number[] | undefined>(undefined);
-  allRoomsList: Observable<number[] | undefined> = this.allRoomsListSubject.asObservable();
-
   private userSubject = new BehaviorSubject<FullUserDto | undefined>(undefined);
   user: Observable<FullUserDto | undefined> = this.userSubject.asObservable();
 
@@ -73,6 +78,13 @@ export class WebSocketConnectionService {
   private isDeviceEditedSubject = new BehaviorSubject<boolean | undefined>(undefined);
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
+
+  private allDeviceRangeSettingsSubject = new BehaviorSubject<Record<number, DeviceRange> | undefined>(undefined);
+  allDeviceRangeSettings: Observable<Record<number, DeviceRange> | undefined> = this.allDeviceRangeSettingsSubject.asObservable();
+
+
+  private allDeviceSettingsSubject = new BehaviorSubject<Record<number, DeviceSettings> | undefined>(undefined);
+  allDeviceSettings: Observable<Record<number, DeviceSettings> | undefined> = this.allDeviceSettingsSubject.asObservable();
 
   /**
    * observables for device readings
@@ -156,7 +168,6 @@ export class WebSocketConnectionService {
   ServerSendsDevice(dto: DeviceWithIdDto) {
     this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
       if (allDevicesRecord !== undefined) {
-
         if (!allDevicesRecord.hasOwnProperty(dto.Id)) {
           this.deviceIdSubject.next(dto.Id);//if it is a new device the device id is set so create can find it
         }
@@ -167,6 +178,36 @@ export class WebSocketConnectionService {
       }
     });
   }
+
+
+  ServerSendsDeviceRangeSettings(dto: DeviceRangeDto) {
+    this.allDeviceRangeSettings.pipe(take(1)).subscribe(allDevicesRecord => {
+      if (!allDevicesRecord) {
+        allDevicesRecord = {};
+      }
+      // Add or update the device range settings in the record
+      allDevicesRecord[dto.Settings.Id] = dto.Settings;
+
+      // Update allDeviceSettingsSubject with the updated record
+      this.allDeviceRangeSettingsSubject.next(allDevicesRecord);
+    });
+  }
+
+  ServerSendsDeviceSettings(dto: DeviceSettingDto) {
+    this.allDeviceSettings.pipe(take(1)).subscribe(allDevicesRecord => {
+      if (!allDevicesRecord) {
+        allDevicesRecord = {};
+      }
+
+      // Add or update the device range settings in the record
+      allDevicesRecord[dto.Settings.Id] = dto.Settings;
+
+      // Update allDeviceSettingsSubject with the updated record
+      this.allDeviceSettingsSubject.next(allDevicesRecord);
+    });
+  }
+
+
 
   ServerSendsRoom(dto: ServerSendsRoom) {
     this.allRooms.pipe(take(1)).subscribe(allRoomsRecord => {
@@ -268,11 +309,11 @@ export class WebSocketConnectionService {
     this.userSubject.next(undefined); // Nulstil allUsers-subjektet
     this.allCountryCodesSubject.next(undefined); // Nulstil allCountryCodes-subjektet
     this.allRoomsSubject.next(undefined); // Nulstil allRooms-subjektet
-    this.allRoomsListSubject.next(undefined); // Nulstil allRoomsList-subjektet
     this.temperatureReadingsSubject.next(undefined); // Nulstil temperatureReadings-subjektet
     this.humidityReadingsSubject.next(undefined); // Nulstil humidityReadings-subjektet
     this.pm25ReadingsSubject.next(undefined); // Nulstil pm25Readings-subjektet
     this.pm100ReadingsSubject.next(undefined); // Nulstil pm100Readings-subjektet
+
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {

@@ -1,5 +1,4 @@
 
-//Returned data types from backend
 export class ServerAuthenticatesUserDto {
   Jwt!: string;
 }
