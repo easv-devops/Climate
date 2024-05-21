@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data.SqlTypes;
+using Dapper;
 using infrastructure.Models;
 using MySqlConnector;
 
@@ -40,13 +41,13 @@ public class DeviceSettingsRepository
                 }
                 else
                 {
-                    throw new Exception("No rows were inserted.");
+                    throw new SqlNullValueException("No rows were inserted.");
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions, maybe log them
-                throw new Exception("An error occurred while creating the device settings.", ex);
+                throw new SqlTypeException("An error occurred while creating the device settings.", ex);
             }
         }
     }
@@ -73,7 +74,7 @@ public class DeviceSettingsRepository
 
                 if (settings == null)
                 {
-                    throw new Exception("Device settings not found.");
+                    throw new SqlNullValueException("Device settings not found.");
                 }
 
                 return settings;
@@ -81,7 +82,7 @@ public class DeviceSettingsRepository
             catch (Exception ex)
             {
                 // Handle exceptions, maybe log them
-                throw new Exception("An error occurred while retrieving the device settings.", ex);
+                throw new SqlTypeException("An error occurred while retrieving the device settings.", ex);
             }
         }
     }
@@ -116,13 +117,13 @@ public class DeviceSettingsRepository
                 }
                 else
                 {
-                    throw new Exception("No rows were updated.");
+                    throw new SqlNullValueException("No rows were updated.");
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions, maybe log them
-                throw new Exception("An error occurred while editing the device settings.", ex);
+                throw new SqlTypeException("An error occurred while editing the device settings.", ex);
             }
         }
     }
@@ -146,7 +147,7 @@ public class DeviceSettingsRepository
             catch (Exception ex)
             {
                 // Handle exceptions, maybe log them
-                throw new Exception("An error occurred while deleting the device settings.", ex);
+                throw new SqlTypeException("An error occurred while deleting the device settings.", ex);
             }
         }
     }

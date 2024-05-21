@@ -44,12 +44,12 @@ public class DeviceRangeRepository
                 }
                 else
                 {
-                    throw new Exception("No rows were inserted.");
+                    throw new SqlNullValueException("No rows were inserted.");
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while creating the settings.", ex);
+                throw new SqlTypeException("An error occurred while creating the settings.", ex);
             }
         }
     }
@@ -72,7 +72,7 @@ public class DeviceRangeRepository
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while deleting the Device settings.", ex);
+                throw new SqlTypeException("An error occurred while deleting the Device settings.", ex);
             }
         }
     }
@@ -111,12 +111,12 @@ public class DeviceRangeRepository
                     return settings;
                 }
             
-                throw new Exception("No rows were updated.");
+                throw new SqlNullValueException("No rows were updated.");
                 
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while editing the settings.", ex);
+                throw new SqlTypeException("An error occurred while editing the settings.", ex);
             }
         }
     }
@@ -135,14 +135,14 @@ public class DeviceRangeRepository
 
               if (settings == null)
               {
-                  throw new Exception("Device settings not found.");
+                  throw new SqlNullValueException("Device settings not found.");
               }
 
               return settings;
           }
           catch (Exception ex)
           {
-              throw new Exception("An error occurred while retrieving the settings.", ex);
+              throw new SqlTypeException("An error occurred while retrieving the settings.", ex);
           }
       }
   }
