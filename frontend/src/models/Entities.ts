@@ -19,11 +19,14 @@ export class DeviceRange{
   Particle100Max!: number;
 }
 
-export class DeviceSettingsDto {
-  deviceId!: number;
-  bmp280ReadingInterval!: number;
-  pmsReadingInterval!: number;
-  updateInterval!: number;
+export class DeviceSettingDto  extends BaseDto<DeviceSettingDto>{
+  DeviceSettings!: DeviceSettings;
+}
+export class DeviceSettings {
+  DeviceId!: number;
+  BMP280ReadingInterval!: number;
+  PMSReadingInterval!: number;
+  UpdateInterval!: number;
 }
 
 export class DeviceInRoom {

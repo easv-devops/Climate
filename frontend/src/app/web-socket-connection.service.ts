@@ -12,7 +12,15 @@ import {
 } from "../models/returnedObjectsFromBackend";
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
-import {CountryCode, Device, DeviceRange, DeviceRangeDto, Room, SensorDto} from "../models/Entities";
+import {
+  CountryCode,
+  Device,
+  DeviceRange,
+  DeviceRangeDto, DeviceSettingDto,
+  DeviceSettings,
+  Room,
+  SensorDto
+} from "../models/Entities";
 import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
 import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
 import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
@@ -71,9 +79,12 @@ export class WebSocketConnectionService {
   isDeviceEdited: Observable<boolean | undefined> = this.isDeviceEditedSubject.asObservable();
 
 
-  private allDeviceSettingsSubject = new BehaviorSubject<Record<number, DeviceRange> | undefined>(undefined);
-  allDeviceSettings: Observable<Record<number, DeviceRange> | undefined> = this.allDeviceSettingsSubject.asObservable();
+  private allDeviceRangeSettingsSubject = new BehaviorSubject<Record<number, DeviceRange> | undefined>(undefined);
+  allDeviceRangeSettings: Observable<Record<number, DeviceRange> | undefined> = this.allDeviceRangeSettingsSubject.asObservable();
 
+
+  private allDeviceSettingsSubject = new BehaviorSubject<Record<number, DeviceSettings> | undefined>(undefined);
+  allDeviceSettings: Observable<Record<number, DeviceSettings> | undefined> = this.allDeviceSettingsSubject.asObservable();
 
   /**
    * observables for device readings
@@ -171,6 +182,20 @@ export class WebSocketConnectionService {
 
 
   ServerSendsDeviceRangeSettings(dto: DeviceRangeDto) {
+    this.allDeviceRangeSettings.pipe(take(1)).subscribe(allDevicesRecord => {
+      if (!allDevicesRecord) {
+        allDevicesRecord = {};
+      }
+
+      // Add or update the device range settings in the record
+      allDevicesRecord[dto.DeviceSettings.DeviceId] = dto.DeviceSettings;
+
+      // Update allDeviceSettingsSubject with the updated record
+      this.allDeviceRangeSettingsSubject.next(allDevicesRecord);
+    });
+  }
+
+  ServerSendsDeviceSettings(dto: DeviceSettingDto) {
     this.allDeviceSettings.pipe(take(1)).subscribe(allDevicesRecord => {
       if (!allDevicesRecord) {
         allDevicesRecord = {};
@@ -455,5 +480,4 @@ export class WebSocketConnectionService {
       this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
     });
   }
-
 }

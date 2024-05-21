@@ -25,7 +25,7 @@ public class ClientWantsToEditDeviceSettingsFromId : BaseEventHandler<ClientWant
     public override Task Handle(ClientWantsToEditDeviceSettingsDto dto, IWebSocketConnection socket)
     {
         var users = StateService.GetUsersForDevice(dto.DeviceSettings.DeviceId);
-        if (users.Any()) //check if the users has access to device
+        if (!users.Any()) //check if the users has access to device
         {
             throw new AuthenticationException("You do not have access to edit this device");
         }

@@ -1,47 +1,54 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
-import {DeviceService} from "../../devices/device.service";
-import {Subject, takeUntil} from "rxjs";
-import {WebSocketConnectionService} from "../../../web-socket-connection.service";
-import {DeviceRange} from "../../../../models/Entities";
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { DeviceService } from "../../devices/device.service";
+import { WebSocketConnectionService } from "../../../web-socket-connection.service";
+import { DeviceRange, DeviceSettings } from "../../../../models/Entities";
 
 @Component({
   selector: 'app-device-settings',
   templateUrl: './device-settings.component.html',
   styleUrls: ['./device-settings.component.scss'],
 })
-export class DeviceSettingsComponent  implements OnInit {
+export class DeviceSettingsComponent implements OnInit, OnDestroy {
   @Input() deviceId!: number;
   private unsubscribe$ = new Subject<void>();
-  public deviceRange!: DeviceRange
+  public deviceRange!: DeviceRange;
+  public advancedSettings!: DeviceSettings;
 
-  // Bind værdier til lokale variabler
+  settingsForm: FormGroup = this.fb.group({
+    TemperatureInterval: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+    ParticleInterval: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+    DeviceInterval: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
+  });
+
   temperatureRange = { lower: 0, upper: 40 };
   humidityRange = { lower: 0, upper: 100 };
   particle25Max = 0;
   particle100Max = 0;
 
-  constructor(public deviceService: DeviceService,  private ws: WebSocketConnectionService) { }
+  constructor(
+    public deviceService: DeviceService,
+    private ws: WebSocketConnectionService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
+
   ngOnInit() {
     this.deviceService.getDeviceSettingsForDevice(this.deviceId);
     this.subscribeToDevice();
   }
 
-  deleteDevice() {
-
-  }
-
   subscribeToDevice() {
-    this.ws.allDeviceSettings
+    this.ws.allDeviceRangeSettings
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(allDevices => {
         if (allDevices && allDevices[this.deviceId]) {
-          // Update deviceRange and print new settings
           this.deviceRange = allDevices[this.deviceId];
           this.temperatureRange = { lower: this.deviceRange.TemperatureMin, upper: this.deviceRange.TemperatureMax };
           this.humidityRange = { lower: this.deviceRange.HumidityMin, upper: this.deviceRange.HumidityMax };
@@ -49,9 +56,26 @@ export class DeviceSettingsComponent  implements OnInit {
           this.particle100Max = this.deviceRange.Particle100Max;
         }
       });
+
+    this.ws.allDeviceSettings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(allDevices => {
+        if (allDevices && allDevices[this.deviceId]) {
+          this.advancedSettings = allDevices[this.deviceId];
+          this.populateSettingsForm(this.advancedSettings);
+        }
+      });
   }
 
-  createDeviceReading(): DeviceRange {
+  populateSettingsForm(settings: DeviceSettings) {
+    this.settingsForm.patchValue({
+      TemperatureInterval: settings.BMP280ReadingInterval || '',
+      ParticleInterval: settings.PMSReadingInterval || '',
+      DeviceInterval: settings.UpdateInterval || '',
+    });
+  }
+
+  createDeviceRangeReading(): DeviceRange {
     return {
       DeviceId: this.deviceId,
       TemperatureMin: this.temperatureRange.lower,
@@ -64,8 +88,26 @@ export class DeviceSettingsComponent  implements OnInit {
   }
 
   EditDeviceRange() {
-    this.deviceService.editDeviceRange(this.createDeviceReading())
+    this.deviceService.editDeviceRange(this.createDeviceRangeReading());
   }
-}
 
-//todo method for edit device range settings (should be triggered when one of the device range values is changed)
+  onSubmit() {
+    if (this.settingsForm.valid) {
+      const updatedSettings: DeviceSettings = {
+        DeviceId: this.deviceId,
+        BMP280ReadingInterval: this.settingsForm.value.TemperatureInterval,
+        PMSReadingInterval: this.settingsForm.value.ParticleInterval,
+        UpdateInterval: this.settingsForm.value.DeviceInterval
+      };
+      this.deviceService.updateDeviceSettings(updatedSettings);
+    }
+  }
+
+
+
+  deleteDevice() {
+
+  }
+
+
+}

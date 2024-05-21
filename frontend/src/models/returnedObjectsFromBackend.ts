@@ -1,7 +1,4 @@
 
-//Returned data types from backend
-import {DeviceRange, DeviceSettingsDto} from "./Entities";
-
 export class ServerAuthenticatesUserDto {
   Jwt!: string;
 }

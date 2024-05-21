@@ -37,8 +37,14 @@ public class ClientWantsToGetAllDeviceSettingsFromId : BaseEventHandler<ClientWa
         {
             DeviceSettings = rangeSettings
         });
+
+        var deviceSettings = _deviceSettingsService.GetDeviceSettingsFromId(dto.Id);
         
-        
+        socket.SendDto(new ServerSendsDeviceSettings
+        {
+            DeviceSettings = deviceSettings
+        });
+
         return Task.CompletedTask;
     }
 }
