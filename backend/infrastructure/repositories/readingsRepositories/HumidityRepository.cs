@@ -87,6 +87,5 @@ public class HumidityRepository
             throw new SqlTypeException("Failed to retrieve humidity readings from device " + deviceId, e);
         }
     }
-
 }
 

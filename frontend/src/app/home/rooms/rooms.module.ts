@@ -14,18 +14,20 @@ import {EditRoomComponent} from "./edit-room/edit-room.component";
 import {RoomCardComponent} from "./room-card/room-card.component";
 import {RoomGraphComponent} from "../graphs/room-graph/room-graph.component";
 import {NgApexchartsModule} from "ng-apexcharts";
+import {DevicesModule} from "../devices/devices.module";
 
 
 @NgModule({
     declarations: [RoomsComponent, RoomComponent, AllRoomsComponent, DeviceCardComponent, CreateRoomComponent, EditRoomComponent, RoomCardComponent, RoomGraphComponent],
-  imports: [
-    CommonModule,
-    IonicModule,
-    RoomsRoutingModule,
-    HomePageModule,
-    ReactiveFormsModule,
-    NgApexchartsModule
-  ],
+    imports: [
+        CommonModule,
+        IonicModule,
+        RoomsRoutingModule,
+        HomePageModule,
+        ReactiveFormsModule,
+        NgApexchartsModule,
+        DevicesModule
+    ],
   exports: [RoomCardComponent]
 })
 export class RoomsModule {

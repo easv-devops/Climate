@@ -25,12 +25,15 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
     private readonly RoomService _roomService;
     private readonly DeviceService _deviceService;
     private readonly DeviceReadingsService _deviceReadingsService;
+    private readonly DeviceSettingsService _deviceSettingsService;
     
-    public ClientWantsToDeleteRoom(RoomService roomService, DeviceService deviceService, DeviceReadingsService deviceReadingsService)
+    public ClientWantsToDeleteRoom(RoomService roomService, DeviceService deviceService, DeviceReadingsService deviceReadingsService,
+        DeviceSettingsService deviceSettingsService)
     {
         _roomService = roomService;
         _deviceService = deviceService;
         _deviceReadingsService = deviceReadingsService;
+        _deviceSettingsService = deviceSettingsService;
     }
 
     public override Task Handle(ClientWantsToDeleteRoomDto dto, IWebSocketConnection socket)
@@ -40,6 +43,8 @@ public class ClientWantsToDeleteRoom: BaseEventHandler<ClientWantsToDeleteRoomDt
 
         foreach (var deviceId in deviceIds)
         {
+            _deviceSettingsService.DeleteSettings(deviceId);
+            _deviceSettingsService.DeleteRangeSettings(deviceId);
             _deviceReadingsService.DeleteAllReadings(deviceId);
             if (!_deviceService.DeleteDevice(deviceId))
             {
