@@ -168,7 +168,6 @@ export class WebSocketConnectionService {
   ServerSendsDevice(dto: DeviceWithIdDto) {
     this.allDevices.pipe(take(1)).subscribe(allDevicesRecord => {
       if (allDevicesRecord !== undefined) {
-
         if (!allDevicesRecord.hasOwnProperty(dto.Id)) {
           this.deviceIdSubject.next(dto.Id);//if it is a new device the device id is set so create can find it
         }

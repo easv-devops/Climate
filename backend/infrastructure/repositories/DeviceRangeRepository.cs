@@ -13,8 +13,7 @@ public class DeviceRangeRepository
     {
         _connectionString = connectionString;
     }
-    
-    
+     
     public RangeDto CreateRangeSettings(RangeDto settings)
     {
         using (var connection = new MySqlConnection(_connectionString))
@@ -25,7 +24,7 @@ public class DeviceRangeRepository
 
                 var sql = @"
                     INSERT INTO RangeSettings (DeviceId, TemperatureMin, TemperatureMax, HumidityMin, HumidityMax, Particle25Max, Particle100Max)
-                    VALUES (@DeviceId, @TemperatureMin, @TemperatureMax, @HumidityMin, @HumidityMax, @Particle25, @Particle100)";
+                    VALUES (@DeviceId, @TemperatureMin, @TemperatureMax, @HumidityMin, @HumidityMax, @Particle25Max, @Particle100Max)";
 
                 var affectedRows = connection.Execute(sql, new
                 {
@@ -137,7 +136,6 @@ public class DeviceRangeRepository
               {
                   throw new Exception("Device settings not found.");
               }
-
               return settings;
           }
           catch (Exception ex)
