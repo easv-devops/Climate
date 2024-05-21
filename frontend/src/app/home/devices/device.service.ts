@@ -9,7 +9,11 @@ import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWant
 import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
 import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
 import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
-
+import {ClientWantsGetDeviceSettingsDto} from "../../../models/ClientWantsToGetDeviceSettingsDto";
+import {DeviceRange} from "../../../models/Entities";
+import {
+  ClientWantsToEditDeviceRangeDto
+} from "../../../models/ClientWantsToEditDeviceRange";
 
 @Injectable({providedIn: 'root'})
 export class DeviceService {
@@ -68,5 +72,20 @@ export class DeviceService {
       EndTime: end
     });
     this.ws.socketConnection.sendDto(dto)
+  }
+
+  //gets all device settings for a given device
+  getDeviceSettingsForDevice(deviceId: number){
+    var dto = new ClientWantsGetDeviceSettingsDto({
+      Id: deviceId
+    })
+    this.ws.socketConnection.sendDto(dto);
+  }
+
+  editDeviceRange(deviceRange: DeviceRange){
+    var dto = new ClientWantsToEditDeviceRangeDto({
+      DeviceSettings: deviceRange
+    })
+    this.ws.socketConnection.sendDto(dto);
   }
 }

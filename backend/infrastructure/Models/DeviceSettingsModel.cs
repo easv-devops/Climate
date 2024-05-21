@@ -11,8 +11,8 @@ public class DeviceRangeDto{
     public required int TemperatureMin { get; set; } 
     public required int HumidityMax { get; set; } 
     public required int HumidityMin { get; set; } 
-    public required int Particle25 { get; set; } 
-    public required int Particle100 { get; set; }
+    public required int Particle25Max { get; set; } 
+    public required int Particle100Max { get; set; }
 }
 
 public class DeviceSettingsDto

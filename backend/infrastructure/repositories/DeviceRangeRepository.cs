@@ -34,8 +34,8 @@ public class DeviceRangeRepository
                     deviceSettings.TemperatureMax,
                     deviceSettings.HumidityMin,
                     deviceSettings.HumidityMax,
-                    deviceSettings.Particle25,
-                    deviceSettings.Particle100
+                    deviceSettings.Particle25Max,
+                    deviceSettings.Particle100Max
                 });
 
                 if (affectedRows > 0)
@@ -91,8 +91,8 @@ public class DeviceRangeRepository
                         TemperatureMax = @TemperatureMax,
                         HumidityMin = @HumidityMin,
                         HumidityMax = @HumidityMax,
-                        Particle25Max = @Particle25,
-                        Particle100Max = @Particle100
+                        Particle25Max = @Particle25Max,
+                        Particle100Max = @Particle100Max
                     WHERE DeviceId = @DeviceId";
 
                 var affectedRows = connection.Execute(sql, new
@@ -102,18 +102,17 @@ public class DeviceRangeRepository
                     deviceSettings.TemperatureMax,
                     deviceSettings.HumidityMin,
                     deviceSettings.HumidityMax,
-                    deviceSettings.Particle25,
-                    deviceSettings.Particle100
+                    deviceSettings.Particle25Max,
+                    deviceSettings.Particle100Max
                 });
 
                 if (affectedRows > 0)
                 {
                     return deviceSettings;
                 }
-                else
-                {
-                    throw new Exception("No rows were updated.");
-                }
+            
+                throw new Exception("No rows were updated.");
+                
             }
             catch (Exception ex)
             {

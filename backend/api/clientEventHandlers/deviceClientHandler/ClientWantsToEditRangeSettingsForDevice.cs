@@ -1,5 +1,6 @@
 ﻿using System.Security.Authentication;
 using api.helpers;
+using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
@@ -26,7 +27,7 @@ public class ClientWantsToEditRangeSettingsForDevice: BaseEventHandler<ClientWan
     public override Task Handle(ClientWantsToEditDeviceRangeDto dto, IWebSocketConnection socket)
     {
         var users = StateService.GetUsersForDevice(dto.DeviceSettings.DeviceId);
-        if (users.Any()) //check if the users has access to device
+        if (!users.Any()) //check if the users has access to device
         {
             throw new AuthenticationException("You do not have access to edit this device");
         }
@@ -43,8 +44,3 @@ public class ClientWantsToEditRangeSettingsForDevice: BaseEventHandler<ClientWan
     }
 }
 
-
-public class ServerSendsDeviceRangeSettings: BaseDto
-{
-    public DeviceRangeDto DeviceSettings { get; set; }
-}

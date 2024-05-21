@@ -1,7 +1,29 @@
+import {BaseDto} from "./baseDto";
+
 export class Device {
   Id!: number;
   RoomId!: number;
   DeviceName!: string;
+}
+
+export class DeviceRangeDto  extends BaseDto<DeviceRangeDto>{
+  DeviceSettings!: DeviceRange;
+}
+export class DeviceRange{
+  DeviceId!: number;
+  TemperatureMax!: number;
+  TemperatureMin!: number;
+  HumidityMax!: number;
+  HumidityMin!: number;
+  Particle25Max!: number;
+  Particle100Max!: number;
+}
+
+export class DeviceSettingsDto {
+  deviceId!: number;
+  bmp280ReadingInterval!: number;
+  pmsReadingInterval!: number;
+  updateInterval!: number;
 }
 
 export class DeviceInRoom {

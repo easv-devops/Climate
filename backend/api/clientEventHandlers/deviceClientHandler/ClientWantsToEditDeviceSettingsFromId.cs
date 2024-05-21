@@ -33,16 +33,16 @@ public class ClientWantsToEditDeviceSettingsFromId : BaseEventHandler<ClientWant
         var newSettings = _deviceSettingsService.EditSettings(dto.DeviceSettings);
 
         //return the is deleted bool
-        socket.SendDto(new ServerSendsDeviceRangeSettings
+        socket.SendDto(new ServerSendsDeviceSettings
         {
             DeviceSettings = newSettings
         });
         
         return Task.CompletedTask;
     }
-    
-    public class ServerSendsDeviceRangeSettings: BaseDto
-    {
-        public DeviceSettingsDto DeviceSettings { get; set; }
-    }
+}
+
+public class ServerSendsDeviceSettings: BaseDto
+{
+    public DeviceSettingsDto DeviceSettings { get; set; }
 }

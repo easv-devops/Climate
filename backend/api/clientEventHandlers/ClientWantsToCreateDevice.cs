@@ -54,8 +54,8 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
                     TemperatureMin = 15,
                     HumidityMax = 30,
                     HumidityMin = 60,
-                    Particle25 = 15,
-                    Particle100 = 15
+                    Particle25Max = 15,
+                    Particle100Max = 15
                 });
             }
             else
