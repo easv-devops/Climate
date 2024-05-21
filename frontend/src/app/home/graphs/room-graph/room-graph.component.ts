@@ -8,7 +8,8 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-room-graph',
-  templateUrl: '../graph/graph.component.html'
+  templateUrl: '../graph/graph.component.html',
+  styleUrls: ['../graph/graph.component.scss']
 })
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
