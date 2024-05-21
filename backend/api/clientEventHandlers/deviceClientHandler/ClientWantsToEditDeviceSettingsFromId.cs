@@ -1,4 +1,5 @@
 ﻿using System.Security.Authentication;
+using api.ClientEventFilters;
 using api.helpers;
 using api.WebSocket;
 using Fleck;
@@ -13,6 +14,8 @@ public class ClientWantsToEditDeviceSettingsDto : BaseDto
     public SettingsDto Settings { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToEditDeviceSettingsFromId : BaseEventHandler<ClientWantsToEditDeviceSettingsDto>
 {
     private readonly DeviceSettingsService _deviceSettingsService;

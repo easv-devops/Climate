@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using api.ClientEventFilters;
 using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
@@ -15,6 +16,8 @@ public class ClientWantsGetDeviceSettingsDto : BaseDto
     public int Id { get; set; }
 }
 
+[RequireAuthentication]
+[ValidateDataAnnotations]
 public class ClientWantsToGetAllDeviceSettingsFromId : BaseEventHandler<ClientWantsGetDeviceSettingsDto>
 {
     private readonly DeviceSettingsService _deviceSettingsService;
