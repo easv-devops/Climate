@@ -64,7 +64,6 @@ export class RegisterComponent implements OnInit {
   private subscribeToCountryCodes() {
     this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
       countryCodeList => {
-        console.log(countryCodeList)
         if (countryCodeList) {
           this.allCountryCodes = countryCodeList!
         }

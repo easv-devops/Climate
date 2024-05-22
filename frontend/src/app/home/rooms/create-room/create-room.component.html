@@ -9,7 +9,8 @@
         <form (ngSubmit)="createRoom()" [formGroup]="form"> <!-- Ændret submit-funktionen til createRoom() -->
           <ion-list>
             <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-              <ion-input formControlName="roomName" label="Room Name *" label-placement="stacked" style="align-content: flex-start"> <!-- Ændret formControlName og label til "Room Name" -->
+              <ion-input formControlName="roomName" label="Room Name *" label-placement="stacked"
+                         style="align-content: flex-start"> <!-- Ændret formControlName og label til "Room Name" -->
               </ion-input>
 
               <ion-button id="name-popover" fill="clear" style="align-content: flex-end;">
@@ -27,7 +28,8 @@
             </div>
           </ion-list>
           <div class="ion-text-center ion-padding">
-            <ion-button (click)="createRoom()" size="large" [disabled]="form.controls.roomName.invalid"> <!-- Ændret click-event til createRoom() og disabled-check til form.controls.roomName -->
+            <ion-button (click)="createRoom()" size="large" [disabled]="form.controls.roomName.invalid">
+              <!-- Ændret click-event til createRoom() og disabled-check til form.controls.roomName -->
               Create
             </ion-button>
           </div>

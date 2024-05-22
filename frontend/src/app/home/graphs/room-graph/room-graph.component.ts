@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
-import {DeviceService} from "../../devices/device.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
@@ -165,7 +164,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     let firstTimestamp;
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
-    }else {
+    } else {
       firstTimestamp = new Date().getTime()
     }
     if (startTime.getTime() < firstTimestamp!) {

@@ -1,5 +1,5 @@
-import { Directive } from '@angular/core';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import {Directive} from '@angular/core';
+import {Observable, Subject, takeUntil} from 'rxjs';
 import {SensorDto} from "../../../models/Entities";
 
 @Directive()
@@ -19,7 +19,7 @@ export class BaseGraphComponent {
 
   initChart(): void {
     this.chartOptions = {
-      series: [{ data: [] }],
+      series: [{data: []}],
       chart: {
         type: "area",
         height: 300
@@ -74,7 +74,7 @@ export class BaseGraphComponent {
             if (series) {
               series.data = newSeries;
             } else {
-              this.chartOptions.series.push({ name: seriesName, data: newSeries });
+              this.chartOptions.series.push({name: seriesName, data: newSeries});
             }
           }
         }

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { WebSocketConnectionService } from '../../../web-socket-connection.service';
-import { DeviceService } from '../../devices/device.service';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {WebSocketConnectionService} from '../../../web-socket-connection.service';
+import {DeviceService} from '../../devices/device.service';
 import {BaseGraphComponent} from "../graphSuper.component";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
@@ -164,28 +164,28 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     let firstTimestamp;
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
-    }else {
+    } else {
       firstTimestamp = new Date().getTime()
     }
-      if (startTime.getTime() < firstTimestamp!) {
-        switch (seriesName) {
-          case 'Temperature':
-            this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'Humidity':
-            this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'PM 2.5':
-            this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          case 'PM 10':
-            this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
-            break;
-          default:
-            console.error('Invalid series name:', seriesName);
-            break;
-        }
+    if (startTime.getTime() < firstTimestamp!) {
+      switch (seriesName) {
+        case 'Temperature':
+          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'Humidity':
+          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'PM 2.5':
+          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        case 'PM 10':
+          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, new Date(firstTimestamp));
+          break;
+        default:
+          console.error('Invalid series name:', seriesName);
+          break;
       }
+    }
   }
 }
 

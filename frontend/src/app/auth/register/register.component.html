@@ -12,7 +12,8 @@
             <ion-list>
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-input style="align-content: flex-start" formControlName="firstName" label="First Name *" label-placement="stacked"></ion-input>
+                <ion-input style="align-content: flex-start" formControlName="firstName" label="First Name *"
+                           label-placement="stacked"></ion-input>
 
                 <ion-button id="firstname-popover" fill="clear" style="align-content: flex-end;">
                   <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
@@ -27,7 +28,8 @@
               </ion-item>
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-input style="align-content: flex-start" formControlName="lastName" label="Last Name *" label-placement="stacked"></ion-input>
+                <ion-input style="align-content: flex-start" formControlName="lastName" label="Last Name *"
+                           label-placement="stacked"></ion-input>
                 <ion-button id="lastname-popover" fill="clear" style="align-content: flex-end;">
                   <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
                 </ion-button>
@@ -50,7 +52,8 @@
               </div>
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-input style="align-content: flex-start" formControlName="email" label="E-mail *" label-placement="stacked">
+                <ion-input style="align-content: flex-start" formControlName="email" label="E-mail *"
+                           label-placement="stacked">
                 </ion-input>
                 <ion-button id="email-popover" fill="clear" style="align-content: flex-end;">
                   <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
@@ -67,7 +70,8 @@
               </div>
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-input style="align-content: flex-start" formControlName="phone" label="Phone *" label-placement="stacked">
+                <ion-input style="align-content: flex-start" formControlName="phone" label="Phone *"
+                           label-placement="stacked">
                 </ion-input>
 
                 <ion-button id="number-popover" fill="clear" style="align-content: flex-end;">
@@ -75,7 +79,8 @@
                 </ion-button>
                 <ion-popover trigger="number-popover" triggerAction="click">
                   <ng-template>
-                    <ion-content class="ion-padding">Enter a valid phone number. Only allows digits, parenthesis, dashes and spaces
+                    <ion-content class="ion-padding">Enter a valid phone number. Only allows digits, parenthesis, dashes
+                      and spaces
                     </ion-content>
                   </ng-template>
                 </ion-popover>
@@ -91,7 +96,8 @@
               </div>
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-select style="align-content: flex-start" formControlName="countryCode" label="Country Code *" label-placement="stacked">
+                <ion-select style="align-content: flex-start" formControlName="countryCode" label="Country Code *"
+                            label-placement="stacked">
                   <ion-select-option
                     *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
                     {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
@@ -111,7 +117,8 @@
 
 
               <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-                <ion-input style="align-content: flex-start" type="password" formControlName="password" label="Password *" label-placement="stacked">
+                <ion-input style="align-content: flex-start" type="password" formControlName="password"
+                           label="Password *" label-placement="stacked">
                 </ion-input>
 
                 <ion-button id="pw-popover" fill="clear" style="align-content: flex-end;">

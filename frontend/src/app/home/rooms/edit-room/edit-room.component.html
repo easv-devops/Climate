@@ -9,7 +9,8 @@
         <form (ngSubmit)="editRoom()" [formGroup]="form"> <!-- Ændret submit-funktionen til editRoom() -->
           <ion-list>
             <ion-item *ngIf="room !== undefined" style="display:flex; justify-content: space-between; flex-wrap: wrap;">
-              <ion-input formControlName="roomName" label="Room Name *" label-placement="stacked" [value]="room.RoomName"
+              <ion-input formControlName="roomName" label="Room Name *" label-placement="stacked"
+                         [value]="room.RoomName"
                          style="align-content: flex-start"> <!-- Ændret formControlName og label til "Room Name" -->
               </ion-input>
               <ion-button id="name-popover" fill="clear" style="align-content: flex-end;">
@@ -27,7 +28,8 @@
             </div>
           </ion-list>
           <div class="ion-text-center ion-padding">
-            <ion-button (click)="editRoom()" size="large" [disabled]="form.controls.roomName.invalid"> <!-- Ændret click-event til editRoom() og disabled-check til form.controls.roomName -->
+            <ion-button (click)="editRoom()" size="large" [disabled]="form.controls.roomName.invalid">
+              <!-- Ændret click-event til editRoom() og disabled-check til form.controls.roomName -->
               Save Changes <!-- Ændret teksten på knappen til "Save Changes" -->
             </ion-button>
           </div>
