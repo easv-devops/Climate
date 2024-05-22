@@ -9,7 +9,7 @@ public class CreateAlertDto
     public required int DeviceId { get; set; }
     
     [Required(ErrorMessage = "Timestamp is required.")]
-    public required DateTime Timestamp { get; set; }
+    public required string Timestamp { get; set; }
     
     [Required(ErrorMessage = "Description is required.")]
     [MaxLength(200, ErrorMessage = "Description is too long (max 200 characters)")]

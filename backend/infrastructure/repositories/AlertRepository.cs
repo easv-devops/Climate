@@ -16,6 +16,12 @@ public class AlertRepository
 
     public AlertDto CreateAlert(CreateAlertDto dto)
     {
+        // Convert the datetime string to a DateTime object
+        DateTime dateTime = DateTime.Parse(dto.Timestamp);
+
+        // Convert the DateTime object to MySQL-compatible format
+        string mysqlDateTime = dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+        
         using var connection = new MySqlConnection(_connectionString);
         try
         {
@@ -28,7 +34,7 @@ public class AlertRepository
 
             var alertId = connection.ExecuteScalar<int>(sql, new
             {
-                dto.DeviceId, dto.Timestamp, dto.Description, dto.IsRead
+                dto.DeviceId, Timestamp = mysqlDateTime, dto.Description, dto.IsRead
             });
 
             return GetAlertById(alertId);
@@ -141,23 +147,23 @@ public class AlertRepository
     
     public bool DeleteAlerts(int deviceId)
     {
-        using (var connection = new MySqlConnection(_connectionString))
+        using var connection = new MySqlConnection(_connectionString);
+        try
         {
-            try
-            {
-                connection.Open();
+            connection.Open();
 
-                var affectedRows = connection.Execute(
-                    "DELETE FROM Alert WHERE DeviceId = @DeviceId",
-                    new { DeviceId = deviceId }
-                );
+            var sql = @"
+                DELETE FROM Alert 
+                WHERE DeviceId = @DeviceId;
+                ";
+            
+            connection.Execute(sql,new { DeviceId = deviceId });
 
-                return affectedRows > 0;
-            }
-            catch (Exception ex)
-            {
-                throw new SqlTypeException("An error occurred while deleting alerts from device #" + deviceId, ex);
-            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw new SqlTypeException("An error occurred while deleting alerts from device #" + deviceId, ex);
         }
     }
 }

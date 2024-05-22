@@ -13,10 +13,12 @@ namespace api.mqttEventListeners;
 public class MqttClientSubscriber
 {
     private DeviceReadingsService _readingsService;
+    private readonly AlertService _alertService;
     
-    public MqttClientSubscriber(DeviceReadingsService readingsService)
+    public MqttClientSubscriber(DeviceReadingsService readingsService, AlertService alertService)
     {
         _readingsService = readingsService;
+        _alertService = alertService;
     }
     
     public async Task CommunicateWithBroker()
@@ -48,6 +50,8 @@ public class MqttClientSubscriber
                 var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
 
                 _readingsService.CreateReadings(messageObject);
+                
+                var alerts = _alertService.ScreenReadings(messageObject);
                 
                 //todo check for current listeners in state service and call relevant server to client handlers
                 var pongMessage = new MqttApplicationMessageBuilder()

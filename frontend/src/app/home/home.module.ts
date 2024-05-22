@@ -10,7 +10,6 @@ import {GraphComponent} from "./graphs/graph/graph.component";
 import {NgApexchartsModule} from "ng-apexcharts";
 import {LandingPageComponent} from "./landing-page/landing-page.component";
 import {AlertComponent} from "./alert/alert.component";
-import {AgGridAngular} from "ag-grid-angular";
 
 
 @NgModule({
@@ -20,7 +19,6 @@ import {AgGridAngular} from "ag-grid-angular";
     IonicModule,
     HomePageRoutingModule,
     NgApexchartsModule,
-    AgGridAngular
   ],
   exports: [
     GraphComponent,
