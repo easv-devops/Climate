@@ -9,6 +9,8 @@ import {TopbarComponent} from "./topbar/topbar.component";
 import {GraphComponent} from "./graphs/graph/graph.component";
 import {NgApexchartsModule} from "ng-apexcharts";
 import {LandingPageComponent} from "./landing-page/landing-page.component";
+import {AlertComponent} from "./alert/alert.component";
+import {AgGridAngular} from "ag-grid-angular";
 
 
 @NgModule({
@@ -17,13 +19,14 @@ import {LandingPageComponent} from "./landing-page/landing-page.component";
     FormsModule,
     IonicModule,
     HomePageRoutingModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    AgGridAngular
   ],
   exports: [
     GraphComponent,
     TopbarComponent,
   ],
-  declarations: [HomePage, TopbarComponent, GraphComponent, LandingPageComponent]
+  declarations: [HomePage, TopbarComponent, GraphComponent, LandingPageComponent, AlertComponent]
 })
 export class HomePageModule {
 }

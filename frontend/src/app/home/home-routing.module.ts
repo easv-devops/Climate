@@ -5,6 +5,7 @@ import {HomePage} from './home.page';
 
 import {LandingPageComponent} from "./landing-page/landing-page.component";
 import {AllRoomsComponent} from "./rooms/all-rooms/all-rooms.component";
+import {AlertComponent} from "./alert/alert.component";
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: 'landing', //Path for landing zone
         component: LandingPageComponent
+      },
+      {
+        path: 'alert', //Path for alert
+        component: AlertComponent
       },
       {
         path: 'rooms', //Path for rooms module, which loads own children (rooms-routing.module)

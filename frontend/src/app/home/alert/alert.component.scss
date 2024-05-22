@@ -1,0 +1,35 @@
+/* alert.component.scss */
+
+/* Stil for overskrifter i tabellen */
+.header-row ion-col {
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  color: black; /* Sort skriftfarve */
+}
+
+.header-row ion-col:not(:first-child) {
+  border-left: 1px solid #ccc;
+  padding-left: 10px; /* Juster padding efter behov */
+}
+
+/* Stil for rækker i tabellen */
+.data-row ion-col {
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #ccc;
+  color: black; /* Sort skriftfarve */
+}
+
+/* Tilføj en hover-effekt til rækkerne for at indikere at de kan interageres med */
+.data-row:hover {
+  background-color: #f0f0f0;
+}
+
+/* Tilpas ion-content for at begrænse højden */
+.content {
+  padding: 10px; /* Tilføj polstring efter behov */
+}
