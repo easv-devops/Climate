@@ -1,5 +1,10 @@
 /* alert.component.scss */
 
+.table-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px; /* Tilføj passende mængde padding omkring tabellen */
+}
 /* Stil for overskrifter i tabellen */
 .header-row ion-col {
   display: flex;
