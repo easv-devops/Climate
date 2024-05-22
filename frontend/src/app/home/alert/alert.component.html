@@ -10,40 +10,50 @@
   <ion-grid>
     <ion-row class="header-row">
       <!-- Kolonneoverskrifter med visuel opdeling -->
-      <ion-col size="2" (click)="sortBy('timestamp')">
-        <span>Timestamp</span>
-        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['timestamp'] === 'asc'"></ion-icon>
-        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['timestamp'] === 'desc'"></ion-icon>
-      </ion-col>
-      <ion-col size="1" (click)="sortBy('isRead')">
-        <span>IsRead</span>
-        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['isRead'] === 'asc'"></ion-icon>
-        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['isRead'] === 'desc'"></ion-icon>
-      </ion-col>
-      <ion-col size="4" (click)="sortBy('description')">
-        <span>Description</span>
-        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['description'] === 'asc'"></ion-icon>
-        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['description'] === 'desc'"></ion-icon>
-      </ion-col>
+
       <ion-col size="2" (click)="sortBy('deviceName')">
         <span>Device Name</span>
         <ion-icon name="caret-up-outline" *ngIf="sortByOrder['deviceName'] === 'asc'"></ion-icon>
         <ion-icon name="caret-down-outline" *ngIf="sortByOrder['deviceName'] === 'desc'"></ion-icon>
       </ion-col>
+
+      <ion-col size="4" (click)="sortBy('description')">
+        <span>Description</span>
+        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['description'] === 'asc'"></ion-icon>
+        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['description'] === 'desc'"></ion-icon>
+      </ion-col>
+
       <ion-col size="3" (click)="sortBy('roomName')">
         <span>Room Name</span>
         <ion-icon name="caret-up-outline" *ngIf="sortByOrder['roomName'] === 'asc'"></ion-icon>
         <ion-icon name="caret-down-outline" *ngIf="sortByOrder['roomName'] === 'desc'"></ion-icon>
       </ion-col>
+
+      <ion-col size="2" (click)="sortBy('timestamp')">
+        <span>Timestamp</span>
+        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['timestamp'] === 'asc'"></ion-icon>
+        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['timestamp'] === 'desc'"></ion-icon>
+      </ion-col>
+
+      <ion-col size="1" (click)="sortBy('isRead')">
+        <span>IsRead</span>
+        <ion-icon name="caret-up-outline" *ngIf="sortByOrder['isRead'] === 'asc'"></ion-icon>
+        <ion-icon name="caret-down-outline" *ngIf="sortByOrder['isRead'] === 'desc'"></ion-icon>
+      </ion-col>
+
     </ion-row>
 
     <!-- Tabelrækker med sorteret data -->
-    <ion-row *ngFor="let alert of sortedAlerts">
+    <ion-row class="data-row" *ngFor="let alert of sortedAlerts">
+      <ion-col size="2">{{ alert.deviceName }}</ion-col>
+      <ion-col size="4">{{ alert.description }}</ion-col>
+      <ion-col size="3">{{ alert.roomName }}</ion-col>
       <ion-col size="2">{{ alert.timestamp }}</ion-col>
       <ion-col size="1">{{ alert.isRead }}</ion-col>
-      <ion-col size="4">{{ alert.description }}</ion-col>
-      <ion-col size="2">{{ alert.deviceName }}</ion-col>
-      <ion-col size="3">{{ alert.roomName }}</ion-col>
+
+
+
     </ion-row>
+
   </ion-grid>
 </ion-content>
