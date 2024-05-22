@@ -50,6 +50,7 @@ public static class Startup
         builder.Services.AddSingleton(provider => new RoomsRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new DeviceSettingsRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new DeviceRangeRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new AlertRepository(provider.GetRequiredService<string>()));
 
         builder.Services.AddSingleton<DeviceSettingsService>();
         builder.Services.AddSingleton<AuthService>();
@@ -60,6 +61,7 @@ public static class Startup
         builder.Services.AddSingleton<RoomService>();
         builder.Services.AddSingleton<UserService>();
         builder.Services.AddSingleton<RoomReadingsService>();
+        builder.Services.AddSingleton<AlertService>();
 
         builder.Services.AddSingleton(provider => new HumidityRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new TemperatureRepository(provider.GetRequiredService<string>()));
@@ -71,6 +73,7 @@ public static class Startup
         builder.Services.AddSingleton<ServerWantsToSendRoom>();
         builder.Services.AddSingleton<ServerWantsToSendUser>();
         builder.Services.AddSingleton<ServerWantsToInitUser>();
+        builder.Services.AddSingleton<ServerWantsToSendAlert>();
 
         // Add services to the container.
         var services = builder.FindAndInjectClientEventHandlers(Assembly.GetExecutingAssembly());

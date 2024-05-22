@@ -25,12 +25,18 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
     private readonly DeviceService _deviceService;
     private readonly DeviceReadingsService _deviceReadingsService;
     private readonly DeviceSettingsService _deviceSettingsService;
+    private readonly AlertService _alertService;
 
-    public ClientWantsToDeleteDevice(DeviceService deviceService, DeviceReadingsService deviceReadingsService, DeviceSettingsService deviceSettingsService)
+    public ClientWantsToDeleteDevice(
+        DeviceService deviceService, 
+        DeviceReadingsService deviceReadingsService, 
+        DeviceSettingsService deviceSettingsService,
+        AlertService alertService)
     {
         _deviceService = deviceService;
         _deviceReadingsService = deviceReadingsService;
         _deviceSettingsService = deviceSettingsService;
+        _alertService = alertService;
     }
     
     
@@ -48,6 +54,12 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
         if (!_deviceSettingsService.DeleteSettings(dto.Id) || !_deviceSettingsService.DeleteRangeSettings(dto.Id))
         {
             throw new SqlTypeException("Something went wrong when deleting device Settings #" + dto.Id);
+        }
+        
+        // Removes alerts linked to device
+        if (!_alertService.DeleteAlerts(dto.Id))
+        {
+            throw new SqlTypeException("Something went wrong when deleting alerts from device #" + dto.Id);
         }
         
         // Removes readings for the device and then the device itself
