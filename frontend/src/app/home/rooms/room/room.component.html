@@ -4,19 +4,18 @@
     <h1 *ngIf="room" class="climate-color room-title">{{ room.RoomName }}</h1>
 
     <ion-item class="ion-no-margin ion-no-padding" lines="none">
-      <ion-button fill="clear" color="dark" shape="round" routerLink="/rooms/{{idFromRoute}}/edit" class="icon-large">
+      <ion-button fill="clear" color="dark" shape="round"
+                  routerLink="/rooms/{{this.idFromRoute}}/edit" class="icon-large">
         <ion-icon slot="icon-only" name="create" class="climate-color"></ion-icon>
       </ion-button>
-
-      <ion-button fill="clear" color="dark" shape="round" class="ion-padding">
-        <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-button fill="clear" color="dark" shape="round" class="icon-large">
+        <ion-icon slot="icon-only" name="settings" class="climate-color"></ion-icon>
       </ion-button>
-
-      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" (click)="presentDeleteRoomAlert()">
-        <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-button fill="clear" color="dark" shape="round" (click)="presentDeleteRoomAlert()" class="icon-large">
+        <ion-icon slot="icon-only" name="trash" class="climate-color"></ion-icon>
       </ion-button>
-
     </ion-item>
+
 
   </div>
 

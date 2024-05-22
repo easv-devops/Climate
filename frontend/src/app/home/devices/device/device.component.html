@@ -7,11 +7,11 @@
       <ion-button fill="clear" shape="round" routerLink="/devices/{{this.idFromRoute}}/edit">
         <ion-icon slot="icon-only" name="create" class="climate-color icon-large"></ion-icon>
       </ion-button>
-      <ion-button fill="clear" shape="round" class="ion-padding">
-        <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-button fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="settings" class="climate-color icon-large"></ion-icon>
       </ion-button>
-      <ion-button id="present-alert" fill="clear" shape="round" class="ion-padding" (click)="presentDeleteDeviceAlert()">
-        <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
+      <ion-button fill="clear" shape="round" (click)="presentDeleteDeviceAlert()">
+        <ion-icon slot="icon-only" name="trash" class="climate-color icon-large"></ion-icon>
       </ion-button>
     </ion-item>
   </div>
