@@ -33,6 +33,7 @@ export class RoomComponent implements OnInit {
     this.subscribeToRoomDevice();//todo skal ændres til allrooms.
   }
 
+
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

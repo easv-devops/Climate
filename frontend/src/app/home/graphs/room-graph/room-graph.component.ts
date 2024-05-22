@@ -1,19 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
-import {DeviceService} from "../../devices/device.service";
 import {ActivatedRoute} from "@angular/router";
 import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
+import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-room-graph',
-  templateUrl: '../graph/graph.component.html'
+  templateUrl: '../graph/graph.component.html',
+  styleUrls: ['../graph/graph.component.scss']
 })
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
+  isMobile: boolean | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private roomService: RoomService,
-              private activatedRoute: ActivatedRoute) { super(); }
+              private activatedRoute: ActivatedRoute,
+              private breakpointObserver: BreakpointObserver) {
+    super();
+    this.breakpointObserver.observe([
+      Breakpoints.Handset, Breakpoints.Tablet
+    ]).subscribe(result => {
+      this.isMobile = result.matches;
+    });
+  }
 
   ngOnInit(): void {
     this.getDeviceFromRoute();
@@ -154,7 +164,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     let firstTimestamp;
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
-    }else {
+    } else {
       firstTimestamp = new Date().getTime()
     }
     if (startTime.getTime() < firstTimestamp!) {

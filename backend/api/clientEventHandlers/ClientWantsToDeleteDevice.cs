@@ -24,11 +24,13 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
 {
     private readonly DeviceService _deviceService;
     private readonly DeviceReadingsService _deviceReadingsService;
+    private readonly DeviceSettingsService _deviceSettingsService;
 
-    public ClientWantsToDeleteDevice(DeviceService deviceService, DeviceReadingsService deviceReadingsService)
+    public ClientWantsToDeleteDevice(DeviceService deviceService, DeviceReadingsService deviceReadingsService, DeviceSettingsService deviceSettingsService)
     {
         _deviceService = deviceService;
         _deviceReadingsService = deviceReadingsService;
+        _deviceSettingsService = deviceSettingsService;
     }
     
     
@@ -42,6 +44,12 @@ public class ClientWantsToDeleteDevice : BaseEventHandler<ClientWantsToDeleteDev
             throw new AuthenticationException("Only the owner of device #"+dto.Id+" has access to this information");
         }
 
+        //removes device settings and range settings.
+        if (!_deviceSettingsService.DeleteSettings(dto.Id) || !_deviceSettingsService.DeleteRangeSettings(dto.Id))
+        {
+            throw new SqlTypeException("Something went wrong when deleting device Settings #" + dto.Id);
+        }
+        
         // Removes readings for the device and then the device itself
         if (!_deviceReadingsService.DeleteAllReadings(dto.Id) || !_deviceService.DeleteDevice(dto.Id))
         {

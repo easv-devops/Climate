@@ -21,3 +21,27 @@ button.active {
 button:focus {
   outline: 0;
 }
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .content-container {
+    flex-direction: row;
+  }
+
+  .stats-card {
+    flex: 1
+  }
+
+  .graph-card {
+    flex: 3;
+  }
+
+  .divider {
+    width: 1px;
+    background: #e7e7e7;
+  }
+}

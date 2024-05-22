@@ -8,6 +8,7 @@ using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
+using infrastructure.repositories;
 using infrastructure.repositories.readingsRepositories;
 using lib;
 using service.services;
@@ -47,7 +48,10 @@ public static class Startup
         builder.Services.AddSingleton(provider => new UserRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new DeviceRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton(provider => new RoomsRepository(provider.GetRequiredService<string>()));
-        
+        builder.Services.AddSingleton(provider => new DeviceSettingsRepository(provider.GetRequiredService<string>()));
+        builder.Services.AddSingleton(provider => new DeviceRangeRepository(provider.GetRequiredService<string>()));
+
+        builder.Services.AddSingleton<DeviceSettingsService>();
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<TokenService>();
         builder.Services.AddSingleton<NotificationService>();

@@ -1,24 +1,28 @@
 <ion-content>
   <!-- Header section -->
   <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
-    <h1 class="climate-color" style="font-size: 48px">{{ this.device?.DeviceName }}</h1>
+    <h1 class="climate-color device-title">{{ this.device?.DeviceName }}</h1>
 
-    <div>
-      <ion-button fill="clear" shape="round" class="ion-padding" routerLink="/devices/{{this.idFromRoute}}/edit">
-        <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
+    <ion-item class="ion-no-margin ion-no-padding" lines="none">
+      <ion-button fill="clear" shape="round" routerLink="/devices/{{this.idFromRoute}}/edit">
+        <ion-icon slot="icon-only" name="create" class="climate-color icon-large"></ion-icon>
       </ion-button>
+      <ion-button fill="clear" shape="round">
+        <ion-icon slot="icon-only" name="settings" class="climate-color icon-large"></ion-icon>
 
       <ion-button fill="clear" shape="round" class="ion-padding">
         <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
       </ion-button>
+      <ion-button fill="clear" shape="round" (click)="deleteDevice()">
+        <ion-icon slot="icon-only" name="trash" class="climate-color icon-large"></ion-icon>
 
       <ion-button id="present-alert" fill="clear" shape="round" class="ion-padding" (click)="presentDeleteDeviceAlert()">
         <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
       </ion-button>
-
-
-    </div>
+    </ion-item>
 
   </div>
   <app-graph *ngIf="device"></app-graph>
+
+  <app-device-settings [deviceId]="idFromRoute!"></app-device-settings>
 </ion-content>

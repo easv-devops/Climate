@@ -14,9 +14,9 @@ import {ClientWantsToGetCountryCodeDto} from "../../../../models/ClientWantsToGe
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss'],
 })
-export class EditUserComponent  implements OnInit {
+export class EditUserComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
-  user: FullUserDto | undefined;
+  public user: FullUserDto | undefined;
   public allCountryCodes: CountryCode[] | undefined;
 
   readonly form = this.fb.group({
@@ -30,7 +30,8 @@ export class EditUserComponent  implements OnInit {
   constructor(private readonly fb: FormBuilder,
               public ws: WebSocketConnectionService,
               private readonly router: Router,
-              private userService: UserService) { }
+              private userService: UserService) {
+  }
 
   ngOnInit() {
     this.subscribeToUser();
@@ -64,7 +65,6 @@ export class EditUserComponent  implements OnInit {
   private subscribeToCountryCodes() {
     this.ws.allCountryCodes.pipe(takeUntil(this.unsubscribe$)).subscribe(
       countryCodeList => {
-        console.log(countryCodeList)
         if (countryCodeList) {
           this.allCountryCodes = countryCodeList!
         }
@@ -72,7 +72,7 @@ export class EditUserComponent  implements OnInit {
   }
 
   editUser() {
-    if(!this.form.valid) {
+    if (!this.form.valid) {
       //TODO toast error message
       return;
     }
