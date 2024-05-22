@@ -23,7 +23,7 @@ import {LandingPageComponent} from "./landing-page/landing-page.component";
     GraphComponent,
     TopbarComponent,
   ],
-  declarations: [HomePage, TopbarComponent, GraphComponent]
+  declarations: [HomePage, TopbarComponent, GraphComponent, LandingPageComponent]
 })
 export class HomePageModule {
 }
