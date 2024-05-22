@@ -17,7 +17,7 @@ export class RoomComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
 
   room!: Room
-  devices!: Device[]
+  devices: Device[] = [];
 
 
   constructor(private activatedRoute: ActivatedRoute,
@@ -41,22 +41,21 @@ export class RoomComponent implements OnInit {
   getRoomFromRoute() {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
+
   subscribeToDevice() {
     this.ws.allDevices
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe(allDevices => {
         if (allDevices !== undefined) {
-          //var device = allDevices
+          this.devices = [];
 
-          this.devices.push()
-
-          for (const deviceId of this.room.DeviceIds!) {
-            const device = allDevices[deviceId];
+          for (let deviceId of this.room.DeviceIds ?? []) {
+            let device = allDevices[deviceId];
             if (device) {
               this.devices.push(device);
             }
           }
-
+          console.log('Devices:', this.devices);
         }
       });
   }
@@ -75,10 +74,10 @@ export class RoomComponent implements OnInit {
           const selectedRoom = roomRecord[this.idFromRoute!];
           //checks if any changes in room from server and updates room and devices
           this.room = selectedRoom;
+          this.subscribeToDevice();
         }
       });
   }
-
 
 
   deleteRoom() {
@@ -87,9 +86,15 @@ export class RoomComponent implements OnInit {
   }
 
   async presentDeleteRoomAlert() {
+    let deviceNames = this.devices.map(device => device.DeviceName).join(', ');
+
+    if (!deviceNames) {
+      deviceNames = 'No devices found.';
+    }
+
     const alert = await this.alertController.create({
       header: 'You are about to delete: ' + this.room.RoomName,
-      message: 'Deleting this room will also delete all the associated devices: ' + this.room.DeviceIds,
+      message: 'Deleting this room will also delete all the associated devices: ' + deviceNames,
       buttons: [
         {
           text: 'No',
