@@ -42,23 +42,6 @@ export class RoomComponent implements OnInit {
     this.idFromRoute = +this.activatedRoute.snapshot.params['id'];
   }
 
-  subscribeToDevice() {
-    this.ws.allDevices
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(allDevices => {
-        if (allDevices !== undefined) {
-          this.devices = [];
-
-          for (let deviceId of this.room.DeviceIds ?? []) {
-            let device = allDevices[deviceId];
-            if (device) {
-              this.devices.push(device);
-            }
-          }
-          console.log('Devices:', this.devices);
-        }
-      });
-  }
 
   subscribeToRoomDevice() {
     this.ws.socketConnection.sendDto(new ClientWantsToGetDeviceIdsForRoomDto({RoomId: this.idFromRoute}));
@@ -79,6 +62,24 @@ export class RoomComponent implements OnInit {
       });
   }
 
+  subscribeToDevice() {
+    this.ws.allDevices
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(allDevices => {
+        if (allDevices !== undefined) {
+          this.devices = [];
+
+          for (const deviceId of this.room.DeviceIds ?? []) {
+            let device = allDevices[deviceId];
+
+            if (device) {
+              this.devices.push(device);
+            }
+          }
+        }
+      });
+  }
+
 
   deleteRoom() {
     this.roomService.deleteRoom(this.idFromRoute as number)
@@ -93,8 +94,8 @@ export class RoomComponent implements OnInit {
     }
 
     const alert = await this.alertController.create({
-      header: 'You are about to delete: ' + this.room.RoomName,
-      message: 'Deleting this room will also delete all the associated devices: ' + deviceNames,
+      header: 'Are you sure you want to delete ' + this.room.RoomName + '?',
+      message: 'Deleting this room will delete all associated devices and their readings: ' + deviceNames,
       buttons: [
         {
           text: 'No',

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
-import {Device, DeviceInRoom, SensorDto} from "../../../../models/Entities";
+import {Device} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
@@ -17,10 +17,6 @@ export class DeviceComponent implements OnInit {
   idFromRoute: number | undefined;
   device?: Device;
   private unsubscribe$ = new Subject<void>();
-
-
-
-
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
@@ -66,6 +62,7 @@ export class DeviceComponent implements OnInit {
     this.deviceService.deleteDevice(deviceToDelete);
 
     const roomId = this.device?.RoomId;
+
     if (roomId) {
       this.router.navigate(['/rooms', roomId]);
     } else {
@@ -76,8 +73,7 @@ export class DeviceComponent implements OnInit {
 
   async presentDeleteDeviceAlert() {
     const alert = await this.alertController.create({
-      header: 'You are about to delete: ' + this.device?.DeviceName,
-      message: 'Are you sure?',
+      header: 'Are you sure you want to delete ' + this.device?.DeviceName + '?',
       buttons: [
         {
           text: 'No',
