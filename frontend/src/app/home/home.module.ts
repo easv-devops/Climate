@@ -8,6 +8,7 @@ import {HomePageRoutingModule} from './home-routing.module';
 import {TopbarComponent} from "./topbar/topbar.component";
 import {GraphComponent} from "./graphs/graph/graph.component";
 import {NgApexchartsModule} from "ng-apexcharts";
+import {LandingPageComponent} from "./landing-page/landing-page.component";
 
 
 @NgModule({

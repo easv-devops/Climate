@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {RoomService} from "../room.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
 import {Room} from "../../../../models/Entities";
 
 @Component({
@@ -18,11 +17,13 @@ export class AllRoomsComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private roomService: RoomService,
+              private router: Router,
               private ws: WebSocketConnectionService) {
   }
 
   ngOnInit() {
     this.subscribeToAllRooms();
+    this.checkIfUserHasRooms();
   }
 
 
@@ -42,6 +43,12 @@ export class AllRoomsComponent implements OnInit {
           this.allRooms = Object.values(roomRecord);
         }
       });
+  }
+
+  checkIfUserHasRooms() {
+    if (!this.allRooms || this.allRooms.length === 0) {
+      this.router.navigate(['/landing']);
+    }
   }
 
 }

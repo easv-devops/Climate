@@ -102,7 +102,7 @@ export class RegisterComponent implements OnInit {
   register() {
     let user = new ClientWantsToRegisterDto({
       Email: this.email.value!,
-      CountryCode: this.countryCode.value!, //todo get it from the form control when country code is added
+      CountryCode: this.countryCode.value!,
       Phone: this.phone.value!,
       FirstName: this.firstName.value!,
       LastName: this.lastName.value!,
