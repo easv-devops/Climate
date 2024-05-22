@@ -9,13 +9,13 @@
 
     <ion-content>
       <ion-list>
-        <ion-accordion-group>
+        <ion-accordion-group [multiple]="true">
           <ion-accordion *ngFor="let menuItem of menuItems">
             <ion-item slot="header">
               <ion-icon class="climate-color" slot="start" [name]="menuItem.icon"></ion-icon>
               <ion-label class="climate-color">{{ menuItem.label }}</ion-label>
             </ion-item>
-            <ion-list slot="content">
+            <ion-list slot="content" style="height: 210px; overflow-y: auto">
               <ion-menu-toggle>
                 <ion-item *ngFor="let subItem of menuItem.subItems" [routerLink]="subItem.routerLink">
                   <ion-icon class="climate-color" slot="start" [name]="subItem.icon"></ion-icon>
@@ -50,7 +50,7 @@
 
       <ion-content>
         <ion-list>
-          <ion-accordion-group>
+          <ion-accordion-group [multiple]="true">
             <ion-accordion *ngFor="let menuItem of menuItems">
               <ion-item slot="header">
                 <ion-icon class="climate-color" slot="start" [name]="menuItem.icon"></ion-icon>

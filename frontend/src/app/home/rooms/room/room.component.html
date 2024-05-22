@@ -1,39 +1,35 @@
-
-
-
 <ion-card>
   <!-- Header section -->
   <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
-    <h1 *ngIf="room" class="climate-color" style="font-size: 48px">{{this.room.RoomName}}</h1>
+    <h1 *ngIf="room" class="climate-color room-title">{{ this.room.RoomName }}</h1>
 
-    <div>
-
-      <ion-button fill="clear" color="dark" shape="round" class="ion-padding" routerLink="/rooms/{{this.idFromRoute}}/edit">
-        <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
+    <ion-item class="ion-no-margin ion-no-padding" lines="none">
+      <ion-button fill="clear" color="dark" shape="round"
+                  routerLink="/rooms/{{this.idFromRoute}}/edit" class="icon-large">
+        <ion-icon slot="icon-only" name="create" class="climate-color"></ion-icon>
       </ion-button>
-    </div>
-
-    <ion-button fill="clear" color="dark" shape="round" class="ion-padding">
-      <ion-icon slot="icon-only" name="settings" class="climate-color" style="font-size: 48px"></ion-icon>
-    </ion-button>
-    <ion-button fill="clear" color="dark" shape="round" class="ion-padding" (click)="deleteRoom()" >
-      <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px" ></ion-icon>
-    </ion-button>
+      <ion-button fill="clear" color="dark" shape="round" class="icon-large">
+        <ion-icon slot="icon-only" name="settings" class="climate-color"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" color="dark" shape="round" (click)="deleteRoom()" class="icon-large">
+        <ion-icon slot="icon-only" name="trash" class="climate-color"></ion-icon>
+      </ion-button>
+    </ion-item>
 
   </div>
+
+
+  <app-room-graph></app-room-graph>
 
   <!-- Device Card section -->
   <div *ngIf="room?.DeviceIds != undefined" class="ion-margin" style="display: flex; flex-wrap: wrap;">
     <app-device-card *ngFor="let deviceId of room.DeviceIds" [deviceId]="deviceId" routerLink="/devices/{{deviceId}}"
-                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
+                     style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
     <app-device-card [deviceId]="-1" routerLink="/devices/add"
-                   style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
+                     style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
   </div>
 
 </ion-card>
-
-
-<app-room-graph></app-room-graph>
 
 
 

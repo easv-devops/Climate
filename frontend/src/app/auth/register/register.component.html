@@ -11,12 +11,35 @@
 
             <ion-list>
 
-              <ion-item>
-                <ion-input formControlName="firstName" label="First Name *" label-placement="stacked"></ion-input>
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-input style="align-content: flex-start" formControlName="firstName" label="First Name *"
+                           label-placement="stacked"></ion-input>
+
+                <ion-button id="firstname-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="firstname-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">
+                      Enter your first name. If you have a middle name you can enter it here as well.
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
 
-              <ion-item>
-                <ion-input formControlName="lastName" label="Last Name *" label-placement="stacked"></ion-input>
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-input style="align-content: flex-start" formControlName="lastName" label="Last Name *"
+                           label-placement="stacked"></ion-input>
+                <ion-button id="lastname-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="lastname-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">
+                      Enter your last name.
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
 
               <div *ngIf="firstName.touched && firstName.invalid" slot="label"
@@ -28,17 +51,39 @@
                 <ion-text color="danger">Required</ion-text>
               </div>
 
-              <ion-item>
-                <ion-input formControlName="email" label="E-mail *" label-placement="stacked">
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-input style="align-content: flex-start" formControlName="email" label="E-mail *"
+                           label-placement="stacked">
                 </ion-input>
+                <ion-button id="email-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="email-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Enter a valid email address
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
               <div *ngIf="email.touched && email.invalid" slot="label" style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">Valid email is required</ion-text>
               </div>
 
-              <ion-item>
-                <ion-input formControlName="phone" label="Phone *" label-placement="stacked">
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-input style="align-content: flex-start" formControlName="phone" label="Phone *"
+                           label-placement="stacked">
                 </ion-input>
+
+                <ion-button id="number-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="number-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Enter a valid phone number. Only allows digits, parenthesis, dashes
+                      and spaces
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
               <div *ngIf="phone.touched && phone.invalid" slot="label" style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">Required</ion-text>
@@ -50,19 +95,41 @@
                 <ion-text color="danger">select country code</ion-text>
               </div>
 
-              <ion-item>
-                <ion-select formControlName="countryCode" label="Country Code *" label-placement="stacked">
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-select style="align-content: flex-start" formControlName="countryCode" label="Country Code *"
+                            label-placement="stacked">
                   <ion-select-option
                     *ngFor="let country of allCountryCodes" [value]="country.IsoCode">
                     {{ country.Country }} ({{ country.IsoCode }} / {{ country.CountryCode }})
                   </ion-select-option>
                 </ion-select>
+
+                <ion-button id="cc-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="cc-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Choose your country code for your phone number.
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
 
 
-              <ion-item>
-                <ion-input type="password" formControlName="password" label="Password *" label-placement="stacked">
+              <ion-item style="display:flex; justify-content: space-between; flex-wrap: wrap;">
+                <ion-input style="align-content: flex-start" type="password" formControlName="password"
+                           label="Password *" label-placement="stacked">
                 </ion-input>
+
+                <ion-button id="pw-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="pw-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Choose a password for your account. Min. 8 characters
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
               <div *ngIf="password.touched && password.invalid" slot="label" style="text-align: left; margin-left: 4%;">
                 <ion-text color="danger">Required</ion-text>
@@ -71,6 +138,16 @@
               <ion-item>
                 <ion-input type="password" formControlName="repeatPassword" label="Repeat password *"
                            label-placement="stacked"></ion-input>
+
+                <ion-button id="rpw-popover" fill="clear" style="align-content: flex-end;">
+                  <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+                </ion-button>
+                <ion-popover trigger="rpw-popover" triggerAction="click">
+                  <ng-template>
+                    <ion-content class="ion-padding">Repeat your password. Must match the above.
+                    </ion-content>
+                  </ng-template>
+                </ion-popover>
               </ion-item>
               <div class="passwordField" *ngIf="(repeatPassword.touched && (repeatPassword.invalid || !isPasswordSame))"
                    slot="label"
