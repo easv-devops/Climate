@@ -1,5 +1,7 @@
 ﻿using System.Text.Json;
 using api.helpers;
+using api.serverEventModels;
+using api.WebSocket;
 using Fleck;
 using infrastructure;
 using infrastructure.Models;
@@ -50,8 +52,8 @@ public class MqttClientSubscriber
                 var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
 
                 _readingsService.CreateReadings(messageObject);
-                
-                var alerts = _alertService.ScreenReadings(messageObject);
+
+                ScreenReadings(messageObject);
                 
                 //todo check for current listeners in state service and call relevant server to client handlers
                 var pongMessage = new MqttApplicationMessageBuilder()
@@ -69,8 +71,25 @@ public class MqttClientSubscriber
             }
         };
     }
-    
-    
+
+    private void ScreenReadings(DeviceData messageObject)
+    {
+        // Screens all readings for values out of range, and creates alerts in db
+        var alerts = _alertService.ScreenReadings(messageObject);
+        
+        // Sends all new alerts to any active clients subscribed to the device that sent readings
+        var subscribedUserList = StateService.GetUsersForDevice(messageObject.DeviceId);
+
+        foreach (var user in subscribedUserList)
+        {
+            var connection = StateService.GetClient(user);
+            if (!ReferenceEquals(connection, null))
+            {
+                connection.Connection.SendDto(new ServerSendsAlertList()
+                {
+                    Alerts = alerts
+                });
+            }
+        }
+    }
 }
-
-
