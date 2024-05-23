@@ -15,3 +15,12 @@ ion-accordion.accordion-expanding ion-item[slot='header'],
 ion-accordion.accordion-expanded ion-item[slot='header'] {
   --color: #133157;
 }
+
+.custom-button {
+  --color: var(--ion-color-dark);
+  --background: var(--ion-color-light);
+  --border-radius: 0;
+  text-align: left;
+}
+
+
