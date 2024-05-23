@@ -1,12 +1,10 @@
-interface Alerts {
-  timestamp: string;
-  isRead: boolean;
-  description: string;
-  deviceName: string;
-  roomName: string;
-}
+import {AlertDto} from "../../../models/Entities";
 
 import { Component, OnInit } from '@angular/core';
+import {Subject, takeUntil} from "rxjs";
+import {WebSocketConnectionService} from "../../web-socket-connection.service";
+import {ClientWantsToGetAlertsDto} from "../../../models/ClientWantsToGetAlertsDto";
+import {ClientWantsToEditAlertDto} from "../../../models/ClientWantsToEditAlertDto";
 
 @Component({
   selector: 'app-alert',
@@ -14,37 +12,38 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./alert.component.scss']
 })
 
-
-
 export class AlertComponent implements OnInit {
-
   selectAllChecked: boolean = false;
-  sortedAlerts: Alerts[] = [];
+  sortedAlerts: AlertDto[] = [];
   sortByOrder: { [key: string]: string } = {};
   showFilterDropdown: boolean = false;
+  alertList?: AlertDto[];
+  private unsubscribe$ = new Subject<void>();
 
-  mockAlerts = [
-    { timestamp: '2024-05-22 10:00:00', isRead: false, description: 'Temperature threshold exceeded', deviceName: 'Temp Sensor 1', roomName: 'Living Room' },
-    { timestamp: '2024-05-22 10:15:00', isRead: true, description: 'Low battery', deviceName: 'Smoke Detector', roomName: 'Bedroom' },
-    { timestamp: '2024-05-22 10:30:00', isRead: false, description: 'Device offline', deviceName: 'Motion Sensor', roomName: 'Kitchen' },
-    { timestamp: '2024-05-22 10:45:00', isRead: false, description: 'Door left open', deviceName: 'Door Sensor', roomName: 'Entryway' },
-    { timestamp: '2024-05-22 11:00:00', isRead: true, description: 'Humidity threshold exceeded', deviceName: 'Humidity Sensor', roomName: 'Bathroom' },
-    { timestamp: '2024-05-22 11:15:00', isRead: false, description: 'Water leak detected', deviceName: 'Water Leak Sensor', roomName: 'Basement' },
-    { timestamp: '2024-05-22 11:30:00', isRead: true, description: 'Motion detected', deviceName: 'Motion Sensor 2', roomName: 'Living Room' },
-    { timestamp: '2024-05-22 11:45:00', isRead: false, description: 'CO2 level above threshold', deviceName: 'CO2 Sensor', roomName: 'Office' },
-    { timestamp: '2024-05-22 12:00:00', isRead: false, description: 'Window open', deviceName: 'Window Sensor', roomName: 'Bedroom' },
-    { timestamp: '2024-05-22 12:15:00', isRead: true, description: 'Fire alarm detected', deviceName: 'Fire Alarm', roomName: 'Living Room' }
-  ]; //todo hente rigtige alerts fra devices og slet hardcoded
+  constructor(private ws: WebSocketConnectionService) {}
 
+  ngOnInit() {
+    this.getAlerts(false);
+    this.subscribeToAlerts();
+  }
 
+  ngOnDestroy() {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+  }
 
-  constructor() {}
+  private subscribeToAlerts() {
+    this.ws.alerts
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(alerts => {
+        if (alerts) {
+          this.alertList = alerts;
+          this.sortedAlerts = [...this.alertList];
+        }
+      });
+  }
 
-  ngOnInit() {this.sortedAlerts = [...this.mockAlerts];}
-
-  sortBy(column: keyof Alerts) {
-    console.log('Sorting by', column);
-
+  sortBy(column: keyof AlertDto) {
     // Skifter mellem sorteringsrækkefølgen stigende og faldende
     this.sortByOrder[column] = !this.sortByOrder[column] || this.sortByOrder[column] === 'asc' ? 'desc' : 'asc';
 
@@ -65,7 +64,7 @@ export class AlertComponent implements OnInit {
 
   toggleSelectAll() {
     this.sortedAlerts.forEach(alert => {
-      alert.isRead = this.selectAllChecked;
+      alert.IsRead = this.selectAllChecked;
     });
   }
 
@@ -74,11 +73,27 @@ export class AlertComponent implements OnInit {
   }
 
   filterByIsRead(isRead: boolean | null) {
-    if (isRead === null) {
-      this.sortedAlerts = [...this.mockAlerts]; // Ingen filter, vis alle alerts
-    } else {
-      this.sortedAlerts = this.mockAlerts.filter(alert => alert.isRead === isRead);
+    if(this.alertList){
+      if (isRead === null) {
+        this.sortedAlerts = [...this.alertList]; // Ingen filter, vis alle alerts
+      } else {
+        this.sortedAlerts = this.alertList.filter(alert => alert.IsRead === isRead);
+      }
+      this.showFilterDropdown = false; // Skjul dropdown-menu efter filtrering
     }
-    this.showFilterDropdown = false; // Skjul dropdown-menu efter filtrering
+  }
+
+  onAlertReadChange(alert: any) {
+    this.ws.socketConnection.sendDto(new ClientWantsToEditAlertDto({
+      AlertId: alert.Id,
+      DeviceId: alert.DeviceId,
+      IsRead: alert.IsRead
+    }))
+  }
+
+  getAlerts(b: boolean) {
+    this.ws.socketConnection.sendDto(new ClientWantsToGetAlertsDto({
+      IsRead: b
+    }));
   }
 }

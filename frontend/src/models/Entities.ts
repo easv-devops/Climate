@@ -50,3 +50,13 @@ export class CountryCode{
   IsoCode!: string;
   Country!: string;
 }
+
+export class AlertDto {
+  Id!: number;
+  Timestamp!: Date;
+  IsRead!: boolean;
+  Description!: string;
+  DeviceId!: number;
+  DeviceName!: string;
+  RoomName!: string;
+}

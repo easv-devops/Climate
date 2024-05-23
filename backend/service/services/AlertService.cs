@@ -62,7 +62,7 @@ public class AlertService
         double? min, double? max)
     {
         string description = $"{readingType} was {condition}! " +
-                             $"Reading showed {reading.Value} (Your range: {min} - {max}). {reading.TimeStamp}";
+                             $"Reading showed {reading.Value} (Your range: {min} - {max})";
         var alertDto = new CreateAlertDto
         {
             DeviceId = deviceId,

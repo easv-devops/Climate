@@ -52,7 +52,7 @@ public static class KeyVaultService
     public static async Task<string> GetDbConn()
     {
         // In local development we all have an Environment Variable called dbconn
-        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbconn.ToString()); 
+        var connectionString = Environment.GetEnvironmentVariable(EnvVarKeys.dbtestconn.ToString()); 
         
         // If that is null or empty, this must be running on the staging or production VM
         if (string.IsNullOrEmpty(connectionString))
