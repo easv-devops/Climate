@@ -22,7 +22,7 @@ const routes: Routes = [
         component: LandingPageComponent
       },
       {
-        path: 'alert', //Path for alert
+        path: 'alerts', //Path for alert
         component: AlertComponent
       },
       {
