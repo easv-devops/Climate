@@ -1,4 +1,4 @@
-interface Alertss {
+interface Alerts {
   timestamp: string;
   isRead: boolean;
   description: string;
@@ -18,10 +18,12 @@ import { Component, OnInit } from '@angular/core';
 
 export class AlertComponent implements OnInit {
 
-  sortedAlerts: Alertss[] = [];
+  selectAllChecked: boolean = false;
+  sortedAlerts: Alerts[] = [];
   sortByOrder: { [key: string]: string } = {};
+  showFilterDropdown: boolean = false;
 
-  alerts = [
+  mockAlerts = [
     { timestamp: '2024-05-22 10:00:00', isRead: false, description: 'Temperature threshold exceeded', deviceName: 'Temp Sensor 1', roomName: 'Living Room' },
     { timestamp: '2024-05-22 10:15:00', isRead: true, description: 'Low battery', deviceName: 'Smoke Detector', roomName: 'Bedroom' },
     { timestamp: '2024-05-22 10:30:00', isRead: false, description: 'Device offline', deviceName: 'Motion Sensor', roomName: 'Kitchen' },
@@ -38,9 +40,9 @@ export class AlertComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {this.sortedAlerts = [...this.alerts];}
+  ngOnInit() {this.sortedAlerts = [...this.mockAlerts];}
 
-  sortBy(column: keyof Alertss) {
+  sortBy(column: keyof Alerts) {
     console.log('Sorting by', column);
 
     // Skifter mellem sorteringsrækkefølgen stigende og faldende
@@ -59,5 +61,24 @@ export class AlertComponent implements OnInit {
       if (a[column] > b[column]) return this.sortByOrder[column] === 'asc' ? 1 : -1;
       return 0;
     });
+  }
+
+  toggleSelectAll() {
+    this.sortedAlerts.forEach(alert => {
+      alert.isRead = this.selectAllChecked;
+    });
+  }
+
+  toggleFilterDropdown() {
+    this.showFilterDropdown = !this.showFilterDropdown;
+  }
+
+  filterByIsRead(isRead: boolean | null) {
+    if (isRead === null) {
+      this.sortedAlerts = [...this.mockAlerts]; // Ingen filter, vis alle alerts
+    } else {
+      this.sortedAlerts = this.mockAlerts.filter(alert => alert.isRead === isRead);
+    }
+    this.showFilterDropdown = false; // Skjul dropdown-menu efter filtrering
   }
 }
