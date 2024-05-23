@@ -1,6 +1,4 @@
-﻿using System.Security.Authentication;
-using api.ClientEventFilters;
-using api.helpers;
+﻿using api.helpers;
 using api.serverEventModels;
 using api.WebSocket;
 using Fleck;
@@ -10,12 +8,17 @@ using service.services;
 
 namespace api.clientEventHandlers.AlertClientHandlers;
 
+/**
+ * This class is only used for testing.
+ * Keep ClientWantsToCreateAlert ~identical to MqttClientSubscriber.ScreenReadings
+ */
+
+
 public class ClientWantsToCreateAlertDto : BaseDto
 {
     public DeviceData DeviceData { get; set; }
 }
 
-[RequireAuthentication]
 public class ClientWantsToCreateAlert : BaseEventHandler<ClientWantsToCreateAlertDto>
 {
     private readonly AlertService _alertService;
@@ -26,18 +29,26 @@ public class ClientWantsToCreateAlert : BaseEventHandler<ClientWantsToCreateAler
 
     public override Task Handle(ClientWantsToCreateAlertDto dto, IWebSocketConnection socket)
     {
-        var users = StateService.GetUsersForDevice(dto.DeviceData.DeviceId);
-        if (users.Count == 0) //check if the users has access to device
-        {
-            throw new AuthenticationException("You do not have access to create alerts for this device");
-        }
-        
+        // Screens all readings for values out of range, and creates alerts in db
         var alerts = _alertService.ScreenReadings(dto.DeviceData);
         
-        socket.SendDto(new ServerSendsAlertList()
+        if(alerts.Count == 0)
+            return Task.CompletedTask; // No need to send an empty list
+        
+        // Sends all new alerts to any active clients subscribed to the device that sent readings
+        var subscribedUserList = StateService.GetUsersForDevice(dto.DeviceData.DeviceId);
+
+        foreach (var user in subscribedUserList)
         {
-            Alerts = alerts
-        });
+            var connection = StateService.GetClient(user);
+            if (!ReferenceEquals(connection, null))
+            {
+                connection.Connection.SendDto(new ServerSendsAlertList()
+                {
+                    Alerts = alerts
+                });
+            }
+        }
         
         return Task.CompletedTask;
     }

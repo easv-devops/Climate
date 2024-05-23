@@ -77,6 +77,9 @@ public class MqttClientSubscriber
         // Screens all readings for values out of range, and creates alerts in db
         var alerts = _alertService.ScreenReadings(messageObject);
         
+        if(alerts.Count == 0)
+            return; // No need to send an empty list
+        
         // Sends all new alerts to any active clients subscribed to the device that sent readings
         var subscribedUserList = StateService.GetUsersForDevice(messageObject.DeviceId);
 
