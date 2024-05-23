@@ -4,15 +4,17 @@ import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
 import {FullUserDto} from "../../../models/ServerSendsUser";
 import {PopoverController} from "@ionic/angular";
+import {AlertDto} from "../../../models/Entities";
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.component.html',
-  styleUrls: ['../home.page.scss'],
+  styleUrls: ['./topbar.component.scss'],
 })
 export class TopbarComponent implements OnInit {
   private unsubscribe$ = new Subject<void>();
   user!: FullUserDto;
+  alertCount: number = 0;
 
   constructor(private router: Router,
               private ws: WebSocketConnectionService,
@@ -21,6 +23,7 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeToUsers();
+    this.subscribeToAlerts();
   }
 
   ngOnDestroy() {
@@ -49,5 +52,20 @@ export class TopbarComponent implements OnInit {
     this.popoverController.dismiss();
     this.router.navigateByUrl("/auth/login");
     this.ws.clearDataOnLogout();
+  }
+
+  private subscribeToAlerts() {
+    this.ws.alerts
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(alerts => {
+        if (alerts) {
+          this.alertCount = 0;
+          for (const alert of alerts) {
+            if(!alert.IsRead) {
+              this.alertCount++;
+            }
+          }
+        }
+      });
   }
 }

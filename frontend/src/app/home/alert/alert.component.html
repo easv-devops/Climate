@@ -14,8 +14,10 @@
   <div class="table-container">
     <ion-grid>
       <ion-row class="header-row">
-        <ion-col size="1">
-          <ion-checkbox [(ngModel)]="selectAllChecked" (ionChange)="toggleSelectAll()"></ion-checkbox>
+        <ion-col size="1" (click)="sortBy('IsRead')">
+          <span>Read</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['IsRead'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['IsRead'] === 'desc'"></ion-icon>
         </ion-col>
         <ion-col size="2" (click)="sortBy('DeviceName')">
           <span>Device</span>

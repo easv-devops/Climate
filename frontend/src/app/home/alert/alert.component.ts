@@ -11,20 +11,17 @@ import { ClientWantsToEditAlertDto } from "../../../models/ClientWantsToEditAler
   styleUrls: ['./alert.component.scss']
 })
 export class AlertComponent implements OnInit, OnDestroy {
-  selectAllChecked: boolean = false;
   sortedAlerts: AlertDto[] = [];
   sortByOrder: { [key: string]: string } = {};
   showFilterDropdown: boolean = false;
   alertList: AlertDto[] = [];
   isReadAlertsFetched: boolean = false;
-  isUnreadAlertsFetched: boolean = false;
   currentFilter: boolean | null = null;
   private unsubscribe$ = new Subject<void>();
 
   constructor(private ws: WebSocketConnectionService) {}
 
   ngOnInit() {
-    this.getAlerts(false);
     this.subscribeToAlerts();
   }
 
@@ -44,14 +41,10 @@ export class AlertComponent implements OnInit, OnDestroy {
       });
   }
 
-  private getAlerts(isRead: boolean) {
-    if ((isRead && !this.isReadAlertsFetched) || (!isRead && !this.isUnreadAlertsFetched)) {
-      this.ws.socketConnection.sendDto(new ClientWantsToGetAlertsDto({ IsRead: isRead }));
-      if (isRead) {
-        this.isReadAlertsFetched = true;
-      } else {
-        this.isUnreadAlertsFetched = true;
-      }
+  private getReadAlerts() {
+    if (!this.isReadAlertsFetched) {
+      this.ws.socketConnection.sendDto(new ClientWantsToGetAlertsDto({ IsRead: true }));
+      this.isReadAlertsFetched = true;
     }
   }
 
@@ -69,16 +62,9 @@ export class AlertComponent implements OnInit, OnDestroy {
   filterByIsRead(isRead: boolean | null) {
     this.currentFilter = isRead;
 
-    // Fetch necessary alerts if they haven't been fetched already
-    if (isRead === null) { // = "All"
-      if (!this.isReadAlertsFetched) {
-        this.getAlerts(true);
-      }
-      if (!this.isUnreadAlertsFetched) {
-        this.getAlerts(false);
-      }
-    } else { // = Read or Unread
-      this.getAlerts(isRead);
+    // Fetch Read alerts if "All" or "Read" is chosen (!== true)
+    if (isRead === null || isRead) {
+      this.getReadAlerts();
     }
 
     // Apply the filter to show the correct alerts based on the current filter
@@ -115,12 +101,6 @@ export class AlertComponent implements OnInit, OnDestroy {
       if (a[column] < b[column]) return this.sortByOrder[column] === 'asc' ? -1 : 1;
       if (a[column] > b[column]) return this.sortByOrder[column] === 'asc' ? 1 : -1;
       return 0;
-    });
-  }
-
-  toggleSelectAll() {
-    this.sortedAlerts.forEach(alert => {
-      alert.IsRead = this.selectAllChecked;
     });
   }
 
