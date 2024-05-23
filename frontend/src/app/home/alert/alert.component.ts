@@ -1,23 +1,24 @@
-import {AlertDto} from "../../../models/Entities";
-
-import { Component, OnInit } from '@angular/core';
-import {Subject, takeUntil} from "rxjs";
-import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToGetAlertsDto} from "../../../models/ClientWantsToGetAlertsDto";
-import {ClientWantsToEditAlertDto} from "../../../models/ClientWantsToEditAlertDto";
+import { AlertDto } from "../../../models/Entities";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subject, takeUntil } from "rxjs";
+import { WebSocketConnectionService } from "../../web-socket-connection.service";
+import { ClientWantsToGetAlertsDto } from "../../../models/ClientWantsToGetAlertsDto";
+import { ClientWantsToEditAlertDto } from "../../../models/ClientWantsToEditAlertDto";
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss']
 })
-
-export class AlertComponent implements OnInit {
+export class AlertComponent implements OnInit, OnDestroy {
   selectAllChecked: boolean = false;
   sortedAlerts: AlertDto[] = [];
   sortByOrder: { [key: string]: string } = {};
   showFilterDropdown: boolean = false;
-  alertList?: AlertDto[];
+  alertList: AlertDto[] = [];
+  isReadAlertsFetched: boolean = false;
+  isUnreadAlertsFetched: boolean = false;
+  currentFilter: boolean | null = null;
   private unsubscribe$ = new Subject<void>();
 
   constructor(private ws: WebSocketConnectionService) {}
@@ -38,23 +39,78 @@ export class AlertComponent implements OnInit {
       .subscribe(alerts => {
         if (alerts) {
           this.alertList = alerts;
-          this.sortedAlerts = [...this.alertList];
+          this.applyFilter(this.currentFilter); // Apply the current filter whenever alerts are updated
         }
       });
   }
 
+  private getAlerts(isRead: boolean) {
+    if ((isRead && !this.isReadAlertsFetched) || (!isRead && !this.isUnreadAlertsFetched)) {
+      this.ws.socketConnection.sendDto(new ClientWantsToGetAlertsDto({ IsRead: isRead }));
+      if (isRead) {
+        this.isReadAlertsFetched = true;
+      } else {
+        this.isUnreadAlertsFetched = true;
+      }
+    }
+  }
+
+  private applyFilter(isRead: boolean | null) {
+    if (this.alertList) {
+      if (isRead === null) {
+        this.sortedAlerts = [...this.alertList]; // No filter, show all alerts
+      } else {
+        this.sortedAlerts = this.alertList.filter(alert => alert.IsRead === isRead);
+      }
+      this.showFilterDropdown = false; // Hide dropdown menu after filtering
+    }
+  }
+
+  filterByIsRead(isRead: boolean | null) {
+    this.currentFilter = isRead;
+
+    // Fetch necessary alerts if they haven't been fetched already
+    if (isRead === null) { // = "All"
+      if (!this.isReadAlertsFetched) {
+        this.getAlerts(true);
+      }
+      if (!this.isUnreadAlertsFetched) {
+        this.getAlerts(false);
+      }
+    } else { // = Read or Unread
+      this.getAlerts(isRead);
+    }
+
+    // Apply the filter to show the correct alerts based on the current filter
+    this.applyFilter(isRead);
+  }
+
+  onAlertReadChange(alert: AlertDto) {
+    this.ws.socketConnection.sendDto(new ClientWantsToEditAlertDto({
+      AlertId: alert.Id,
+      DeviceId: alert.DeviceId,
+      IsRead: alert.IsRead
+    }));
+
+    // Optimistically update the local alert list
+    const index = this.alertList.findIndex(a => a.Id === alert.Id);
+    if (index !== -1) {
+      this.alertList[index].IsRead = alert.IsRead;
+    }
+
+    // Reapply the current filter to update the view
+    this.applyFilter(this.currentFilter);
+  }
+
   sortBy(column: keyof AlertDto) {
-    // Skifter mellem sorteringsrækkefølgen stigende og faldende
     this.sortByOrder[column] = !this.sortByOrder[column] || this.sortByOrder[column] === 'asc' ? 'desc' : 'asc';
 
-    // Nulstiller sorteringsrækkefølgen for andre kolonner
     Object.keys(this.sortByOrder).forEach(key => {
       if (key !== column) {
         this.sortByOrder[key] = '';
       }
     });
 
-    // Sorter array af alerts ud fra valgt kolonne og sorteringsrækkefølgen
     this.sortedAlerts.sort((a, b) => {
       if (a[column] < b[column]) return this.sortByOrder[column] === 'asc' ? -1 : 1;
       if (a[column] > b[column]) return this.sortByOrder[column] === 'asc' ? 1 : -1;
@@ -70,30 +126,5 @@ export class AlertComponent implements OnInit {
 
   toggleFilterDropdown() {
     this.showFilterDropdown = !this.showFilterDropdown;
-  }
-
-  filterByIsRead(isRead: boolean | null) {
-    if(this.alertList){
-      if (isRead === null) {
-        this.sortedAlerts = [...this.alertList]; // Ingen filter, vis alle alerts
-      } else {
-        this.sortedAlerts = this.alertList.filter(alert => alert.IsRead === isRead);
-      }
-      this.showFilterDropdown = false; // Skjul dropdown-menu efter filtrering
-    }
-  }
-
-  onAlertReadChange(alert: any) {
-    this.ws.socketConnection.sendDto(new ClientWantsToEditAlertDto({
-      AlertId: alert.Id,
-      DeviceId: alert.DeviceId,
-      IsRead: alert.IsRead
-    }))
-  }
-
-  getAlerts(b: boolean) {
-    this.ws.socketConnection.sendDto(new ClientWantsToGetAlertsDto({
-      IsRead: b
-    }));
   }
 }
