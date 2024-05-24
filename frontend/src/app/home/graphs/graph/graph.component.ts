@@ -17,6 +17,7 @@ import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
 export class GraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
   latestReadings: LatestData | undefined;
+  isAvgReadings: boolean = false;
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,

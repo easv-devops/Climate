@@ -150,7 +150,7 @@ public class RoomReadingsService
     {
         var intervalMinutes = 120;
         var endTime = DateTime.Now.ToLocalTime();
-        var startTime = endTime - TimeSpan.FromMinutes(intervalMinutes);
+        var startTime = endTime - TimeSpan.FromMinutes(24 * 60); // Last 24 hours so it matches with chart data
         
         var temp = GetTemperatureReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
         var hum = GetHumidityReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);

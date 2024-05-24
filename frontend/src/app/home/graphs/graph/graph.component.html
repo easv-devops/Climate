@@ -4,9 +4,8 @@
 
   <ion-card-content class="stats-card">
     <ion-list>
-      <ion-item class="ion-margin" lines="none">
-        <ion-card-title class="climate-color ion-margin-start">Latest Readings</ion-card-title>
-      </ion-item>
+      <ion-card-title class="climate-color ion-text-center">Latest Readings</ion-card-title>
+      <ion-card-subtitle *ngIf="isAvgReadings" class="climate-color ion-text-center">(Last 24 hours)</ion-card-subtitle>
 
       <ion-item class="ion-margin" lines="none">
         <ion-icon name="thermometer-outline" size="large" class="climate-color"></ion-icon>
@@ -35,7 +34,6 @@
         <ion-label *ngIf="latestReadings?.Data?.Particle100" class="climate-color ion-text-end">{{latestReadings?.Data?.Particle100?.Value!.toFixed(1)}}</ion-label>
         <ion-label *ngIf="!latestReadings?.Data?.Particle100" class="climate-color ion-text-end">N/A</ion-label>
       </ion-item>
-
     </ion-list>
   </ion-card-content>
 

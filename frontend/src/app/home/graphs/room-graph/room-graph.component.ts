@@ -17,6 +17,7 @@ import {takeUntil} from "rxjs";
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
   latestReadings: LatestData | undefined;
+  isAvgReadings: boolean = true;
 
   constructor(private ws: WebSocketConnectionService,
               private roomService: RoomService,
