@@ -4,6 +4,9 @@ import {WebSocketConnectionService} from '../../../web-socket-connection.service
 import {DeviceService} from '../../devices/device.service';
 import {BaseGraphComponent} from "../graphSuper.component";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {takeUntil} from "rxjs";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {LatestDeviceData, LatestDeviceReadingsDto} from "../../../../models/Entities";
 
 
 @Component({
@@ -13,6 +16,7 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 })
 export class GraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
+  latestReadings: LatestDeviceData | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,
@@ -32,6 +36,11 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
 
     this.updateGraph('temperature'); // Show temperature as default
     this.setTimeRange("1m");
+
+    this.subscribeToLatestReadings();
+    this.ws.socketConnection.sendDto(new ClientWantsToGetLatestDeviceReadingsDto({
+      DeviceId: this.idFromRoute
+    }))
   }
 
   getDeviceFromRoute() {
@@ -186,6 +195,16 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
           break;
       }
     }
+  }
+
+  subscribeToLatestReadings() {
+    this.ws.latestDeviceReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(readings => {
+        if (readings) {
+          this.latestReadings = readings[this.idFromRoute!];
+        }
+      })
   }
 }
 

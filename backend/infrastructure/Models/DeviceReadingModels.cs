@@ -20,3 +20,17 @@ public class DeviceData
     public int DeviceId { get; set; }
     public DeviceReadingsDto Data { get; set; }
 }
+
+public class LatestDeviceData
+{
+    public int DeviceId { get; set; }
+    public LatestDeviceReadingsDto? Data { get; set; }
+}
+
+public class LatestDeviceReadingsDto
+{
+    public SensorDto? Temperature { get; set; }
+    public SensorDto? Humidity { get; set; }
+    public SensorDto? Particle25 { get; set; }
+    public SensorDto? Particle100 { get; set; }
+}

@@ -87,5 +87,33 @@ public class HumidityRepository
             throw new SqlTypeException("Failed to retrieve humidity readings from device " + deviceId, e);
         }
     }
+
+    public SensorDto GetLatestHumidityReadingFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+        
+            var sql = @"
+                SELECT 
+                    Timestamp AS TimeStamp,
+                    Humidity AS Value
+                FROM 
+                    ReadingHumidity 
+                WHERE 
+                    DeviceId = @deviceId
+                ORDER BY 
+                    Timestamp DESC
+                LIMIT 1;
+            ";
+
+            return connection.QueryFirstOrDefault<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve the latest humidity reading from device " + deviceId, e);
+        }
+    }
 }
 

@@ -17,7 +17,7 @@ import {
   Device,
   DeviceRange,
   DeviceRangeDto, DeviceSettingDto,
-  DeviceSettings,
+  DeviceSettings, LatestDeviceData,
   Room,
   SensorDto
 } from "../models/Entities";
@@ -37,6 +37,7 @@ import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingMo
 import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
 import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
+import {ServerSendsLatestDeviceReadingsDto} from "../models/ServerSendsLatestDeviceReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -102,6 +103,8 @@ export class WebSocketConnectionService {
   private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
 
+  private latestDeviceReadingsSubject = new BehaviorSubject<Record<number, LatestDeviceData> | undefined>(undefined);
+  latestDeviceReadings: Observable<Record<number, LatestDeviceData> | undefined> = this.latestDeviceReadingsSubject.asObservable();
 
   /**
    * observables for room readings
@@ -396,6 +399,22 @@ export class WebSocketConnectionService {
       pm100ReadingsRecord[dto.DeviceId] = existingReadings;
       // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100ReadingsSubject.next(pm100ReadingsRecord);
+    });
+  }
+
+  ServerSendsLatestDeviceReadings(dto: ServerSendsLatestDeviceReadingsDto) {
+    this.latestDeviceReadings.pipe(take(1)).subscribe(latestDeviceRecord => {
+      // Initialize the record if it is undefined
+      const updatedRecord: Record<number, LatestDeviceData> = latestDeviceRecord ? { ...latestDeviceRecord } : {};
+
+      // Create or update the entry for the device
+      updatedRecord[dto.Data.DeviceId] = {
+        DeviceId: dto.Data.DeviceId,
+        Data: dto.Data.Data,
+      };
+
+      // Emit the updated record
+      this.latestDeviceReadingsSubject.next(updatedRecord);
     });
   }
 

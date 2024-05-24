@@ -50,3 +50,15 @@ export class CountryCode{
   IsoCode!: string;
   Country!: string;
 }
+
+export class LatestDeviceData {
+  DeviceId!: number;
+  Data?: LatestDeviceReadingsDto;
+}
+
+export class LatestDeviceReadingsDto {
+  Temperature?: SensorDto;
+  Humidity?: SensorDto;
+  Particle25?: SensorDto;
+  Particle100?: SensorDto;
+}
