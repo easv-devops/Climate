@@ -23,7 +23,7 @@ namespace service.services
 
             if (deviceIds == null || !deviceIds.Any())
             {
-                throw new ArgumentException("Device list is empty or null");
+                return Enumerable.Empty<SensorDto>();
             }
 
             var allReadings = new List<SensorDto>();
@@ -43,7 +43,7 @@ namespace service.services
 
             if (deviceIds == null)
             {
-                throw new ArgumentException("Device list is empty or null");
+                return Enumerable.Empty<SensorDto>();
             }
 
             var allReadings = new List<SensorDto>();
@@ -65,7 +65,7 @@ namespace service.services
 
             if (deviceIds == null || !deviceIds.Any())
             {
-                throw new ArgumentException("Device list is empty or null");
+                return Enumerable.Empty<SensorDto>();
             }
 
             var allReadings = new List<SensorDto>();
@@ -88,7 +88,7 @@ namespace service.services
 
             if (deviceIds == null || !deviceIds.Any())
             {
-                throw new ArgumentException("Device list is empty or null");
+                return Enumerable.Empty<SensorDto>();
             }
 
             var allReadings = new List<SensorDto>();

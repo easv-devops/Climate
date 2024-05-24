@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Subject, takeUntil} from "rxjs";
-import {Device, DeviceInRoom, SensorDto} from "../../../../models/Entities";
+import {Device} from "../../../../models/Entities";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {ClientWantsToDeleteDevice} from "../../../../models/clientRequests";
+import {AlertController} from "@ionic/angular";
 
 
 @Component({
@@ -17,11 +18,11 @@ export class DeviceComponent implements OnInit {
   device?: Device;
   private unsubscribe$ = new Subject<void>();
 
-
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               public ws: WebSocketConnectionService,
-              private deviceService: DeviceService) {
+              private deviceService: DeviceService,
+              private alertController: AlertController) {
   }
 
   ngOnInit() {
@@ -58,14 +59,36 @@ export class DeviceComponent implements OnInit {
     let deviceToDelete = new ClientWantsToDeleteDevice({
       Id: deviceIdToDelete,
     });
-
     this.deviceService.deleteDevice(deviceToDelete);
 
     const roomId = this.device?.RoomId;
+
     if (roomId) {
       this.router.navigate(['/rooms', roomId]);
     } else {
       console.error('Room ID not found for the device');
     }
   }
+
+
+  async presentDeleteDeviceAlert() {
+    const alert = await this.alertController.create({
+      header: 'Are you sure you want to delete ' + this.device?.DeviceName + '?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.deleteDevice();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+
 }

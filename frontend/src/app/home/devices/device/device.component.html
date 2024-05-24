@@ -10,12 +10,12 @@
       <ion-button fill="clear" shape="round">
         <ion-icon slot="icon-only" name="settings" class="climate-color icon-large"></ion-icon>
       </ion-button>
-      <ion-button fill="clear" shape="round" (click)="deleteDevice()">
+      <ion-button fill="clear" shape="round" (click)="presentDeleteDeviceAlert()">
         <ion-icon slot="icon-only" name="trash" class="climate-color icon-large"></ion-icon>
       </ion-button>
     </ion-item>
-
   </div>
+
   <app-graph *ngIf="device"></app-graph>
 
   <app-device-settings [deviceId]="idFromRoute!"></app-device-settings>
