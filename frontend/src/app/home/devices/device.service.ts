@@ -10,11 +10,11 @@ import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsTo
 import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
 import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
 import {ClientWantsGetDeviceSettingsDto} from "../../../models/ClientWantsToGetDeviceSettingsDto";
-import {DeviceRange, DeviceSettings} from "../../../models/Entities";
-import {
-  ClientWantsToEditDeviceRangeDto
-} from "../../../models/ClientWantsToEditDeviceRange";
+import {DeviceRange, DeviceSettings, LatestData} from "../../../models/Entities";
+import {ClientWantsToEditDeviceRangeDto} from "../../../models/ClientWantsToEditDeviceRange";
 import {ClientWantsToEditDeviceSettingsDto} from "../../../models/ClientWantsToEditDeviceSettingsDto";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {take} from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class DeviceService {
@@ -95,5 +95,23 @@ export class DeviceService {
       Settings: updatedSettings
     });
     this.ws.socketConnection.sendDto(dto);
+  }
+
+  getLatestReadings(deviceId: number): LatestData | undefined {
+    this.ws.latestDeviceReadings
+      .pipe(take(1))
+      .subscribe(readings => {
+        if (readings && readings[deviceId]) {
+          // If our record already holds latest readings for this device, return that
+          return readings[deviceId!];
+        } else {
+          // If not, request it from backend
+          this.ws.socketConnection.sendDto(new ClientWantsToGetLatestDeviceReadingsDto({
+            DeviceId: deviceId
+          }))
+          return undefined;
+        }
+      })
+    return undefined;
   }
 }

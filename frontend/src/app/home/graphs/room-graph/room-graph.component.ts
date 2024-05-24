@@ -38,10 +38,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     this.updateGraph('temperature'); // Show temperature as default
 
     this.subscribeToLatestReadings();
-    // TODO Gem i egen metode og check først i ws Record om data allerede findes før det requestes
-    this.ws.socketConnection.sendDto(new ClientWantsToGetLatestRoomReadingsDto({
-      RoomId: this.idFromRoute
-    }))
+    this.roomService.getLatestReadings(this.idFromRoute!);
   }
 
   getDeviceFromRoute() {

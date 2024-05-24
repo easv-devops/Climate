@@ -38,10 +38,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     this.updateGraph('temperature'); // Show temperature as default
 
     this.subscribeToLatestReadings();
-    // TODO Gem i egen metode og check først i ws Record om data allerede findes før det requestes
-    this.ws.socketConnection.sendDto(new ClientWantsToGetLatestDeviceReadingsDto({
-      DeviceId: this.idFromRoute
-    }))
+    this.deviceService.getLatestReadings(this.idFromRoute!);
   }
 
   getDeviceFromRoute() {
@@ -147,7 +144,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
       let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
       const startTime = new Date(lastTimestamp);
-      const endTime = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)); // Add two hours for CEST
+      const endTime = new Date();
 
       switch (seriesName) {
         case 'Temperature':

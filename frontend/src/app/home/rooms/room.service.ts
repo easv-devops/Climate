@@ -16,6 +16,10 @@ import {
 import {
   ClientWantsToGetPm100ReadingsForRoomDto
 } from "../../../models/roomModels/roomReadingModels/ClientWantsToGetPm100ReadingsForRoomDto";
+import {LatestData} from "../../../models/Entities";
+import {take} from "rxjs";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../models/ClientWantsToGetLatestRoomReadingsDto";
 
 
 @Injectable({
@@ -95,5 +99,23 @@ export class RoomService {
       EndTime: end
     });
     this.ws.socketConnection.sendDto(dto)
+  }
+
+  getLatestReadings(roomId: number): LatestData | undefined {
+    this.ws.latestRoomReadings
+      .pipe(take(1))
+      .subscribe(readings => {
+        if (readings && readings[roomId]) {
+          // If our record already holds latest readings for this room, return that
+          return readings[roomId!];
+        } else {
+          // If not, request it from backend
+          this.ws.socketConnection.sendDto(new ClientWantsToGetLatestRoomReadingsDto({
+            RoomId: roomId
+          }))
+          return undefined;
+        }
+      })
+    return undefined;
   }
 }
