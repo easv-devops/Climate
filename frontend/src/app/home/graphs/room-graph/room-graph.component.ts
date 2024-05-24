@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
-import {LatestDeviceData, LatestDeviceReadingsDto} from "../../../../models/Entities";
+import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
 
 @Component({
   selector: 'app-room-graph',
@@ -13,7 +13,7 @@ import {LatestDeviceData, LatestDeviceReadingsDto} from "../../../../models/Enti
 })
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
-  latestReadings: LatestDeviceData | undefined;
+  latestReadings: LatestData | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private roomService: RoomService,

@@ -5,5 +5,5 @@ namespace api.serverEventModels;
 
 public class ServerSendsLatestDeviceReadingsDto : BaseDto
 {
-    public LatestDeviceData? Data { get; set; }
+    public LatestData? Data { get; set; }
 }

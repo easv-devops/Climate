@@ -51,12 +51,12 @@ export class CountryCode{
   Country!: string;
 }
 
-export class LatestDeviceData {
-  DeviceId!: number;
-  Data?: LatestDeviceReadingsDto;
+export class LatestData {
+  Id!: number;
+  Data?: LatestReadingsDto;
 }
 
-export class LatestDeviceReadingsDto {
+export class LatestReadingsDto {
   Temperature?: SensorDto;
   Humidity?: SensorDto;
   Particle25?: SensorDto;

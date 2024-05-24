@@ -17,7 +17,7 @@ import {
   Device,
   DeviceRange,
   DeviceRangeDto, DeviceSettingDto,
-  DeviceSettings, LatestDeviceData,
+  DeviceSettings, LatestData,
   Room,
   SensorDto
 } from "../models/Entities";
@@ -103,8 +103,8 @@ export class WebSocketConnectionService {
   private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
 
-  private latestDeviceReadingsSubject = new BehaviorSubject<Record<number, LatestDeviceData> | undefined>(undefined);
-  latestDeviceReadings: Observable<Record<number, LatestDeviceData> | undefined> = this.latestDeviceReadingsSubject.asObservable();
+  private latestDeviceReadingsSubject = new BehaviorSubject<Record<number, LatestData> | undefined>(undefined);
+  latestDeviceReadings: Observable<Record<number, LatestData> | undefined> = this.latestDeviceReadingsSubject.asObservable();
 
   /**
    * observables for room readings
@@ -405,11 +405,11 @@ export class WebSocketConnectionService {
   ServerSendsLatestDeviceReadings(dto: ServerSendsLatestDeviceReadingsDto) {
     this.latestDeviceReadings.pipe(take(1)).subscribe(latestDeviceRecord => {
       // Initialize the record if it is undefined
-      const updatedRecord: Record<number, LatestDeviceData> = latestDeviceRecord ? { ...latestDeviceRecord } : {};
+      const updatedRecord: Record<number, LatestData> = latestDeviceRecord ? { ...latestDeviceRecord } : {};
 
       // Create or update the entry for the device
-      updatedRecord[dto.Data.DeviceId] = {
-        DeviceId: dto.Data.DeviceId,
+      updatedRecord[dto.Data.Id] = {
+        Id: dto.Data.Id,
         Data: dto.Data.Data,
       };
 

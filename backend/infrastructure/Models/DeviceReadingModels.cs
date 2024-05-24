@@ -21,13 +21,13 @@ public class DeviceData
     public DeviceReadingsDto Data { get; set; }
 }
 
-public class LatestDeviceData
+public class LatestData
 {
-    public int DeviceId { get; set; }
-    public LatestDeviceReadingsDto? Data { get; set; }
+    public int Id { get; set; } // DeviceId (og RoomId hvis den skal bruges til at sende RoomAvg)
+    public LatestReadingsDto? Data { get; set; }
 }
 
-public class LatestDeviceReadingsDto
+public class LatestReadingsDto
 {
     public SensorDto? Temperature { get; set; }
     public SensorDto? Humidity { get; set; }

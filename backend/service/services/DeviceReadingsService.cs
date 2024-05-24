@@ -89,12 +89,12 @@ public class DeviceReadingsService
         return _particlesRepository.GetPm100ReadingsFromDevice(deviceId, startTime, endTime);
     }
 
-    public LatestDeviceData GetLatestTemperatureReadingFromDevice(int deviceId)
+    public LatestData GetLatestTemperatureReadingFromDevice(int deviceId)
     {
-        var latestReadings = new LatestDeviceData()
+        var latestReadings = new LatestData()
         {
-            DeviceId = deviceId,
-            Data = new LatestDeviceReadingsDto()
+            Id = deviceId,
+            Data = new LatestReadingsDto()
             {
                 Temperature = _temperatureRepository.GetLatestTemperatureReadingFromDevice(deviceId),
                 Humidity = _humidityRepository.GetLatestHumidityReadingFromDevice(deviceId),

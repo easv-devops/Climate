@@ -6,7 +6,7 @@ import {BaseGraphComponent} from "../graphSuper.component";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {takeUntil} from "rxjs";
 import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
-import {LatestDeviceData, LatestDeviceReadingsDto} from "../../../../models/Entities";
+import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
 
 
 @Component({
@@ -16,7 +16,7 @@ import {LatestDeviceData, LatestDeviceReadingsDto} from "../../../../models/Enti
 })
 export class GraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
-  latestReadings: LatestDeviceData | undefined;
+  latestReadings: LatestData | undefined;
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,
@@ -35,9 +35,9 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     this.initChart();
 
     this.updateGraph('temperature'); // Show temperature as default
-    this.setTimeRange("1m");
 
     this.subscribeToLatestReadings();
+    // TODO Gem i egen metode og check først i ws Record om data allerede findes før det requestes
     this.ws.socketConnection.sendDto(new ClientWantsToGetLatestDeviceReadingsDto({
       DeviceId: this.idFromRoute
     }))

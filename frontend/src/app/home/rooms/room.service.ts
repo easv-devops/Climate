@@ -4,10 +4,6 @@ import {ClientWantsToGetAllRoomsDto} from "../../../models/roomModels/clientWant
 import {ClientWantsToCreateRoomDto} from "../../../models/roomModels/ClientWantsToCreateRoomDto";
 import {ClientWantsToEditRoomDto} from "../../../models/roomModels/ClientWantsToEditRoomDto";
 import {ClientWantsToDeleteRoomDto} from "../../../models/roomModels/ClientWantsToDeleteRoomDto";
-import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
-import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
-import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
-import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
 import {
   ClientWantsToGetTemperatureReadingsForRoomDto
 } from "../../../models/roomModels/roomReadingModels/ClientWantsToGetTemperatureReadingsForRoomDto";

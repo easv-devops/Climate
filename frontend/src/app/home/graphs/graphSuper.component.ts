@@ -6,7 +6,7 @@ import {SensorDto} from "../../../models/Entities";
 export class BaseGraphComponent {
   idFromRoute: number | undefined;
   chartOptions: any = {};
-  public activeOptionButton = "1d";
+  public activeOptionButton = "1m";
   public activeTimeInterval?: number;
   public currentReadingType: string = "temperature";
 
