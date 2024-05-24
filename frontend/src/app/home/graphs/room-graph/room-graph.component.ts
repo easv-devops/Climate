@@ -5,6 +5,9 @@ import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../../models/ClientWantsToGetLatestRoomReadingsDto";
+import {takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-room-graph',
@@ -32,7 +35,12 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     this.initChart();
 
     this.updateGraph('temperature'); // Show temperature as default
-    this.setTimeRange("1m");
+
+    this.subscribeToLatestReadings();
+    // TODO Gem i egen metode og check først i ws Record om data allerede findes før det requestes
+    this.ws.socketConnection.sendDto(new ClientWantsToGetLatestRoomReadingsDto({
+      RoomId: this.idFromRoute
+    }))
   }
 
   getDeviceFromRoute() {
@@ -139,7 +147,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
       let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
       const startTime = new Date(lastTimestamp);
-      const endTime = new Date();
+      const endTime = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)); // Add two hours for CEST
 
       switch (seriesName) {
         case 'Temperature':
@@ -190,4 +198,13 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     }
   }
 
+  subscribeToLatestReadings() {
+    this.ws.latestRoomReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(readings => {
+        if (readings) {
+          this.latestReadings = readings[this.idFromRoute!];
+        }
+      })
+  }
 }

@@ -11,28 +11,28 @@
       <ion-item class="ion-margin" lines="none">
         <ion-icon name="thermometer-outline" size="large" class="climate-color"></ion-icon>
         <ion-label class="climate-color ion-margin-start">Temperature: </ion-label>
-        <ion-label *ngIf="latestReadings?.Data?.Temperature" class="climate-color ion-text-end">{{this.latestReadings?.Data?.Temperature?.Value}}</ion-label>
+        <ion-label *ngIf="latestReadings?.Data?.Temperature" class="climate-color ion-text-end">{{this.latestReadings?.Data?.Temperature?.Value!.toFixed(1)}}</ion-label>
         <ion-label *ngIf="!latestReadings?.Data?.Temperature" class="climate-color ion-text-end">N/A</ion-label>
       </ion-item>
 
       <ion-item class="ion-margin" lines="none">
         <ion-icon name="water-outline" size="large" class="climate-color"></ion-icon>
         <ion-label class="climate-color ion-margin-start">Humidity:</ion-label>
-        <ion-label *ngIf="latestReadings?.Data?.Humidity" class="climate-color ion-text-end">{{ latestReadings?.Data?.Humidity?.Value }}</ion-label>
+        <ion-label *ngIf="latestReadings?.Data?.Humidity" class="climate-color ion-text-end">{{latestReadings?.Data?.Humidity?.Value!.toFixed(1)}}</ion-label>
         <ion-label *ngIf="!latestReadings?.Data?.Humidity" class="climate-color ion-text-end">N/A</ion-label>
       </ion-item>
 
       <ion-item class="ion-margin" lines="none">
         <ion-icon name="logo-tableau" size="large" class="climate-color"></ion-icon>
         <ion-label class="climate-color ion-margin-start">PM<sub>2.5</sub>:</ion-label>
-        <ion-label *ngIf="latestReadings?.Data?.Particle25" class="climate-color ion-text-end">{{ latestReadings?.Data?.Particle25?.Value }}</ion-label>
+        <ion-label *ngIf="latestReadings?.Data?.Particle25" class="climate-color ion-text-end">{{latestReadings?.Data?.Particle25?.Value!.toFixed(1)}}</ion-label>
         <ion-label *ngIf="!latestReadings?.Data?.Particle25" class="climate-color ion-text-end">N/A</ion-label>
       </ion-item>
 
       <ion-item class="ion-margin" lines="none">
         <ion-icon name="sparkles-outline" size="large" class="climate-color"></ion-icon>
         <ion-label class="climate-color ion-margin-start">PM<sub>10</sub>:</ion-label>
-        <ion-label *ngIf="latestReadings?.Data?.Particle100" class="climate-color ion-text-end">{{ latestReadings?.Data?.Particle100?.Value }}</ion-label>
+        <ion-label *ngIf="latestReadings?.Data?.Particle100" class="climate-color ion-text-end">{{latestReadings?.Data?.Particle100?.Value!.toFixed(1)}}</ion-label>
         <ion-label *ngIf="!latestReadings?.Data?.Particle100" class="climate-color ion-text-end">N/A</ion-label>
       </ion-item>
 

@@ -35,7 +35,7 @@ public class ClientWantsToGetLatestDeviceReadings : BaseEventHandler<ClientWants
             throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
         }
 
-        var data = _deviceReadingsService.GetLatestTemperatureReadingFromDevice(dto.DeviceId);
+        var data = _deviceReadingsService.GetLatestReadingsFromDevice(dto.DeviceId);
         
         socket.SendDto(new ServerSendsLatestDeviceReadingsDto()
         {

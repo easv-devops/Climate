@@ -32,7 +32,13 @@ export class BaseGraphComponent {
       },
       xaxis: {
         type: "datetime",
-        tickAmount: 6
+        tickAmount: 6,
+        tooltip: {
+          enabled: false
+        },
+        labels: {
+          datetimeUTC: false
+        }
       },
       yaxis: {
         labels: {
@@ -43,7 +49,7 @@ export class BaseGraphComponent {
       },
       tooltip: {
         x: {
-          format: "hh:mm  dd-MMM yyyy"
+          format: "HH:mm  dd-MMM yyyy"
         }
       },
       fill: {

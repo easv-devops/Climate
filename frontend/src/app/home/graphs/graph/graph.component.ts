@@ -146,7 +146,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
       let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
 
       const startTime = new Date(lastTimestamp);
-      const endTime = new Date();
+      const endTime = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)); // Add two hours for CEST
 
       switch (seriesName) {
         case 'Temperature':
@@ -174,7 +174,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
     } else {
-      firstTimestamp = new Date().getTime()
+      firstTimestamp = new Date().getTime() + (2 * 60 * 60 * 1000); // Add two hours for CEST
     }
     if (startTime.getTime() < firstTimestamp!) {
       switch (seriesName) {

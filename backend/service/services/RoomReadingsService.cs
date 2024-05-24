@@ -145,4 +145,30 @@ public class RoomReadingsService
         var totalMinutes = (int)Math.Round(dateTime.TimeOfDay.TotalMinutes / intervalMinutes) * intervalMinutes;
         return dateTime.Date.AddMinutes(totalMinutes);
     }
+    
+    public LatestData GetLatestReadingsFromRoom(int roomId)
+    {
+        var intervalMinutes = 120;
+        var endTime = DateTime.Now.ToLocalTime();
+        var startTime = endTime - TimeSpan.FromMinutes(intervalMinutes);
+        
+        var temp = GetTemperatureReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var hum = GetHumidityReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var p25 = GetPm25ReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var p100 = GetPm100ReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        
+        var latestReadings = new LatestData()
+        {
+            Id = roomId,
+            Data = new LatestReadingsDto()
+            {
+                Temperature = temp.LastOrDefault(),
+                Humidity = hum.LastOrDefault(),
+                Particle25 = p25.LastOrDefault(),
+                Particle100 = p100.LastOrDefault()
+            }
+        };
+
+        return latestReadings;
+    }
 }

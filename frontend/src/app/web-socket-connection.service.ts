@@ -38,6 +38,7 @@ import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomRe
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
 import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
 import {ServerSendsLatestDeviceReadingsDto} from "../models/ServerSendsLatestDeviceReadingsDto";
+import {ServerSendsLatestRoomReadingsDto} from "../models/ServerSendsLatestRoomReadingsDto";
 
 
 @Injectable({providedIn: 'root'})
@@ -121,6 +122,9 @@ export class WebSocketConnectionService {
 
   private pm100RoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100RoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100RoomReadingsSubject.asObservable();
+
+  private latestRoomReadingsSubject = new BehaviorSubject<Record<number, LatestData> | undefined>(undefined);
+  latestRoomReadings: Observable<Record<number, LatestData> | undefined> = this.latestRoomReadingsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -499,6 +503,22 @@ export class WebSocketConnectionService {
       pm100ReadingsRecord[dto.RoomId] = existingReadings;
       // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
+    });
+  }
+
+  ServerSendsLatestRoomReadings(dto: ServerSendsLatestRoomReadingsDto) {
+    this.latestRoomReadings.pipe(take(1)).subscribe(latestRoomRecord => {
+      // Initialize the record if it is undefined
+      const updatedRecord: Record<number, LatestData> = latestRoomRecord ? { ...latestRoomRecord } : {};
+
+      // Create or update the entry for the room
+      updatedRecord[dto.Data.Id] = {
+        Id: dto.Data.Id,
+        Data: dto.Data.Data,
+      };
+
+      // Emit the updated record
+      this.latestRoomReadingsSubject.next(updatedRecord);
     });
   }
 }

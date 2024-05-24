@@ -89,7 +89,7 @@ public class DeviceReadingsService
         return _particlesRepository.GetPm100ReadingsFromDevice(deviceId, startTime, endTime);
     }
 
-    public LatestData GetLatestTemperatureReadingFromDevice(int deviceId)
+    public LatestData GetLatestReadingsFromDevice(int deviceId)
     {
         var latestReadings = new LatestData()
         {
