@@ -136,7 +136,7 @@ public class MqttClientSubscriber
             var connection = StateService.GetClient(user);
             if (!ReferenceEquals(connection, null))
             {
-                connection.Connection.SendDto(new ServerSendsLatestDeviceReadingsDto()
+                connection.Connection.SendDto(new ServerSendsLatestDeviceReadings()
                 {
                     Data = latestReadings
                 });

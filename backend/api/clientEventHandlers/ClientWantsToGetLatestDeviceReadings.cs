@@ -37,7 +37,7 @@ public class ClientWantsToGetLatestDeviceReadings : BaseEventHandler<ClientWants
 
         var data = _deviceReadingsService.GetLatestReadingsFromDevice(dto.DeviceId);
         
-        socket.SendDto(new ServerSendsLatestDeviceReadingsDto()
+        socket.SendDto(new ServerSendsLatestDeviceReadings()
         {
             Data = data
         });

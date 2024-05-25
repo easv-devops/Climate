@@ -37,7 +37,7 @@ public class ClientWantsToGetLatestRoomReadings : BaseEventHandler<ClientWantsTo
         
         var data = _roomReadingsService.GetLatestReadingsFromRoom(dto.RoomId);
         
-        socket.SendDto(new ServerSendsLatestRoomReadingsDto()
+        socket.SendDto(new ServerSendsLatestRoomReadings()
         {
             Data = data
         });
