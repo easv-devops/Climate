@@ -173,7 +173,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
     } else {
-      firstTimestamp = new Date().getTime()
+      firstTimestamp = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)).getTime(); // Add two hours for CEST
     }
     if (startTime.getTime() < firstTimestamp!) {
       switch (seriesName) {
