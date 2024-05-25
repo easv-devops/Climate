@@ -432,6 +432,18 @@ export class WebSocketConnectionService {
     this.temperatureRoomReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
       temperatureReadingsRecord = temperatureReadingsRecord || {};
       let existingReadings = temperatureReadingsRecord[dto.RoomId] || [];
+
+      // Check if there are existing readings
+      if (existingReadings.length > 0) {
+        // Check if the last reading in the existing readings has the same timestamp as the last reading in the new readings
+        const lastExistingReading = existingReadings[existingReadings.length - 1];
+        const lastNewReading = dto.TemperatureReadings[dto.TemperatureReadings.length - 1];
+        if (lastExistingReading && lastNewReading && lastExistingReading.TimeStamp === lastNewReading.TimeStamp) {
+          // If the timestamps match, remove the last reading from existing readings
+          existingReadings = existingReadings.slice(0, -1);
+        }
+      }
+
       existingReadings = existingReadings.concat(dto.TemperatureReadings);
 
       // Sortér læsningerne efter tidspunkt
@@ -452,6 +464,17 @@ export class WebSocketConnectionService {
 
       // Get the existing readings for the given DeviceId
       let existingReadings = humidityReadingsRecord[dto.RoomId] || [];
+
+      // Check if there are existing readings
+      if (existingReadings.length > 0) {
+        // Check if the last reading in the existing readings has the same timestamp as the last reading in the new readings
+        const lastExistingReading = existingReadings[existingReadings.length - 1];
+        const lastNewReading = dto.HumidityReadings[dto.HumidityReadings.length - 1];
+        if (lastExistingReading && lastNewReading && lastExistingReading.TimeStamp === lastNewReading.TimeStamp) {
+          // If the timestamps match, remove the last reading from existing readings
+          existingReadings = existingReadings.slice(0, -1);
+        }
+      }
 
       // Add the new readings to the existing readings
       existingReadings = existingReadings.concat(dto.HumidityReadings);
@@ -475,6 +498,17 @@ export class WebSocketConnectionService {
       // Get the existing readings for the given DeviceId
       let existingReadings = pm25ReadingsRecord[dto.RoomId] || [];
 
+      // Check if there are existing readings
+      if (existingReadings.length > 0) {
+        // Check if the last reading in the existing readings has the same timestamp as the last reading in the new readings
+        const lastExistingReading = existingReadings[existingReadings.length - 1];
+        const lastNewReading = dto.Pm25Readings[dto.Pm25Readings.length - 1];
+        if (lastExistingReading && lastNewReading && lastExistingReading.TimeStamp === lastNewReading.TimeStamp) {
+          // If the timestamps match, remove the last reading from existing readings
+          existingReadings = existingReadings.slice(0, -1);
+        }
+      }
+
       // Add the new readings to the existing readings
       existingReadings = existingReadings.concat(dto.Pm25Readings);
 
@@ -495,6 +529,18 @@ export class WebSocketConnectionService {
       pm100ReadingsRecord = pm100ReadingsRecord || {};
       // Get the existing readings for the given DeviceId
       let existingReadings = pm100ReadingsRecord[dto.RoomId] || [];
+
+      // Check if there are existing readings
+      if (existingReadings.length > 0) {
+        // Check if the last reading in the existing readings has the same timestamp as the last reading in the new readings
+        const lastExistingReading = existingReadings[existingReadings.length - 1];
+        const lastNewReading = dto.Pm100Readings[dto.Pm100Readings.length - 1];
+        if (lastExistingReading && lastNewReading && lastExistingReading.TimeStamp === lastNewReading.TimeStamp) {
+          // If the timestamps match, remove the last reading from existing readings
+          existingReadings = existingReadings.slice(0, -1);
+        }
+      }
+
       // Add the new readings to the existing readings
       existingReadings = existingReadings.concat(dto.Pm100Readings);
       // Sort the readings by timestamp
