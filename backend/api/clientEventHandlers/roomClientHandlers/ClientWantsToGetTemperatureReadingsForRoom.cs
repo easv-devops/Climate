@@ -5,6 +5,7 @@ using api.serverEventModels;
 using api.serverEventModels.roomDtos;
 using api.WebSocket;
 using Fleck;
+using infrastructure.Models;
 using lib;
 using service.services;
 
@@ -49,10 +50,16 @@ public class ClientWantsToGetTemperatureReadingsForRoom: BaseEventHandler<Client
         socket.SendDto(new ServerSendsTemperatureReadingsForRoom
         {
             RoomId = dto.RoomId,
-            TemperatureReadings = readings
+            Readings = readings
         });
 
         
         return Task.CompletedTask;
     }
+}
+
+public class ServerSendsTemperatureReadingsForRoom : BaseDto, IRoomReadingsDto
+{
+    public int RoomId { get; set; }
+    public IEnumerable<SensorDto>? Readings { get; set; }
 }

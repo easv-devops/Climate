@@ -3,8 +3,8 @@ using lib;
 
 namespace api.serverEventModels;
 
-public class ServerSendsTemperatureReadings : BaseDto
+public class ServerSendsTemperatureReadings : BaseDto, IDeviceReadingsDto
 {
     public int DeviceId { get; set; }
-    public IEnumerable<SensorDto>? TemperatureReadings { get; set; }
+    public IEnumerable<SensorDto>? Readings { get; set; }
 }

@@ -34,3 +34,15 @@ public class LatestReadingsDto
     public SensorDto? Particle25 { get; set; }
     public SensorDto? Particle100 { get; set; }
 }
+
+public interface IDeviceReadingsDto
+{
+    int DeviceId { get; set; }
+    IEnumerable<SensorDto>? Readings { get; set; }
+}
+
+public interface IRoomReadingsDto
+{
+    int RoomId { get; set; }
+    IEnumerable<SensorDto> Readings { get; set; }
+}

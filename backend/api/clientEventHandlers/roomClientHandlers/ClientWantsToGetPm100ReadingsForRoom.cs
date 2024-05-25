@@ -44,15 +44,15 @@ public class ClientWantsToGetPm100ReadingsForRoom : BaseEventHandler<ClientWants
         socket.SendDto(new ServerSendsPm100ReadingsForRoom
         {
             RoomId = dto.RoomId,
-            Pm100Readings = readings
+            Readings = readings
         });
 
         return Task.CompletedTask;
     }
 }
 
-public class ServerSendsPm100ReadingsForRoom: BaseDto
+public class ServerSendsPm100ReadingsForRoom: BaseDto, IRoomReadingsDto
 {
     public int RoomId { get; set; }
-    public IEnumerable<SensorDto> Pm100Readings { get; set; }
+    public IEnumerable<SensorDto> Readings { get; set; }
 }

@@ -3,8 +3,8 @@ using lib;
 
 namespace api.serverEventModels;
 
-public class ServerSendsPm100Readings : BaseDto
+public class ServerSendsPm100Readings : BaseDto, IDeviceReadingsDto
 {
     public int DeviceId { get; set; }
-    public IEnumerable<SensorDto>? Pm100Readings { get; set; }
+    public IEnumerable<SensorDto>? Readings { get; set; }
 }

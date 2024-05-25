@@ -31,14 +31,6 @@ export class RoomService {
   constructor() {
   }
 
-
-  getAllRooms() {
-    this.ws.socketConnection.sendDto(
-      new ClientWantsToGetAllRoomsDto({
-      })
-    )
-  }
-
   //todo send et rigtigt objekt med, men den virker
   createRoom(name: string){
     this.ws.socketConnection.sendDto(new ClientWantsToCreateRoomDto({
@@ -68,7 +60,7 @@ export class RoomService {
       RoomId: id,
       StartTime: start,
       EndTime: end,
-      Interval: 120,
+      Interval: 120
     });
 
     this.ws.socketConnection.sendDto(dto)
@@ -78,7 +70,8 @@ export class RoomService {
     var dto = new ClientWantsToGetHumidityReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
   }
@@ -87,7 +80,8 @@ export class RoomService {
     var dto = new ClientWantsToGetPm25ReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
   }
@@ -96,7 +90,8 @@ export class RoomService {
     var dto = new ClientWantsToGetPm100ReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
   }

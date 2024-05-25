@@ -46,7 +46,7 @@ public class ClientWantsToGetHumidityReadings : BaseEventHandler<ClientWantsToGe
         socket.SendDto(new ServerSendsHumidityReadings()
         {
             DeviceId = dto.DeviceId,
-            HumidityReadings = readings
+            Readings = readings
         });
 
         return Task.CompletedTask;

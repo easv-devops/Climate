@@ -2,11 +2,11 @@
 using api.clientEventHandlers.roomClientHandlers;
 using api.helpers;
 using api.serverEventModels;
-using api.serverEventModels.roomDtos;
 using api.WebSocket;
 using Fleck;
 using infrastructure;
 using infrastructure.Models;
+using lib;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Formatter;
@@ -92,31 +92,23 @@ public class MqttClientSubscriber
             var connection = StateService.GetClient(user);
             if (!ReferenceEquals(connection, null))
             {
-                connection.Connection.SendDto(new ServerSendsTemperatureReadings()
-                {
-                    DeviceId = messageObject.DeviceId,
-                    TemperatureReadings = messageObject.Data.Temperatures
-                });
-                
-                connection.Connection.SendDto(new ServerSendsHumidityReadings()
-                {
-                    DeviceId = messageObject.DeviceId,
-                    HumidityReadings = messageObject.Data.Humidities
-                });
-                
-                connection.Connection.SendDto(new ServerSendsPm25Readings()
-                {
-                    DeviceId = messageObject.DeviceId,
-                    Pm25Readings = messageObject.Data.Particles25
-                });
-                
-                connection.Connection.SendDto(new ServerSendsPm100Readings()
-                {
-                    DeviceId = messageObject.DeviceId,
-                    Pm100Readings = messageObject.Data.Particles100
-                });
+                SendDeviceReadings<ServerSendsTemperatureReadings>(connection, messageObject.DeviceId, messageObject.Data.Temperatures);
+                SendDeviceReadings<ServerSendsHumidityReadings>(connection, messageObject.DeviceId, messageObject.Data.Humidities);
+                SendDeviceReadings<ServerSendsPm25Readings>(connection, messageObject.DeviceId, messageObject.Data.Particles25);
+                SendDeviceReadings<ServerSendsPm100Readings>(connection, messageObject.DeviceId, messageObject.Data.Particles100);
             }
         }
+    }
+    
+    private void SendDeviceReadings<T>(WebSocketMetaData connection, int deviceId, IEnumerable<SensorDto> readings) 
+        where T : BaseDto, IDeviceReadingsDto, new()
+    {
+        var dto = new T
+        {
+            DeviceId = deviceId,
+            Readings = readings
+        };
+        connection.Connection.SendDto(dto);
     }
 
     private void SendLatestDeviceReadingsToClient(DeviceData messageObject)
@@ -155,64 +147,41 @@ public class MqttClientSubscriber
     private void SendRoomReadingsToClient(DeviceData messageObject)
     {
         var roomId = _deviceService.GetRoomIdFromDevice(messageObject.DeviceId);
-        
         // Sends the latest device readings to any active clients subscribed to the device
         var subscribedUserList = StateService.GetUsersForRoom(roomId);
 
         if (subscribedUserList.Count == 0)
             return; // No subscribed listeners, stop here.
 
-        var endTime = DateTime.Now.ToLocalTime();
-        var startTime = endTime - TimeSpan.FromMinutes(24 * 60); // Last 24 hours so it matches with chart data
-        
-        var temperatureReadings = _roomReadingsService.GetTemperatureReadingsFromRoom
-            (roomId, startTime, endTime, 120);
-        
-        var humidityReadings = _roomReadingsService.GetHumidityReadingsFromRoom
-            (roomId, startTime, endTime, 120);
-        
-        var pm25Readings = _roomReadingsService.GetPm25ReadingsFromRoom
-            (roomId, startTime, endTime, 120);
-        
-        var pm100Readings = _roomReadingsService.GetPm100ReadingsFromRoom
-            (roomId, startTime, endTime, 120);
+        var roomReadings = _roomReadingsService.GetAllReadingsFromRoom(roomId);
         
         foreach (var user in subscribedUserList)
         {
             var connection = StateService.GetClient(user);
             if (!ReferenceEquals(connection, null))
             {
-                connection.Connection.SendDto(new ServerSendsTemperatureReadingsForRoom()
-                {
-                    RoomId = roomId,
-                    TemperatureReadings = temperatureReadings
-                });
-                
-                connection.Connection.SendDto(new ServerSendsHumidityReadingsForRoom()
-                {
-                    RoomId = roomId,
-                    HumidityReadings = humidityReadings
-                });
-                
-                connection.Connection.SendDto(new ServerSendsPm25ReadingsForRoom()
-                {
-                    RoomId = roomId,
-                    Pm25Readings = pm25Readings
-                });
-                
-                connection.Connection.SendDto(new ServerSendsPm100ReadingsForRoom()
-                {
-                    RoomId = roomId,
-                    Pm100Readings = pm100Readings
-                });
+                SendRoomReadings<ServerSendsTemperatureReadingsForRoom>(connection, roomId, roomReadings.Temperatures);
+                SendRoomReadings<ServerSendsHumidityReadingsForRoom>(connection, roomId, roomReadings.Humidities);
+                SendRoomReadings<ServerSendsPm25ReadingsForRoom>(connection, roomId, roomReadings.Particles25);
+                SendRoomReadings<ServerSendsPm100ReadingsForRoom>(connection, roomId, roomReadings.Particles100);
             }
         }
+    }
+    
+    private void SendRoomReadings<T>(WebSocketMetaData connection, int roomId, IEnumerable<SensorDto> readings) 
+        where T : BaseDto, IRoomReadingsDto, new()
+    {
+        var dto = new T
+        {
+            RoomId = roomId,
+            Readings = readings
+        };
+        connection.Connection.SendDto(dto);
     }
     
     private void SendLatestRoomReadingsToClient(int deviceId)
     {
         var roomId = _deviceService.GetRoomIdFromDevice(deviceId);
-        
         // Sends the latest room readings to any active clients subscribed to the room
         var subscribedUserList = StateService.GetUsersForRoom(roomId);
 

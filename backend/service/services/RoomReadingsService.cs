@@ -171,4 +171,24 @@ public class RoomReadingsService
 
         return latestReadings;
     }
+
+    public DeviceReadingsDto GetAllReadingsFromRoom(int roomId)
+    {
+        var intervalMinutes = 120;
+        var endTime = DateTime.Now.ToLocalTime();
+        var startTime = endTime - TimeSpan.FromMinutes(24 * 60); // Last 24 hours so it matches with chart data
+        
+        var temperature = GetTemperatureReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var humidity = GetHumidityReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var pm25 = GetPm25ReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+        var pm100 = GetPm100ReadingsFromRoom(roomId, startTime, endTime, intervalMinutes);
+
+        return new DeviceReadingsDto()
+        {
+            Temperatures = temperature.ToList(),
+            Humidities = humidity.ToList(),
+            Particles25 = pm25.ToList(),
+            Particles100 = pm100.ToList()
+        };
+    }
 }
