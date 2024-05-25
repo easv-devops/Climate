@@ -112,58 +112,22 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
-        this.fetchDataFromLastTimestampToNow('Temperature');
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
-        this.fetchDataFromLastTimestampToNow('Humidity');
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('Temperature');
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
     }
     this.setTimeRange(this.activeOptionButton);
-  }
-
-  fetchDataFromLastTimestampToNow(seriesName: string) {
-    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
-    if (series && series.data.length > 0) {
-      let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
-
-      const startTime = new Date(lastTimestamp);
-      const endTime = new Date();
-
-      switch (seriesName) {
-        case 'Temperature':
-          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'Humidity':
-          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 2.5':
-          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 10':
-          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        default:
-          console.error('Invalid series name:', seriesName);
-          break;
-      }
-    }
   }
 
   fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {

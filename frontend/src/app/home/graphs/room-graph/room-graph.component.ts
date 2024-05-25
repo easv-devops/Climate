@@ -112,59 +112,22 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
-        this.fetchDataFromLastTimestampToNow('Temperature');
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
-        this.fetchDataFromLastTimestampToNow('Humidity');
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
         this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
         this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('Temperature');
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
     }
     this.setTimeRange(this.activeOptionButton);
-  }
-
-
-  fetchDataFromLastTimestampToNow(seriesName: string) {
-    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
-    if (series && series.data.length > 0) {
-      let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
-
-      const startTime = new Date(lastTimestamp);
-      const endTime = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)); // Add two hours for CEST
-
-      switch (seriesName) {
-        case 'Temperature':
-          this.roomService.getTemperatureByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'Humidity':
-          this.roomService.getHumidityByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 2.5':
-          this.roomService.getPm25ByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 10':
-          this.roomService.getPm100ByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        default:
-          console.error('Invalid series name:', seriesName);
-          break;
-      }
-    }
   }
 
   fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {
