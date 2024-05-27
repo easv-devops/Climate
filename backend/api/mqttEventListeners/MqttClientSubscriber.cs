@@ -17,6 +17,7 @@ namespace api.mqttEventListeners;
 public class MqttClientSubscriber
 {
     private DeviceReadingsService _readingsService;
+<<<<<<< Updated upstream
     private readonly RoomReadingsService _roomReadingsService;
     private readonly DeviceService _deviceService;
       private readonly AlertService _alertService;
@@ -27,33 +28,41 @@ public class MqttClientSubscriber
         _roomReadingsService = roomReadingsService;
         _deviceService = deviceService;
         _alertService = alertService;
+=======
+    private IMqttClient _mqttClient;
+    private MqttFactory _mqttFactory;
+    private MqttClientOptions _mqttClientOptions;
+
+    public MqttClientSubscriber(DeviceReadingsService readingsService)
+    {
+        _readingsService = readingsService;
+        _mqttFactory = new MqttFactory();
+        _mqttClient = _mqttFactory.CreateMqttClient();
+>>>>>>> Stashed changes
     }
     
-    public async Task CommunicateWithBroker()
+    public async Task ConnectToBroker()
     {
-
-        var mqttFactory = new MqttFactory();
-        var mqttClient = mqttFactory.CreateMqttClient();
-        
-        var mqttClientOptions = new MqttClientOptionsBuilder()
+        _mqttClientOptions = new MqttClientOptionsBuilder()
             .WithTcpServer("mqtt.flespi.io", 1883)
             .WithProtocolVersion(MqttProtocolVersion.V500)
-            .WithCredentials(await KeyVaultService.GetMqttToken(), "")
+            .WithCredentials("FlespiToken iNAXKnfDnzPMgOqTfJkgYGOiYFdBDxhSdvH67RZK7r488rKRNG3EdqgFX9NYSW4T", "")
             .Build();
 
-        await mqttClient.ConnectAsync(mqttClientOptions, CancellationToken.None);
+        await _mqttClient.ConnectAsync(_mqttClientOptions, CancellationToken.None);
 
-        var mqttSubscribeOptions = mqttFactory.CreateSubscribeOptionsBuilder()
+        var mqttSubscribeOptions = _mqttFactory.CreateSubscribeOptionsBuilder()
             .WithTopicFilter(f => f.WithTopic("Climate/#"))
             .Build();
 
-        await mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
+        await _mqttClient.SubscribeAsync(mqttSubscribeOptions, CancellationToken.None);
 
-        mqttClient.ApplicationMessageReceivedAsync += async e =>
+        _mqttClient.ApplicationMessageReceivedAsync += async e =>
         {
             try
             {
                 var message = e.ApplicationMessage.ConvertPayloadToString();
+<<<<<<< Updated upstream
            
                 var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
 
@@ -65,16 +74,14 @@ public class MqttClientSubscriber
                 SendLatestDeviceReadingsToClient(messageObject);
                 SendRoomReadingsToClient(messageObject);
                 SendLatestRoomReadingsToClient(messageObject.DeviceId);
+=======
+                DeviceData messageObject = JsonSerializer.Deserialize<DeviceData>(message);
+                Console.WriteLine("messageObject: ");
+                Console.WriteLine(messageObject.DeviceId);
+                Console.WriteLine(messageObject.Data.Humidities[0].TimeStamp);
+>>>>>>> Stashed changes
                 
-                //todo check for current listeners in state service and call relevant server to client handlers
-                var pongMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic("response_topic")//todo do we want some confirm? 
-                    .WithPayload("yes we received the message, thank you very much, " +
-                                 "the websocket client(s) also has the data")
-                    .WithQualityOfServiceLevel(e.ApplicationMessage.QualityOfServiceLevel)
-                    .WithRetainFlag(e.ApplicationMessage.Retain)
-                    .Build();
-                await mqttClient.PublishAsync(pongMessage, CancellationToken.None);
+                _readingsService.CreateReadings(messageObject);
             }
             catch (Exception exc)
             {
@@ -83,6 +90,7 @@ public class MqttClientSubscriber
         };
     }
 
+<<<<<<< Updated upstream
     private void SendDeviceReadingsToClient(DeviceData messageObject)
     {
         // Sends the latest device readings to any active clients subscribed to the device
@@ -230,5 +238,23 @@ public class MqttClientSubscriber
                 });
             }
         }
+=======
+    public async Task SendMessageToBroker(SettingsDto settingsDto)
+    {
+        if (_mqttClient == null || !_mqttClient.IsConnected)
+        {
+            await ConnectToBroker();
+        }
+        
+        var jsonPayload = JsonSerializer.Serialize(settingsDto);
+        
+        var mqttMessage = new MqttApplicationMessageBuilder()
+            .WithTopic("Climate/" + settingsDto.Id + "/settings")
+            .WithPayload(jsonPayload)
+            .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+            .WithRetainFlag(false)
+            .Build();
+        await _mqttClient.PublishAsync(mqttMessage, CancellationToken.None);
+>>>>>>> Stashed changes
     }
 }

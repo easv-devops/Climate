@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using api.ClientEventFilters;
 using api.helpers;
+using api.mqttEventListeners;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
@@ -28,11 +29,13 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
     {
         private readonly DeviceService _deviceService;
         private readonly DeviceSettingsService _deviceSettingsService;
+        private MqttClientSubscriber _mqttClientSubscriber;
 
-        public ClientWantsToCreateDevice(DeviceService deviceService, DeviceSettingsService deviceSettingsService)
+        public ClientWantsToCreateDevice(DeviceService deviceService, DeviceSettingsService deviceSettingsService, MqttClientSubscriber mqttClientSubscriber)
         {
             _deviceService = deviceService;
             _deviceSettingsService = deviceSettingsService;
+            _mqttClientSubscriber = mqttClientSubscriber;
         }
 
 
@@ -62,23 +65,32 @@ public class ClientWantsToCreateDevice : BaseEventHandler<ClientWantsToCreateDev
             {
                 rangeSettings = _deviceSettingsService.CreateRangeSetting(dto.DeviceRange);
             }
+        
             
             StateService.AddDeviceSettings(rangeSettings);//adds the range settings to the state service 
+
+            SettingsDto deviceSettings;
             
             if (ReferenceEquals(dto.DeviceSettings, null)) //sets the settings if the users has not selected any
             {
-                _deviceSettingsService.CreateDeviceSettings(new SettingsDto
+                deviceSettings = new SettingsDto
                 {
                     Id = response.Id,
                     BMP280ReadingInterval = 2,
                     PMSReadingInterval = 5,
                     UpdateInterval = 10
-                });
+                };
+                
             }
             else
             {
-                _deviceSettingsService.CreateDeviceSettings(dto.DeviceSettings);
+                deviceSettings = dto.DeviceSettings;
             }
+            _deviceSettingsService.CreateDeviceSettings(deviceSettings);
+
+            //sends the new settings to the device
+            _mqttClientSubscriber.SendMessageToBroker(deviceSettings);
+
 
             //add user to state service for later use
             StateService.AddUserToDevice(response.Id, socket.ConnectionInfo.Id);

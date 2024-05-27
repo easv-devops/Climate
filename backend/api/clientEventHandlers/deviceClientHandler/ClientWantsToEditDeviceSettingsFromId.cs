@@ -1,6 +1,7 @@
 ﻿using System.Security.Authentication;
 using api.ClientEventFilters;
 using api.helpers;
+using api.mqttEventListeners;
 using api.WebSocket;
 using Fleck;
 using infrastructure.Models;
@@ -19,10 +20,13 @@ public class ClientWantsToEditDeviceSettingsDto : BaseDto
 public class ClientWantsToEditDeviceSettingsFromId : BaseEventHandler<ClientWantsToEditDeviceSettingsDto>
 {
     private readonly DeviceSettingsService _deviceSettingsService;
+    private readonly MqttClientSubscriber _mqttClientSubscriber;
 
-    public ClientWantsToEditDeviceSettingsFromId(DeviceSettingsService deviceSettingsService)
+
+    public ClientWantsToEditDeviceSettingsFromId(DeviceSettingsService deviceSettingsService, MqttClientSubscriber mqttClientSubscriber)
     {
         _deviceSettingsService = deviceSettingsService;
+        _mqttClientSubscriber = mqttClientSubscriber;
     }
     
     public override Task Handle(ClientWantsToEditDeviceSettingsDto dto, IWebSocketConnection socket)
@@ -34,6 +38,9 @@ public class ClientWantsToEditDeviceSettingsFromId : BaseEventHandler<ClientWant
         }
 
         var newSettings = _deviceSettingsService.EditSettings(dto.Settings);
+        
+        //sends the new settings to the device
+        _mqttClientSubscriber.SendMessageToBroker(dto.Settings);
 
         //return the is deleted bool
         socket.SendDto(new ServerSendsDeviceSettings

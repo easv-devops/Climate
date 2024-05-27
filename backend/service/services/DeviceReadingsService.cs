@@ -25,8 +25,8 @@ public class DeviceReadingsService
     
     public void CreateReadings(DeviceData deviceReadingsDto)
     {
-        var deviceId = deviceReadingsDto.DeviceId;
 
+        var deviceId = deviceReadingsDto.DeviceId;
         if (deviceReadingsDto.Data.Humidities.Any())
             _humidityRepository.SaveHumidityList(deviceId, deviceReadingsDto.Data.Humidities);
         else
