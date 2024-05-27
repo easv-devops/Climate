@@ -559,6 +559,7 @@ export class WebSocketConnectionService {
       // Emit the updated record
       this.latestRoomReadingsSubject.next(updatedRecord);
     });
+  }
 
   ServerSendsAlertList(dto: ServerSendsAlertList) {
     this.alerts.pipe(take(1)).subscribe(alertList => {
