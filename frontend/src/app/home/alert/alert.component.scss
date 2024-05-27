@@ -1,0 +1,75 @@
+
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px; /* Tilføj passende mængde padding omkring tabellen */
+}
+/* Stil for overskrifter i tabellen */
+.header-row ion-col {
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  color: black; /* Sort skriftfarve */
+}
+
+.header-row ion-col:not(:first-child) {
+  border-left: 1px solid #ccc;
+  padding-left: 10px; /* Juster padding efter behov */
+}
+
+/* Stil for rækker i tabellen */
+.data-row ion-col {
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1px solid #ccc;
+  color: black; /* Sort skriftfarve */
+}
+
+/* Tilføj en hover-effekt til rækkerne for at indikere at de kan interageres med */
+.data-row:hover {
+  background-color: #f0f0f0;
+}
+
+/* Tilpas ion-content for at begrænse højden */
+.content {
+  padding: 10px; /* Tilføj polstring efter behov */
+}
+
+.data-row ion-col:hover {
+  background-color: #f0f0f0;
+}
+
+
+.filter-bar {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+  position: relative;
+}
+
+.filter-dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 10px;
+}
+
+.filter-dropdown ion-item {
+  cursor: pointer;
+}
+
+.filter-bar ion-button {
+  display: flex;
+  align-items: center;
+}
+
+.filter-bar ion-icon {
+  margin-right: 5px;
+}
+

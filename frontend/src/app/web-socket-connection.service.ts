@@ -13,6 +13,7 @@ import {
 import {BehaviorSubject, Observable, take} from "rxjs";
 import {ErrorHandlingService} from "./error-handling.service";
 import {
+  AlertDto,
   CountryCode,
   Device,
   DeviceRange,
@@ -37,6 +38,8 @@ import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingMo
 import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
 import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
+import {ServerSendsAlertList} from "../models/ServerSendsAlertList";
+import {ServerSendsAlert} from "../models/ServerSendsAlert";
 
 
 @Injectable({providedIn: 'root'})
@@ -118,6 +121,10 @@ export class WebSocketConnectionService {
 
   private pm100RoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100RoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100RoomReadingsSubject.asObservable();
+
+  // Observable for alerts
+  private alertsSubject = new BehaviorSubject<AlertDto[] | undefined>(undefined);
+  alerts: Observable<AlertDto[] | undefined> = this.alertsSubject.asObservable();
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -481,5 +488,31 @@ export class WebSocketConnectionService {
       // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
     });
+  }
+
+  ServerSendsAlertList(dto: ServerSendsAlertList) {
+    this.alerts.pipe(take(1)).subscribe(alertList => {
+      if (!alertList) {
+        alertList = [];
+      }
+
+      dto.Alerts?.forEach(alert => {
+        alertList?.push(alert)
+      });
+
+      this.alertsSubject.next(alertList);
+    });
+  }
+
+  ServerSendsAlert(dto: ServerSendsAlert) {
+    this.alerts.pipe(take(1)).subscribe(alertList => {
+      if(alertList) {
+        const updatedAlertList = alertList.map(alert => {
+          return alert.Id === dto.Alert.Id ? dto.Alert : alert;
+        });
+
+        this.alertsSubject.next(updatedAlertList);
+      }
+    })
   }
 }

@@ -1,0 +1,55 @@
+<ion-content>
+  <div class="filter-bar">
+    <ion-button (click)="toggleFilterDropdown()">
+      <ion-icon name="funnel-outline"></ion-icon>
+      Filter
+    </ion-button>
+    <ion-list *ngIf="showFilterDropdown" class="filter-dropdown">
+      <ion-item (click)="filterByIsRead(null)">All</ion-item>
+      <ion-item (click)="filterByIsRead(true)">Read</ion-item>
+      <ion-item (click)="filterByIsRead(false)">Unread</ion-item>
+    </ion-list>
+  </div>
+
+  <div class="table-container">
+    <ion-grid>
+      <ion-row class="header-row">
+        <ion-col size="1" (click)="sortBy('IsRead')">
+          <span>Read</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['IsRead'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['IsRead'] === 'desc'"></ion-icon>
+        </ion-col>
+        <ion-col size="2" (click)="sortBy('DeviceName')">
+          <span>Device</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['DeviceName'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['DeviceName'] === 'desc'"></ion-icon>
+        </ion-col>
+        <ion-col size="4" (click)="sortBy('Description')">
+          <span>Description</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['Description'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['Description'] === 'desc'"></ion-icon>
+        </ion-col>
+        <ion-col size="3" (click)="sortBy('RoomName')">
+          <span>Room</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['RoomName'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['RoomName'] === 'desc'"></ion-icon>
+        </ion-col>
+        <ion-col size="2" (click)="sortBy('Timestamp')">
+          <span>Time</span>
+          <ion-icon name="caret-up-outline" *ngIf="sortByOrder['Timestamp'] === 'asc'"></ion-icon>
+          <ion-icon name="caret-down-outline" *ngIf="sortByOrder['Timestamp'] === 'desc'"></ion-icon>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="data-row" *ngFor="let alert of sortedAlerts">
+        <ion-col size="1">
+          <ion-checkbox [(ngModel)]="alert.IsRead" (ionChange)="onAlertReadChange(alert)"></ion-checkbox>
+        </ion-col>
+        <ion-col size="2">{{ alert.DeviceName }}</ion-col>
+        <ion-col size="4">{{ alert.Description }}</ion-col>
+        <ion-col size="3">{{ alert.RoomName }}</ion-col>
+        <ion-col size="2">{{ alert.Timestamp }}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>
