@@ -19,12 +19,14 @@ public class MqttClientSubscriber
     private DeviceReadingsService _readingsService;
     private readonly RoomReadingsService _roomReadingsService;
     private readonly DeviceService _deviceService;
+      private readonly AlertService _alertService;
     
-    public MqttClientSubscriber(DeviceReadingsService readingsService, RoomReadingsService roomReadingsService, DeviceService deviceService)
+    public MqttClientSubscriber(DeviceReadingsService readingsService, RoomReadingsService roomReadingsService, DeviceService deviceService, AlertService alertService)
     {
         _readingsService = readingsService;
         _roomReadingsService = roomReadingsService;
         _deviceService = deviceService;
+        _alertService = alertService;
     }
     
     public async Task CommunicateWithBroker()
@@ -56,6 +58,8 @@ public class MqttClientSubscriber
                 var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
 
                 _readingsService.CreateReadings(messageObject);
+
+                ScreenReadings(messageObject);
                 
                 SendDeviceReadingsToClient(messageObject);
                 SendLatestDeviceReadingsToClient(messageObject);
@@ -203,6 +207,28 @@ public class MqttClientSubscriber
             }
         }
     }
+
+    private void ScreenReadings(DeviceData messageObject)
+    {
+        // Screens all readings for values out of range, and creates alerts in db
+        var alerts = _alertService.ScreenReadings(messageObject);
+        
+        if(alerts.Count == 0)
+            return; // No need to send an empty list
+        
+        // Sends all new alerts to any active clients subscribed to the device that sent readings
+        var subscribedUserList = StateService.GetUsersForDevice(messageObject.DeviceId);
+
+        foreach (var user in subscribedUserList)
+        {
+            var connection = StateService.GetClient(user);
+            if (!ReferenceEquals(connection, null))
+            {
+                connection.Connection.SendDto(new ServerSendsAlertList()
+                {
+                    Alerts = alerts
+                });
+            }
+        }
+    }
 }
-
-

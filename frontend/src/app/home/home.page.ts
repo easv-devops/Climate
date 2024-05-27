@@ -3,6 +3,7 @@ import {Device, Room} from "../../models/Entities";
 import {Subject, takeUntil} from "rxjs";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {WebSocketConnectionService} from "../web-socket-connection.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -17,7 +18,8 @@ export class HomePage implements OnInit {
   menuItems?: MenuItem[];
 
   constructor(private breakpointObserver: BreakpointObserver,
-              private ws: WebSocketConnectionService) {
+              private ws: WebSocketConnectionService,
+              private router: Router) {
     this.breakpointObserver.observe([
       Breakpoints.Handset, Breakpoints.Tablet
     ]).subscribe(result => {
@@ -34,6 +36,10 @@ export class HomePage implements OnInit {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  navigateToAlerts() {
+    this.router.navigate(["alerts"])
   }
 
 
@@ -114,6 +120,8 @@ export class HomePage implements OnInit {
       this.roomMenuItem.subItems = [];
     }
   }
+
+
 }
 
 interface MenuItem {
