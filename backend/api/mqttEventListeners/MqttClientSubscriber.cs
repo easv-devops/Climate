@@ -17,29 +17,28 @@ namespace api.mqttEventListeners;
 public class MqttClientSubscriber
 {
     private DeviceReadingsService _readingsService;
-<<<<<<< Updated upstream
+
     private readonly RoomReadingsService _roomReadingsService;
     private readonly DeviceService _deviceService;
       private readonly AlertService _alertService;
-    
-    public MqttClientSubscriber(DeviceReadingsService readingsService, RoomReadingsService roomReadingsService, DeviceService deviceService, AlertService alertService)
-    {
-        _readingsService = readingsService;
-        _roomReadingsService = roomReadingsService;
-        _deviceService = deviceService;
-        _alertService = alertService;
-=======
-    private IMqttClient _mqttClient;
-    private MqttFactory _mqttFactory;
-    private MqttClientOptions _mqttClientOptions;
 
-    public MqttClientSubscriber(DeviceReadingsService readingsService)
-    {
-        _readingsService = readingsService;
-        _mqttFactory = new MqttFactory();
-        _mqttClient = _mqttFactory.CreateMqttClient();
->>>>>>> Stashed changes
-    }
+      private IMqttClient _mqttClient;
+      private MqttFactory _mqttFactory;
+      private MqttClientOptions _mqttClientOptions;
+
+      public MqttClientSubscriber(DeviceReadingsService readingsService, RoomReadingsService roomReadingsService,
+          DeviceService deviceService, AlertService alertService)
+      {
+          _readingsService = readingsService;
+          _roomReadingsService = roomReadingsService;
+          _deviceService = deviceService;
+          _alertService = alertService;
+          
+ 
+          _mqttFactory = new MqttFactory();
+          _mqttClient = _mqttFactory.CreateMqttClient();
+      }
+      
     
     public async Task ConnectToBroker()
     {
@@ -62,8 +61,7 @@ public class MqttClientSubscriber
             try
             {
                 var message = e.ApplicationMessage.ConvertPayloadToString();
-<<<<<<< Updated upstream
-           
+
                 var messageObject = JsonSerializer.Deserialize<DeviceData>(message);
 
                 _readingsService.CreateReadings(messageObject);
@@ -74,12 +72,7 @@ public class MqttClientSubscriber
                 SendLatestDeviceReadingsToClient(messageObject);
                 SendRoomReadingsToClient(messageObject);
                 SendLatestRoomReadingsToClient(messageObject.DeviceId);
-=======
-                DeviceData messageObject = JsonSerializer.Deserialize<DeviceData>(message);
-                Console.WriteLine("messageObject: ");
-                Console.WriteLine(messageObject.DeviceId);
-                Console.WriteLine(messageObject.Data.Humidities[0].TimeStamp);
->>>>>>> Stashed changes
+
                 
                 _readingsService.CreateReadings(messageObject);
             }
@@ -89,8 +82,7 @@ public class MqttClientSubscriber
             }
         };
     }
-
-<<<<<<< Updated upstream
+    
     private void SendDeviceReadingsToClient(DeviceData messageObject)
     {
         // Sends the latest device readings to any active clients subscribed to the device
@@ -220,10 +212,10 @@ public class MqttClientSubscriber
     {
         // Screens all readings for values out of range, and creates alerts in db
         var alerts = _alertService.ScreenReadings(messageObject);
-        
-        if(alerts.Count == 0)
+
+        if (alerts.Count == 0)
             return; // No need to send an empty list
-        
+
         // Sends all new alerts to any active clients subscribed to the device that sent readings
         var subscribedUserList = StateService.GetUsersForDevice(messageObject.DeviceId);
 
@@ -238,7 +230,8 @@ public class MqttClientSubscriber
                 });
             }
         }
-=======
+    }
+
     public async Task SendMessageToBroker(SettingsDto settingsDto)
     {
         if (_mqttClient == null || !_mqttClient.IsConnected)
@@ -255,6 +248,6 @@ public class MqttClientSubscriber
             .WithRetainFlag(false)
             .Build();
         await _mqttClient.PublishAsync(mqttMessage, CancellationToken.None);
->>>>>>> Stashed changes
+
     }
 }
