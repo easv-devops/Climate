@@ -20,3 +20,29 @@ public class DeviceData
     public int DeviceId { get; set; }
     public DeviceReadingsDto Data { get; set; }
 }
+
+public class LatestData
+{
+    public int Id { get; set; } // DeviceId (og RoomId hvis den skal bruges til at sende RoomAvg)
+    public LatestReadingsDto? Data { get; set; }
+}
+
+public class LatestReadingsDto
+{
+    public SensorDto? Temperature { get; set; }
+    public SensorDto? Humidity { get; set; }
+    public SensorDto? Particle25 { get; set; }
+    public SensorDto? Particle100 { get; set; }
+}
+
+public interface IDeviceReadingsDto
+{
+    int DeviceId { get; set; }
+    IEnumerable<SensorDto>? Readings { get; set; }
+}
+
+public interface IRoomReadingsDto
+{
+    int RoomId { get; set; }
+    IEnumerable<SensorDto> Readings { get; set; }
+}

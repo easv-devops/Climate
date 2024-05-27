@@ -127,4 +127,23 @@ public class DeviceRepository
             throw new SqlTypeException("Failed to get device IDs for room", e);
         }
     }
+    
+    public int GetRoomIdFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+            string query = @"
+            SELECT RoomId
+            FROM Device
+            WHERE Id = @DeviceId;
+        ";
+            return connection.QueryFirstOrDefault<int>(query, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to get room ID for device", e);
+        }
+    }
 }

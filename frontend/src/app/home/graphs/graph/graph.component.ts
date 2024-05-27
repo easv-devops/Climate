@@ -4,6 +4,9 @@ import {WebSocketConnectionService} from '../../../web-socket-connection.service
 import {DeviceService} from '../../devices/device.service';
 import {BaseGraphComponent} from "../graphSuper.component";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {takeUntil} from "rxjs";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
 
 
 @Component({
@@ -13,6 +16,8 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 })
 export class GraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
+  latestReadings: LatestData | undefined;
+  isAvgReadings: boolean = false;
 
   constructor(private ws: WebSocketConnectionService,
               private deviceService: DeviceService,
@@ -31,7 +36,9 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     this.initChart();
 
     this.updateGraph('temperature'); // Show temperature as default
-    this.setTimeRange("1m");
+
+    this.subscribeToLatestReadings();
+    this.deviceService.getLatestReadings(this.idFromRoute!);
   }
 
   getDeviceFromRoute() {
@@ -105,58 +112,22 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
-        this.fetchDataFromLastTimestampToNow('Temperature');
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
-        this.fetchDataFromLastTimestampToNow('Humidity');
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureReadings, 'Temperature');
         this.subscribeToReadings(this.ws.humidityReadings, 'Humidity');
         this.subscribeToReadings(this.ws.pm25Readings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100Readings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('Temperature');
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
     }
     this.setTimeRange(this.activeOptionButton);
-  }
-
-  fetchDataFromLastTimestampToNow(seriesName: string) {
-    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
-    if (series && series.data.length > 0) {
-      let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
-
-      const startTime = new Date(lastTimestamp);
-      const endTime = new Date();
-
-      switch (seriesName) {
-        case 'Temperature':
-          this.deviceService.getTemperatureByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'Humidity':
-          this.deviceService.getHumidityByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 2.5':
-          this.deviceService.getPm25ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 10':
-          this.deviceService.getPm100ByDeviceId(this.idFromRoute!, startTime, endTime);
-          break;
-        default:
-          console.error('Invalid series name:', seriesName);
-          break;
-      }
-    }
   }
 
   fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {
@@ -165,7 +136,7 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
     } else {
-      firstTimestamp = new Date().getTime()
+      firstTimestamp = new Date().getTime() + (2 * 60 * 60 * 1000); // Add two hours for CEST
     }
     if (startTime.getTime() < firstTimestamp!) {
       switch (seriesName) {
@@ -186,6 +157,16 @@ export class GraphComponent extends BaseGraphComponent implements OnInit {
           break;
       }
     }
+  }
+
+  subscribeToLatestReadings() {
+    this.ws.latestDeviceReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(readings => {
+        if (readings) {
+          this.latestReadings = readings[this.idFromRoute!];
+        }
+      })
   }
 }
 

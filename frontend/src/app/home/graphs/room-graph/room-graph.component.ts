@@ -4,6 +4,10 @@ import {ActivatedRoute} from "@angular/router";
 import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
+import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../../models/ClientWantsToGetLatestRoomReadingsDto";
+import {takeUntil} from "rxjs";
 
 @Component({
   selector: 'app-room-graph',
@@ -12,6 +16,8 @@ import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 })
 export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
   isMobile: boolean | undefined;
+  latestReadings: LatestData | undefined;
+  isAvgReadings: boolean = true;
 
   constructor(private ws: WebSocketConnectionService,
               private roomService: RoomService,
@@ -30,7 +36,9 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     this.initChart();
 
     this.updateGraph('temperature'); // Show temperature as default
-    this.setTimeRange("1m");
+
+    this.subscribeToLatestReadings();
+    this.roomService.getLatestReadings(this.idFromRoute!);
   }
 
   getDeviceFromRoute() {
@@ -104,59 +112,22 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     switch (option) {
       case 'temperature':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
-        this.fetchDataFromLastTimestampToNow('Temperature');
         break;
       case 'humidity':
         this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
-        this.fetchDataFromLastTimestampToNow('Humidity');
         break;
       case 'pm':
         this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
       case 'all':
         this.subscribeToReadings(this.ws.temperatureRoomReadings, 'Temperature');
         this.subscribeToReadings(this.ws.humidityRoomReadings, 'Humidity');
         this.subscribeToReadings(this.ws.pm25RoomReadings, 'PM 2.5');
         this.subscribeToReadings(this.ws.pm100RoomReadings, 'PM 10');
-        this.fetchDataFromLastTimestampToNow('Temperature');
-        this.fetchDataFromLastTimestampToNow('Humidity');
-        this.fetchDataFromLastTimestampToNow('PM 2.5');
-        this.fetchDataFromLastTimestampToNow('PM 10');
         break;
     }
     this.setTimeRange(this.activeOptionButton);
-  }
-
-
-  fetchDataFromLastTimestampToNow(seriesName: string) {
-    const series = this.chartOptions.series.find((s: any) => s.name === seriesName);
-    if (series && series.data.length > 0) {
-      let lastTimestamp = Math.max(...series.data.map((point: any) => point.x));
-
-      const startTime = new Date(lastTimestamp);
-      const endTime = new Date();
-
-      switch (seriesName) {
-        case 'Temperature':
-          this.roomService.getTemperatureByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'Humidity':
-          this.roomService.getHumidityByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 2.5':
-          this.roomService.getPm25ByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        case 'PM 10':
-          this.roomService.getPm100ByRoomId(this.idFromRoute!, startTime, endTime);
-          break;
-        default:
-          console.error('Invalid series name:', seriesName);
-          break;
-      }
-    }
   }
 
   fetchOlderReadingsIfNeeded(seriesName: string, startTime: Date) {
@@ -165,7 +136,7 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     if (series) {
       firstTimestamp = Math.min(...series.data.map((point: any) => point.x));
     } else {
-      firstTimestamp = new Date().getTime()
+      firstTimestamp = new Date(new Date().getTime() + (2 * 60 * 60 * 1000)).getTime(); // Add two hours for CEST
     }
     if (startTime.getTime() < firstTimestamp!) {
       switch (seriesName) {
@@ -188,4 +159,13 @@ export class RoomGraphComponent extends BaseGraphComponent implements OnInit {
     }
   }
 
+  subscribeToLatestReadings() {
+    this.ws.latestRoomReadings
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(readings => {
+        if (readings) {
+          this.latestReadings = readings[this.idFromRoute!];
+        }
+      })
+  }
 }

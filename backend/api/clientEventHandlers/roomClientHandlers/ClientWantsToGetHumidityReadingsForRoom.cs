@@ -44,15 +44,15 @@ public class ClientWantsToGetHumidityReadingsForRoom : BaseEventHandler<ClientWa
         socket.SendDto(new ServerSendsHumidityReadingsForRoom
         {
             RoomId = dto.RoomId,
-            HumidityReadings = readings
+            Readings = readings
         });
 
         return Task.CompletedTask;
     }
 }
 
-public class ServerSendsHumidityReadingsForRoom : BaseDto
+public class ServerSendsHumidityReadingsForRoom : BaseDto, IRoomReadingsDto
 {
     public int RoomId { get; set; }
-    public IEnumerable<SensorDto> HumidityReadings { get; set; }
+    public IEnumerable<SensorDto> Readings { get; set; }
 }

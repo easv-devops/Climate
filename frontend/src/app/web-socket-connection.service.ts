@@ -18,7 +18,7 @@ import {
   Device,
   DeviceRange,
   DeviceRangeDto, DeviceSettingDto,
-  DeviceSettings,
+  DeviceSettings, LatestData,
   Room,
   SensorDto
 } from "../models/Entities";
@@ -38,8 +38,11 @@ import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingMo
 import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
 import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
+import {ServerSendsLatestDeviceReadingsDto} from "../models/ServerSendsLatestDeviceReadingsDto";
+import {ServerSendsLatestRoomReadingsDto} from "../models/ServerSendsLatestRoomReadingsDto";
 import {ServerSendsAlertList} from "../models/ServerSendsAlertList";
 import {ServerSendsAlert} from "../models/ServerSendsAlert";
+
 
 
 @Injectable({providedIn: 'root'})
@@ -105,6 +108,8 @@ export class WebSocketConnectionService {
   private pm100ReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100Readings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100ReadingsSubject.asObservable();
 
+  private latestDeviceReadingsSubject = new BehaviorSubject<Record<number, LatestData> | undefined>(undefined);
+  latestDeviceReadings: Observable<Record<number, LatestData> | undefined> = this.latestDeviceReadingsSubject.asObservable();
 
   /**
    * observables for room readings
@@ -122,9 +127,13 @@ export class WebSocketConnectionService {
   private pm100RoomReadingsSubject = new BehaviorSubject<Record<number, SensorDto[]> | undefined>(undefined);
   pm100RoomReadings: Observable<Record<number, SensorDto[]> | undefined> = this.pm100RoomReadingsSubject.asObservable();
 
+  private latestRoomReadingsSubject = new BehaviorSubject<Record<number, LatestData> | undefined>(undefined);
+  latestRoomReadings: Observable<Record<number, LatestData> | undefined> = this.latestRoomReadingsSubject.asObservable();
+
   // Observable for alerts
   private alertsSubject = new BehaviorSubject<AlertDto[] | undefined>(undefined);
   alerts: Observable<AlertDto[] | undefined> = this.alertsSubject.asObservable();
+  
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -332,7 +341,7 @@ export class WebSocketConnectionService {
       let existingReadings = temperatureReadingsRecord[dto.DeviceId] || [];
 
       // Tilføj de nye læsninger til de eksisterende læsninger
-      existingReadings = existingReadings.concat(dto.TemperatureReadings);
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sortér læsningerne efter tidspunkt
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -354,7 +363,7 @@ export class WebSocketConnectionService {
       let existingReadings = humidityReadingsRecord[dto.DeviceId] || [];
 
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.HumidityReadings);
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -376,7 +385,7 @@ export class WebSocketConnectionService {
       let existingReadings = pm25ReadingsRecord[dto.DeviceId] || [];
 
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.Pm25Readings);
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -396,13 +405,29 @@ export class WebSocketConnectionService {
       // Get the existing readings for the given DeviceId
       let existingReadings = pm100ReadingsRecord[dto.DeviceId] || [];
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.Pm100Readings);
+      existingReadings = existingReadings.concat(dto.Readings);
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
       // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
       pm100ReadingsRecord[dto.DeviceId] = existingReadings;
       // Update pm100ReadingsSubject with the updated pm100ReadingsRecord
       this.pm100ReadingsSubject.next(pm100ReadingsRecord);
+    });
+  }
+
+  ServerSendsLatestDeviceReadings(dto: ServerSendsLatestDeviceReadingsDto) {
+    this.latestDeviceReadings.pipe(take(1)).subscribe(latestDeviceRecord => {
+      // Initialize the record if it is undefined
+      const updatedRecord: Record<number, LatestData> = latestDeviceRecord ? { ...latestDeviceRecord } : {};
+
+      // Create or update the entry for the device
+      updatedRecord[dto.Data.Id] = {
+        Id: dto.Data.Id,
+        Data: dto.Data.Data,
+      };
+
+      // Emit the updated record
+      this.latestDeviceReadingsSubject.next(updatedRecord);
     });
   }
 
@@ -416,7 +441,10 @@ export class WebSocketConnectionService {
     this.temperatureRoomReadings.pipe(take(1)).subscribe(temperatureReadingsRecord => {
       temperatureReadingsRecord = temperatureReadingsRecord || {};
       let existingReadings = temperatureReadingsRecord[dto.RoomId] || [];
-      existingReadings = existingReadings.concat(dto.TemperatureReadings);
+
+      existingReadings = this.removeDuplicateTimestamp(existingReadings, dto.Readings);
+
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sortér læsningerne efter tidspunkt
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -437,8 +465,10 @@ export class WebSocketConnectionService {
       // Get the existing readings for the given DeviceId
       let existingReadings = humidityReadingsRecord[dto.RoomId] || [];
 
+      existingReadings = this.removeDuplicateTimestamp(existingReadings, dto.Readings);
+
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.HumidityReadings);
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -459,8 +489,10 @@ export class WebSocketConnectionService {
       // Get the existing readings for the given DeviceId
       let existingReadings = pm25ReadingsRecord[dto.RoomId] || [];
 
+      existingReadings = this.removeDuplicateTimestamp(existingReadings, dto.Readings);
+
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.Pm25Readings);
+      existingReadings = existingReadings.concat(dto.Readings);
 
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
@@ -479,8 +511,11 @@ export class WebSocketConnectionService {
       pm100ReadingsRecord = pm100ReadingsRecord || {};
       // Get the existing readings for the given DeviceId
       let existingReadings = pm100ReadingsRecord[dto.RoomId] || [];
+
+      existingReadings = this.removeDuplicateTimestamp(existingReadings, dto.Readings);
+
       // Add the new readings to the existing readings
-      existingReadings = existingReadings.concat(dto.Pm100Readings);
+      existingReadings = existingReadings.concat(dto.Readings);
       // Sort the readings by timestamp
       existingReadings.sort((a, b) => new Date(a.TimeStamp).getTime() - new Date(b.TimeStamp).getTime());
       // Update pm100ReadingsRecord with the updated readings for the specific DeviceId
@@ -489,6 +524,41 @@ export class WebSocketConnectionService {
       this.pm100RoomReadingsSubject.next(pm100ReadingsRecord);
     });
   }
+
+
+  /**
+   * Since we are averaging readings in a 120 minute interval, it's likely to produce a new SensorDto with
+   * a duplicated Timestamp that now has a new Value. This method checks for old values and removes them.
+   */
+  private removeDuplicateTimestamp(existingReadings: SensorDto[], newReadings: SensorDto[]): SensorDto[] {
+    // Check if there are existing readings
+    if (existingReadings.length > 0) {
+      // Check if the last reading in the existing readings has the same timestamp as the last reading in the new readings
+      const lastExistingReading = existingReadings[existingReadings.length - 1];
+      const lastNewReading = newReadings[newReadings.length - 1];
+      if (lastExistingReading && lastNewReading && lastExistingReading.TimeStamp === lastNewReading.TimeStamp) {
+        // If the timestamps match, remove the last reading from existing readings
+        existingReadings = existingReadings.slice(0, -1);
+      }
+    }
+
+    return existingReadings;
+  }
+
+  ServerSendsLatestRoomReadings(dto: ServerSendsLatestRoomReadingsDto) {
+    this.latestRoomReadings.pipe(take(1)).subscribe(latestRoomRecord => {
+      // Initialize the record if it is undefined
+      const updatedRecord: Record<number, LatestData> = latestRoomRecord ? { ...latestRoomRecord } : {};
+
+      // Create or update the entry for the room
+      updatedRecord[dto.Data.Id] = {
+        Id: dto.Data.Id,
+        Data: dto.Data.Data,
+      };
+
+      // Emit the updated record
+      this.latestRoomReadingsSubject.next(updatedRecord);
+    });
 
   ServerSendsAlertList(dto: ServerSendsAlertList) {
     this.alerts.pipe(take(1)).subscribe(alertList => {

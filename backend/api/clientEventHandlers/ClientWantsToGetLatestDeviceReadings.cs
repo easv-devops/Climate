@@ -10,28 +10,23 @@ using service.services;
 
 namespace api.clientEventHandlers;
 
-public class ClientWantsToGetTemperatureReadingsDto : BaseDto
+public class ClientWantsToGetLatestDeviceReadingsDto : BaseDto
 {
     [Required(ErrorMessage = "Device Id is required")]
     public int DeviceId { get; set; }
-    
-    public DateTime? StartTime { get; set; }
-    
-    public DateTime? EndTime { get; set; }
-
 }
 
 [RequireAuthentication]
 [ValidateDataAnnotations]
-public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsToGetTemperatureReadingsDto>
+public class ClientWantsToGetLatestDeviceReadings : BaseEventHandler<ClientWantsToGetLatestDeviceReadingsDto>
 {
     private readonly DeviceReadingsService _deviceReadingsService;
-    public ClientWantsToGetTemperatureReadings(DeviceReadingsService deviceReadingsService)
+    
+    public ClientWantsToGetLatestDeviceReadings(DeviceReadingsService deviceReadingsService)
     {
         _deviceReadingsService = deviceReadingsService;
     }
-
-    public override Task Handle(ClientWantsToGetTemperatureReadingsDto dto, IWebSocketConnection socket)
+    public override Task Handle(ClientWantsToGetLatestDeviceReadingsDto dto, IWebSocketConnection socket)
     {
         var guid = socket.ConnectionInfo.Id;
 
@@ -39,14 +34,12 @@ public class ClientWantsToGetTemperatureReadings : BaseEventHandler<ClientWantsT
         {
             throw new AuthenticationException("Only the owner of device #"+dto.DeviceId+" has access to this information");
         }
+
+        var data = _deviceReadingsService.GetLatestReadingsFromDevice(dto.DeviceId);
         
-        var readings =
-            _deviceReadingsService.GetTemperatureReadingsFromDevice(dto.DeviceId, dto.StartTime , dto.EndTime);
-        
-        socket.SendDto(new ServerSendsTemperatureReadings
+        socket.SendDto(new ServerSendsLatestDeviceReadings()
         {
-            DeviceId = dto.DeviceId,
-            Readings = readings
+            Data = data
         });
 
         return Task.CompletedTask;

@@ -88,4 +88,21 @@ public class DeviceReadingsService
     {
         return _particlesRepository.GetPm100ReadingsFromDevice(deviceId, startTime, endTime);
     }
+
+    public LatestData GetLatestReadingsFromDevice(int deviceId)
+    {
+        var latestReadings = new LatestData()
+        {
+            Id = deviceId,
+            Data = new LatestReadingsDto()
+            {
+                Temperature = _temperatureRepository.GetLatestTemperatureReadingFromDevice(deviceId),
+                Humidity = _humidityRepository.GetLatestHumidityReadingFromDevice(deviceId),
+                Particle25 = _particlesRepository.GetLatestP25ReadingFromDevice(deviceId),
+                Particle100 = _particlesRepository.GetLatestP100ReadingFromDevice(deviceId)
+            }
+        };
+        
+        return latestReadings;
+    }
 }

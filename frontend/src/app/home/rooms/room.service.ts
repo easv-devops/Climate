@@ -4,10 +4,6 @@ import {ClientWantsToGetAllRoomsDto} from "../../../models/roomModels/clientWant
 import {ClientWantsToCreateRoomDto} from "../../../models/roomModels/ClientWantsToCreateRoomDto";
 import {ClientWantsToEditRoomDto} from "../../../models/roomModels/ClientWantsToEditRoomDto";
 import {ClientWantsToDeleteRoomDto} from "../../../models/roomModels/ClientWantsToDeleteRoomDto";
-import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
-import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
-import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
-import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
 import {
   ClientWantsToGetTemperatureReadingsForRoomDto
 } from "../../../models/roomModels/roomReadingModels/ClientWantsToGetTemperatureReadingsForRoomDto";
@@ -20,6 +16,10 @@ import {
 import {
   ClientWantsToGetPm100ReadingsForRoomDto
 } from "../../../models/roomModels/roomReadingModels/ClientWantsToGetPm100ReadingsForRoomDto";
+import {LatestData} from "../../../models/Entities";
+import {take} from "rxjs";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../models/ClientWantsToGetLatestRoomReadingsDto";
 
 
 @Injectable({
@@ -29,14 +29,6 @@ export class RoomService {
   private ws: WebSocketConnectionService = inject(WebSocketConnectionService);
 
   constructor() {
-  }
-
-
-  getAllRooms() {
-    this.ws.socketConnection.sendDto(
-      new ClientWantsToGetAllRoomsDto({
-      })
-    )
   }
 
   //todo send et rigtigt objekt med, men den virker
@@ -68,7 +60,7 @@ export class RoomService {
       RoomId: id,
       StartTime: start,
       EndTime: end,
-      Interval: 120,
+      Interval: 120
     });
 
     this.ws.socketConnection.sendDto(dto)
@@ -78,7 +70,8 @@ export class RoomService {
     var dto = new ClientWantsToGetHumidityReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
   }
@@ -87,7 +80,8 @@ export class RoomService {
     var dto = new ClientWantsToGetPm25ReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
   }
@@ -96,8 +90,27 @@ export class RoomService {
     var dto = new ClientWantsToGetPm100ReadingsForRoomDto({
       RoomId: id,
       StartTime: start,
-      EndTime: end
+      EndTime: end,
+      Interval: 120
     });
     this.ws.socketConnection.sendDto(dto)
+  }
+
+  getLatestReadings(roomId: number): LatestData | undefined {
+    this.ws.latestRoomReadings
+      .pipe(take(1))
+      .subscribe(readings => {
+        if (readings && readings[roomId]) {
+          // If our record already holds latest readings for this room, return that
+          return readings[roomId!];
+        } else {
+          // If not, request it from backend
+          this.ws.socketConnection.sendDto(new ClientWantsToGetLatestRoomReadingsDto({
+            RoomId: roomId
+          }))
+          return undefined;
+        }
+      })
+    return undefined;
   }
 }

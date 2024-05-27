@@ -3,5 +3,5 @@ import {SensorDto} from "../../Entities";
 
 export class ServerSendsHumidityReadingsForRoom extends BaseDto<ServerSendsHumidityReadingsForRoom> {
   RoomId!: number;
-  HumidityReadings!: SensorDto[];
+  Readings!: SensorDto[];
 }

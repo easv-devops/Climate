@@ -40,4 +40,9 @@ public class DeviceService
     {
         return _deviceRepository.GetDeviceIdsForRoom(roomId);
     }
+
+    public int GetRoomIdFromDevice(int deviceId)
+    {
+        return _deviceRepository.GetRoomIdFromDevice(deviceId);
+    }
 }

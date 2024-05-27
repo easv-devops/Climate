@@ -93,4 +93,33 @@ public class TemperatureRepository
             throw new SqlTypeException("Failed to retrieve temperature readings from device " + deviceId, e);
         }
     }
+    
+    public SensorDto GetLatestTemperatureReadingFromDevice(int deviceId)
+    {
+        using var connection = new MySqlConnection(_connectionString);
+        try
+        {
+            connection.Open();
+        
+            var sql = @"
+                SELECT 
+                    Timestamp AS TimeStamp,
+                    Temperature AS Value
+                FROM 
+                    ReadingTemperature 
+                WHERE 
+                    DeviceId = @deviceId
+                ORDER BY 
+                    Timestamp DESC
+                LIMIT 1;
+            ";
+
+            return connection.QueryFirstOrDefault<SensorDto>(sql, new { DeviceId = deviceId });
+        }
+        catch (Exception e)
+        {
+            throw new SqlTypeException("Failed to retrieve the latest temperature reading from device " + deviceId, e);
+        }
+    }
+
 }
