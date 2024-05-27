@@ -89,6 +89,38 @@ public class AlertTests
     }
     
     [Test]
+    public async Task ClientWantsToGetAlertsTest()
+    {
+        var ws = await new WebSocketTestClient().ConnectAsync();
+
+        // Arrange: Log in and mock new device data
+        ws.Send(new ClientWantsToSignInDto
+        {
+            email = "user@example.com",
+            password = "12345678"
+        });
+
+        var deviceData = GenerateDeviceData(1, 20, 50, 5, 20); // P100 too high
+        
+        ws.Send(new ClientWantsToCreateAlertDto()
+        {
+            DeviceData = deviceData
+        });
+        
+        // Act: Get unread alerts
+        await ws.DoAndAssert(new ClientWantsToGetAlertsDto()
+        {
+            IsRead = false
+        }, fromServer =>
+        {
+            return fromServer.Count(dto => dto.eventType == nameof(ServerSendsAlertList)) == 3; 
+            // First ServerSendsAlertList is triggered on login.
+            // Second from ClientWantsToCreateAlertDto.
+            // Third from ClientWantsToGetAlertsDto
+        });
+    }
+    
+    [Test]
     public async Task ClientWantsToEditAlertTest()
     {
         var ws = await new WebSocketTestClient().ConnectAsync();
