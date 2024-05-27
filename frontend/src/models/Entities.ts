@@ -51,7 +51,6 @@ export class CountryCode{
   Country!: string;
 }
 
-
 export class LatestData {
   Id!: number;
   Data?: LatestReadingsDto;
@@ -62,6 +61,7 @@ export class LatestReadingsDto {
   Humidity?: SensorDto;
   Particle25?: SensorDto;
   Particle100?: SensorDto;
+}
 
 export class AlertDto {
   Id!: number;
