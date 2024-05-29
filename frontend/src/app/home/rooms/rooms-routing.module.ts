@@ -6,6 +6,7 @@ import {RoomComponent} from "./room/room.component";
 import {CreateRoomComponent} from "./create-room/create-room.component";
 import {EditRoomComponent} from "./edit-room/edit-room.component";
 import {EditDeviceComponent} from "../devices/edit-device/edit-device.component";
+import {AuthGuard} from "../../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -14,20 +15,24 @@ const routes: Routes = [
     children: [ // Child routes for authentication
       {
         path: 'add', // Path for creating a room
-        component: CreateRoomComponent
+        component: CreateRoomComponent,
+        canActivate: [AuthGuard]
       },
 
       {
         path: 'all', // Path for login component (e.g., /auth/login)
-        component: AllRoomsComponent
+        component: AllRoomsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: ':id', // Path for login component (e.g., /auth/login)
-        component: RoomComponent
+        component: RoomComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: ':id/edit',
-        component: EditRoomComponent
+        component: EditRoomComponent,
+        canActivate: [AuthGuard]
       }
     ]
   }

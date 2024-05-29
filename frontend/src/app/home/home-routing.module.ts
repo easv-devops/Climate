@@ -6,6 +6,7 @@ import {HomePage} from './home.page';
 import {LandingPageComponent} from "./landing-page/landing-page.component";
 import {AllRoomsComponent} from "./rooms/all-rooms/all-rooms.component";
 import {AlertComponent} from "./alert/alert.component";
+import {AuthGuard} from "../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -19,23 +20,28 @@ const routes: Routes = [
       },
       {
         path: 'landing', //Path for landing zone
-        component: LandingPageComponent
+        component: LandingPageComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'alerts', //Path for alert
-        component: AlertComponent
+        component: AlertComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'rooms', //Path for rooms module, which loads own children (rooms-routing.module)
-        loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule)
+        loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule),
+        canActivate: [AuthGuard]
       },
       {
         path: 'devices', //Path for devices module, which loads own children (devices-routing.module)
-        loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule)
+        loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule),
+        canActivate: [AuthGuard]
       },
       {
         path: 'user', //Path for devices module, which loads own children (devices-routing.module)
-        loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+        loadChildren: () => import('./user/user.module').then(m => m.UserModule),
+        canActivate: [AuthGuard]
       }
     ]
   },

@@ -4,6 +4,7 @@ import {DevicesComponent} from "./devices.component";
 import {DeviceComponent} from "./device/device.component";
 import {CreateDeviceComponent} from "./create-device/create-device.component";
 import {EditDeviceComponent} from "./edit-device/edit-device.component";
+import {AuthGuard} from "../../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -12,15 +13,18 @@ const routes: Routes = [
     children: [
       {
         path: 'add',
-        component: CreateDeviceComponent
+        component: CreateDeviceComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: ':id',
-        component: DeviceComponent
+        component: DeviceComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: ':id/edit',
-        component: EditDeviceComponent
+        component: EditDeviceComponent,
+        canActivate: [AuthGuard]
       }
     ]
   }
