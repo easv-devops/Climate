@@ -33,7 +33,8 @@ export class LandingPageComponent  implements OnInit {
         takeUntil(this.unsubscribe$)
       )
       .subscribe(roomRecord => {
-        if (roomRecord !== undefined) {
+        if (roomRecord !== undefined && Object.keys(roomRecord).length > 0) {
+          this.ngOnDestroy();
           this.router.navigate(["rooms/all"]);
         }
       });
