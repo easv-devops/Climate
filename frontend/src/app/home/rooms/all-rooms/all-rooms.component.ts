@@ -21,9 +21,12 @@ export class AllRoomsComponent implements OnInit {
 
   ngOnInit() {
     this.subscribeToAllRooms();
-    this.checkIfUserHasRooms();
-  }
 
+    // Delay the check slightly to avoid issues loading rooms on login (redirecting back and forth messed it up)
+    setTimeout(() => {
+      this.checkIfUserHasRooms();
+    }, 0);
+  }
 
   ngOnDestroy() {
     this.unsubscribe$.next();
