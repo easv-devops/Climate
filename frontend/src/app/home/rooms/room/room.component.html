@@ -19,7 +19,7 @@
   <app-room-graph></app-room-graph>
 
   <!-- Device Card section -->
-  <div *ngIf="room?.DeviceIds !== undefined" class="ion-margin" style="display: flex; flex-wrap: wrap;">
+  <div *ngIf="room && room?.DeviceIds !== undefined" class="ion-margin" style="display: flex; flex-wrap: wrap;">
     <app-device-card *ngFor="let deviceId of room.DeviceIds" [deviceId]="deviceId" routerLink="/devices/{{deviceId}}"
                      style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
     <app-device-card [deviceId]="-1" routerLink="/devices/add"
