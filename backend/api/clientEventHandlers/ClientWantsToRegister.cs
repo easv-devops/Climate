@@ -79,11 +79,12 @@ public class ClientWantsToRegister : BaseEventHandler<ClientWantsToRegisterDto>
         //add user information and validates user to state service for later use
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
-
-        _userHandler.InitUser(socket);
         
         //return JWT to client 
         socket.SendDto(new ServerAuthenticatesUser { Jwt = await token });
+        
+        //maps the users devices and rooms in stateService.
+        _userHandler.InitUser(socket);
         
         //sets noti settings and sends welcome message
         List<MessageType> selectedMessageTypes = new List<MessageType>();

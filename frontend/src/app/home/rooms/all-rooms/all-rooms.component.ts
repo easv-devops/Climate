@@ -15,9 +15,7 @@ export class AllRoomsComponent implements OnInit {
   public listOfRooms!: number[]
   allRooms?: Room[];
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private roomService: RoomService,
-              private router: Router,
+  constructor(private router: Router,
               private ws: WebSocketConnectionService) {
   }
 
