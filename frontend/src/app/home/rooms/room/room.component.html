@@ -1,4 +1,4 @@
-<ion-card>
+<ion-content>
   <!-- Header section -->
   <div class="ion-margin" style="display: flex; justify-content: space-between; align-items: center; margin-top: 0">
     <h1 *ngIf="room" class="climate-color room-title">{{ room.RoomName }}</h1>
@@ -7,9 +7,6 @@
       <ion-button fill="clear" color="dark" shape="round"
                   routerLink="/rooms/{{this.idFromRoute}}/edit" class="icon-large">
         <ion-icon slot="icon-only" name="create" class="climate-color"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" color="dark" shape="round" class="icon-large">
-        <ion-icon slot="icon-only" name="settings" class="climate-color"></ion-icon>
       </ion-button>
       <ion-button fill="clear" color="dark" shape="round" (click)="presentDeleteRoomAlert()" class="icon-large">
         <ion-icon slot="icon-only" name="trash" class="climate-color"></ion-icon>
@@ -28,4 +25,4 @@
     <app-device-card [deviceId]="-1" routerLink="/devices/add"
                      style="width: 40vw; max-width: 200px; min-width: 150px"></app-device-card>
   </div>
-</ion-card>
+</ion-content>

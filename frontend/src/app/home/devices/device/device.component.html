@@ -4,14 +4,11 @@
     <h1 class="climate-color device-title">{{ this.device?.DeviceName }}</h1>
 
     <ion-item class="ion-no-margin ion-no-padding" lines="none">
-      <ion-button fill="clear" shape="round" routerLink="/devices/{{this.idFromRoute}}/edit">
-        <ion-icon slot="icon-only" name="create" class="climate-color icon-large"></ion-icon>
+      <ion-button fill="clear" shape="round" class="icon-large" routerLink="/devices/{{this.idFromRoute}}/edit">
+        <ion-icon slot="icon-only" name="create" class="climate-color"></ion-icon>
       </ion-button>
-      <ion-button fill="clear" shape="round">
-        <ion-icon slot="icon-only" name="settings" class="climate-color icon-large"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" shape="round" (click)="presentDeleteDeviceAlert()">
-        <ion-icon slot="icon-only" name="trash" class="climate-color icon-large"></ion-icon>
+      <ion-button fill="clear" shape="round" class="icon-large" (click)="presentDeleteDeviceAlert()">
+        <ion-icon slot="icon-only" name="trash" class="climate-color"></ion-icon>
       </ion-button>
     </ion-item>
   </div>
