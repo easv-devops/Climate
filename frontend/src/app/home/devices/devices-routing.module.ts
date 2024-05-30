@@ -13,20 +13,18 @@ const routes: Routes = [
     children: [
       {
         path: 'add',
-        component: CreateDeviceComponent,
-        canActivate: [AuthGuard]
+        component: CreateDeviceComponent
       },
       {
         path: ':id',
-        component: DeviceComponent,
-        canActivate: [AuthGuard]
+        component: DeviceComponent
       },
       {
         path: ':id/edit',
-        component: EditDeviceComponent,
-        canActivate: [AuthGuard]
+        component: EditDeviceComponent
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   }
 ];
 

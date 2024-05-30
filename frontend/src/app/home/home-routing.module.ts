@@ -20,30 +20,26 @@ const routes: Routes = [
       },
       {
         path: 'landing', //Path for landing zone
-        component: LandingPageComponent,
-        canActivate: [AuthGuard]
+        component: LandingPageComponent
       },
       {
         path: 'alerts', //Path for alert
-        component: AlertComponent,
-        canActivate: [AuthGuard]
+        component: AlertComponent
       },
       {
         path: 'rooms', //Path for rooms module, which loads own children (rooms-routing.module)
-        loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule),
-        canActivate: [AuthGuard]
+        loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule)
       },
       {
         path: 'devices', //Path for devices module, which loads own children (devices-routing.module)
-        loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule),
-        canActivate: [AuthGuard]
+        loadChildren: () => import('./devices/devices.module').then(m => m.DevicesModule)
       },
       {
         path: 'user', //Path for devices module, which loads own children (devices-routing.module)
-        loadChildren: () => import('./user/user.module').then(m => m.UserModule),
-        canActivate: [AuthGuard]
+        loadChildren: () => import('./user/user.module').then(m => m.UserModule)
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   },
 ];
 

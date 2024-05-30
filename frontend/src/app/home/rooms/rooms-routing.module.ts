@@ -15,26 +15,23 @@ const routes: Routes = [
     children: [ // Child routes for authentication
       {
         path: 'add', // Path for creating a room
-        component: CreateRoomComponent,
-        canActivate: [AuthGuard]
+        component: CreateRoomComponent
       },
 
       {
         path: 'all', // Path for login component (e.g., /auth/login)
-        component: AllRoomsComponent,
-        canActivate: [AuthGuard]
+        component: AllRoomsComponent
       },
       {
         path: ':id', // Path for login component (e.g., /auth/login)
-        component: RoomComponent,
-        canActivate: [AuthGuard]
+        component: RoomComponent
       },
       {
         path: ':id/edit',
-        component: EditRoomComponent,
-        canActivate: [AuthGuard]
+        component: EditRoomComponent
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   }
 ];
 
