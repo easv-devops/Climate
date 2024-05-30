@@ -137,7 +137,7 @@ export class WebSocketConnectionService {
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
-    this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl);
+    this.socketConnection = new WebsocketSuperclass(environment.websocketBaseUrl, this);
     this.handleEvent();
   }
 

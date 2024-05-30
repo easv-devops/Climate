@@ -3,6 +3,7 @@ import {ClientWantsToAuthenticateWithJwt} from "./clientRequests";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import {ClientWantsToGetDevicesByUserIdDto} from "./ClientWantsToGetDevicesByUserIdDto";
 import {ClientWantsToGetAllRoomsDto} from "./roomModels/clientWantsToGetAllRoomsDto";
+import {WebSocketConnectionService} from "../app/web-socket-connection.service";
 
 /**
  * Using Reconnecting WebSocket because if the user loses connection, they don't have to re-type email and password
@@ -11,7 +12,7 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
   //This array makes sure, all messages are sent one by one
   private messageQueue: Array<BaseDto<any>> = [];
 
-  constructor(address: string) {
+  constructor(address: string, private ws: WebSocketConnectionService) {
     super(address);
     this.onopen = this.handleOpen.bind(this);
   }
@@ -33,11 +34,14 @@ export class WebsocketSuperclass extends ReconnectingWebSocket {
     if (jwt && jwt != '')
       this.sendDto(new ClientWantsToAuthenticateWithJwt({jwt: jwt}));
 
-    this.messageQueue.forEach( dto => {
-      if (dto) {
-        this.send(JSON.stringify(dto));
-      }
-    })
+    if (this.ws.jwtSubject.getValue() !== null || this.ws.jwtSubject.getValue() !== "")
+    {
+      this.messageQueue.forEach( dto => {
+        if (dto) {
+          this.send(JSON.stringify(dto));
+        }
+      });
+    }
     this.messageQueue = []
 
   }
