@@ -15,7 +15,9 @@ export class AuthGuard implements CanActivate {
   async canActivate() {
     // Tjek om brugeren har en gyldig JWT
     if (this.isLoggedIn()) {
+      console.log("is logdged in")
       return true; // Tillad adgang til ruten, hvis brugeren er logget ind
+
     } else {
       await (await this.toast.create({
         message: "Please login to access the requested URL",
@@ -25,12 +27,15 @@ export class AuthGuard implements CanActivate {
 
       // Hvis brugeren ikke er logget ind, omdiriger til login-siden
       this.router.navigate(['/auth/login']);
+      console.log("is not logged in")
       return false; // Bloker adgang til ruten
     }
   }
 
   //todo temporary logged in method (should be some more)
   isLoggedIn(): boolean {
-    return !!localStorage.getItem("jwt");
+    const currentJwt = this.ws.jwtSubject.getValue();
+    return currentJwt !== undefined && currentJwt !== '';
+
   }
 }

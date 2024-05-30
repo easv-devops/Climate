@@ -167,7 +167,7 @@ steps:
 #    depends_on:
 #      - publish prod backend
 #      - publish prod frontend
-
+#
 #  - name: update prod database
 #    image: flyway/flyway
 #    environment:
