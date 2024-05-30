@@ -4,6 +4,7 @@ import {DevicesComponent} from "./devices.component";
 import {DeviceComponent} from "./device/device.component";
 import {CreateDeviceComponent} from "./create-device/create-device.component";
 import {EditDeviceComponent} from "./edit-device/edit-device.component";
+import {AuthGuard} from "../../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
         path: ':id/edit',
         component: EditDeviceComponent
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   }
 ];
 

@@ -1,11 +1,23 @@
 <div style="display: flex; flex-direction: column; align-items: center" *ngIf="deviceRange">
   <ion-card id="settingsCard" style="width: 90%; padding: 5% 10% 10% 10%;">
     <ion-card-header style="padding-bottom: 5%">
-      <ion-card-title style="text-align: center">Settings</ion-card-title>
+      <ion-card-title style="text-align: center" class="climate-color">Settings</ion-card-title>
     </ion-card-header>
 
     <ion-list>
-      <ion-card-subtitle style="padding-bottom: 3%">Range settings</ion-card-subtitle>
+      <ion-item lines="none" style="display: flex; align-items: center;">
+        <ion-label class="climate-color" style="margin-right: 10px; flex-grow: 0;">Ranges</ion-label>
+        <ion-button id="range-popover" fill="clear" style="flex-grow: 0;">
+          <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="range-popover" triggerAction="click">
+          <ng-template>
+            <ion-content class="ion-padding">
+              Set the acceptable ranges for your device
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
 
       <ion-item>
         <ion-range aria-label="Dual Knobs Range" [dualKnobs]="true" [(ngModel)]="temperatureRange"
@@ -17,8 +29,7 @@
                    [ticks]="true"
                    (ionChange)="EditDeviceRange()"
         >
-          <ion-icon slot="start" name="snow-outline"></ion-icon>
-          <ion-icon slot="end" name="sunny-outline"></ion-icon>
+          <ion-icon slot="start" name="thermometer-outline"></ion-icon>
         </ion-range>
       </ion-item>
 
@@ -33,7 +44,6 @@
                    (ionChange)="EditDeviceRange()"
         >
           <ion-icon slot="start" name="water-outline"></ion-icon>
-          <ion-icon slot="end" name="water"></ion-icon>
         </ion-range>
       </ion-item>
 
@@ -49,8 +59,7 @@
           [ticks]="true"
           (ionChange)="EditDeviceRange()"
         >
-          <ion-icon slot="start"></ion-icon>
-          <ion-icon slot="end" name="water"></ion-icon>
+          <ion-icon slot="start" name="logo-tableau"></ion-icon>
         </ion-range>
       </ion-item>
 
@@ -65,39 +74,9 @@
                    [ticks]="true"
                    (ionChange)="EditDeviceRange()"
         >
-          <ion-icon slot="start"></ion-icon>
-          <ion-icon slot="end" name="water"></ion-icon>
+          <ion-icon slot="start" name="sparkles-outline"></ion-icon>
         </ion-range>
       </ion-item>
-    </ion-list>
-
-    <ion-list>
-      <ion-accordion-group>
-        <ion-accordion value="first">
-          <ion-item slot="header" color="light">
-            <ion-card-header>Edit Device</ion-card-header>
-          </ion-item>
-          <div class="ion-padding" slot="content">
-            <ion-item>
-              <ion-button fill="clear" shape="round" routerLink="/devices/{{this.deviceId}}/edit">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <ion-icon slot="icon-only" name="create" class="climate-color" style="font-size: 48px"></ion-icon>
-                  <ion-label>Edit Device Info</ion-label>
-                </div>
-              </ion-button>
-            </ion-item>
-
-            <ion-item>
-              <ion-button color="danger" shape="round" (click)="deleteDevice()" style="--background-hover: #f50505; transition: background-color 0.3s ease;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <ion-icon slot="icon-only" name="trash" class="climate-color" style="font-size: 48px"></ion-icon>
-                  <ion-label>Delete Device</ion-label>
-                </div>
-              </ion-button>
-            </ion-item>
-          </div>
-        </ion-accordion>
-      </ion-accordion-group>
     </ion-list>
 
     <ion-list>

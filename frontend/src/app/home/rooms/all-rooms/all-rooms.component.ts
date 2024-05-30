@@ -15,17 +15,18 @@ export class AllRoomsComponent implements OnInit {
   public listOfRooms!: number[]
   allRooms?: Room[];
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private roomService: RoomService,
-              private router: Router,
+  constructor(private router: Router,
               private ws: WebSocketConnectionService) {
   }
 
   ngOnInit() {
     this.subscribeToAllRooms();
-    this.checkIfUserHasRooms();
-  }
 
+    // Delay the check slightly to avoid issues loading rooms on login (redirecting back and forth messed it up)
+    setTimeout(() => {
+      this.checkIfUserHasRooms();
+    }, 0);
+  }
 
   ngOnDestroy() {
     this.unsubscribe$.next();

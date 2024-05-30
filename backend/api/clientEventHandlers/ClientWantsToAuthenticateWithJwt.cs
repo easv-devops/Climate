@@ -44,9 +44,8 @@ public class ClientWantsToAuthenticateWithJwt  : BaseEventHandler<ClientWantsToA
         
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
-        
+
         //maps the users devices and rooms in stateService.
-    
         _userHandler.InitUser(socket);
         
         socket.SendDto(new ServerAuthenticatesUser

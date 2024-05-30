@@ -157,7 +157,7 @@ steps:
       repo: midr/climate-frontend
       tags:
         - prod
-
+# Outcommented while prod server is down
 #  - name: trigger update
 #    image: curlimages/curl
 #    commands:

@@ -6,6 +6,7 @@ import {RoomComponent} from "./room/room.component";
 import {CreateRoomComponent} from "./create-room/create-room.component";
 import {EditRoomComponent} from "./edit-room/edit-room.component";
 import {EditDeviceComponent} from "../devices/edit-device/edit-device.component";
+import {AuthGuard} from "../../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -29,7 +30,8 @@ const routes: Routes = [
         path: ':id/edit',
         component: EditRoomComponent
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   }
 ];
 

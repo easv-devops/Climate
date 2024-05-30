@@ -6,6 +6,7 @@ import {HomePage} from './home.page';
 import {LandingPageComponent} from "./landing-page/landing-page.component";
 import {AllRoomsComponent} from "./rooms/all-rooms/all-rooms.component";
 import {AlertComponent} from "./alert/alert.component";
+import {AuthGuard} from "../guards/AuthGuard";
 
 const routes: Routes = [
   {
@@ -37,7 +38,8 @@ const routes: Routes = [
         path: 'user', //Path for devices module, which loads own children (devices-routing.module)
         loadChildren: () => import('./user/user.module').then(m => m.UserModule)
       }
-    ]
+    ],
+    canActivate: [AuthGuard]
   },
 ];
 
