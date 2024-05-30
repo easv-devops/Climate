@@ -8,7 +8,7 @@
     </ion-header>
 
     <ion-content>
-      <ion-list>
+      <ion-list class="ion-margin-bottom">
         <ion-accordion-group [multiple]="true">
           <ion-accordion *ngFor="let menuItem of menuItems">
             <ion-item slot="header">
@@ -25,12 +25,29 @@
             </ion-list>
           </ion-accordion>
         </ion-accordion-group>
+
+        <ion-menu-toggle>
+          <ion-item class="custom-button" color="light" lines="none" (click)="navigateToAlerts()">
+            <ion-icon name="notifications" slot="start" class="climate-color"></ion-icon>
+            <ion-label class="climate-color">Alerts</ion-label>
+            <ion-badge *ngIf="alertCount>0" color="danger">{{alertCount}}</ion-badge>
+            <ion-badge *ngIf="alertCount===0" color="light">{{alertCount}}</ion-badge>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item class="custom-button" color="light" lines="none" (click)="goToUserSettings()">
+            <ion-icon name="cog" slot="start" class="climate-color"></ion-icon>
+            <ion-label class="climate-color">User Settings</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
+
       <ion-menu-toggle>
-        <ion-button expand="block" color="light" class="custom-button" (click)="navigateToAlerts()">
-          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-          Alerts
-        </ion-button>
+        <ion-item class="custom-button" color="light" lines="none" (click)="signOut()">
+          <ion-icon name="log-out" slot="start" class="climate-color"></ion-icon>
+          <ion-label class="climate-color" color="danger">Sign out</ion-label>
+        </ion-item>
       </ion-menu-toggle>
 
     </ion-content>
@@ -56,7 +73,7 @@
       </ion-header>
 
       <ion-content>
-        <ion-list>
+        <ion-list class="ion-margin-bottom">
           <ion-accordion-group [multiple]="true">
             <ion-accordion *ngFor="let menuItem of menuItems">
               <ion-item slot="header">
@@ -71,11 +88,25 @@
               </ion-list>
             </ion-accordion>
           </ion-accordion-group>
+
+          <ion-item class="custom-button" color="light" lines="none" (click)="navigateToAlerts()">
+            <ion-icon name="notifications" slot="start" class="climate-color"></ion-icon>
+            <ion-label class="climate-color">Alerts</ion-label>
+            <ion-badge *ngIf="alertCount>0" color="danger">{{alertCount}}</ion-badge>
+            <ion-badge *ngIf="alertCount===0" color="light">{{alertCount}}</ion-badge>
+          </ion-item>
+
+          <ion-item class="custom-button" color="light" lines="none" (click)="goToUserSettings()">
+            <ion-icon name="cog" slot="start" class="climate-color"></ion-icon>
+            <ion-label class="climate-color">User Settings</ion-label>
+          </ion-item>
         </ion-list>
-        <ion-button expand="block" color="light" class="custom-button" (click)="navigateToAlerts()">
-          <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
-          Alerts
-        </ion-button>
+
+        <ion-item class="custom-button" color="light" lines="none" (click)="signOut()">
+          <ion-icon name="log-out" slot="start" class="climate-color"></ion-icon>
+          <ion-label class="climate-color" color="danger">Sign out</ion-label>
+        </ion-item>
+
       </ion-content>
     </ion-menu>
 

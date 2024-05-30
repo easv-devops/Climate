@@ -20,7 +20,10 @@ ion-accordion.accordion-expanded ion-item[slot='header'] {
   --color: var(--ion-color-dark);
   --background: var(--ion-color-light);
   --border-radius: 0;
-  text-align: left;
+}
+
+.custom-button:hover {
+  cursor: pointer;
 }
 
 

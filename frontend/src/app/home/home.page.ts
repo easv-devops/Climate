@@ -16,6 +16,7 @@ export class HomePage implements OnInit {
   roomMenuItem?: MenuItem;
   deviceMenuItem?: MenuItem;
   menuItems?: MenuItem[];
+  alertCount: number = 0;
 
   constructor(private breakpointObserver: BreakpointObserver,
               private ws: WebSocketConnectionService,
@@ -31,6 +32,7 @@ export class HomePage implements OnInit {
     this.loadMenu();
     this.subscribeToDevices();
     this.subscribeToRooms();
+    this.subscribeToAlerts();
   }
 
   ngOnDestroy() {
@@ -121,6 +123,29 @@ export class HomePage implements OnInit {
     }
   }
 
+  goToUserSettings() {
+    this.router.navigate(['/user']);
+  }
+
+  signOut() {
+    this.router.navigateByUrl("/auth/login");
+    this.ws.clearDataOnLogout();
+  }
+
+  private subscribeToAlerts() {
+    this.ws.alerts
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(alerts => {
+        if (alerts) {
+          this.alertCount = 0;
+          for (const alert of alerts) {
+            if(!alert.IsRead) {
+              this.alertCount++;
+            }
+          }
+        }
+      });
+  }
 
 }
 
