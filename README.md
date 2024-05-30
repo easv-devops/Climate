@@ -37,8 +37,6 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 
                        
 
-- Read particles, temp, humid
-
 # Quickstart
 The easiest way to get started with Climate is by loggin in or creating a Climate account.
 
