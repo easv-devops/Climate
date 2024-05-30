@@ -62,5 +62,7 @@ http://20.67.249.7:5001/#/auth/register
 # Documentation
 
 Use this account to log into the application:
+
 Username: user@example.com
+
 Password: 12345678
