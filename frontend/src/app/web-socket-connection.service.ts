@@ -590,7 +590,6 @@ export class WebSocketConnectionService {
         const updatedAlertList = alertList.map(alert => {
           return alert.Id === dto.Alert.Id ? dto.Alert : alert;
         });
-
         this.alertsSubject.next(updatedAlertList);
       }
     })

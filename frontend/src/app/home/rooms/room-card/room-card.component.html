@@ -2,6 +2,7 @@
   <ion-card-header style="background-color: white;">
     <ion-card-title style="display: flex; flex-direction: row; justify-content: center">
       <div>
+        <ion-badge style="" *ngIf="this.alerts>0" id="notifications-badge" color="danger">{{this.alerts}}</ion-badge>
         <ion-icon *ngIf="roomId !== -1" name="home" style="font-size: 60px;"></ion-icon>
         <ion-icon *ngIf="roomId === -1" name="add" style="font-size: 60px;"></ion-icon>
       </div>

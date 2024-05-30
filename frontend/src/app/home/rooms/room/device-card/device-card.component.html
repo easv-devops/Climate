@@ -1,6 +1,7 @@
 <ion-card color="light" style="display: flex; flex-direction: column; height: 90%;">
   <ion-card-header style="background-color: white;">
     <ion-card-title style="display: flex; flex-direction: row; justify-content: center">
+      <ion-badge style="" *ngIf="this.alerts>0" id="notifications-badge" color="danger">{{this.alerts}}</ion-badge>
       <div>
         <ion-icon *ngIf="deviceId !== -1" name="radio" style="font-size: 60px;"></ion-icon>
         <ion-icon *ngIf="deviceId === -1" name="add" style="font-size: 60px;"></ion-icon>

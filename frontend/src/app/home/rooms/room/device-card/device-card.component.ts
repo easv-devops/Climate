@@ -13,12 +13,14 @@ import {Device, Room} from "../../../../../models/Entities";
 export class DeviceCardComponent implements OnInit {
   @Input() deviceId: number | undefined;
   private unsubscribe$ = new Subject<void>();
+  public alerts = 0;
 
   public device!: Device;
 
   constructor(private ws: WebSocketConnectionService) { }
 
   ngOnInit(): void {
+    this.subscribeToAlerts()
     if(this.deviceId !== -1) {
       this.subscribeToRoomDevice();
     } else {
@@ -29,6 +31,22 @@ export class DeviceCardComponent implements OnInit {
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+  private subscribeToAlerts() {
+    this.ws.alerts
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(alerts => {
+        if (alerts) {
+          this.alerts = 0;
+          alerts.forEach(alert => {
+
+            if (alert.DeviceId === this.deviceId)
+            {
+              this.alerts++
+            }
+          });
+        }
+      });
   }
 
   subscribeToRoomDevice() {

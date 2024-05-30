@@ -28,6 +28,7 @@ export class AllRoomsComponent implements OnInit {
     }, 0);
   }
 
+
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

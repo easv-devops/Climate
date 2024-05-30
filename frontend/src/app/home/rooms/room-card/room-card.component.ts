@@ -12,6 +12,7 @@ export class RoomCardComponent  implements OnInit {
   @Input() roomId!: number;
   room: Room | undefined;
   private unsubscribe$ = new Subject<void>();
+  public alerts = 0;
 
   constructor(private ws: WebSocketConnectionService) { }
 
@@ -23,6 +24,25 @@ export class RoomCardComponent  implements OnInit {
     }
   }
 
+  private subscribeToAlerts() {
+    this.ws.alerts
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe(alerts => {
+        if (alerts) {
+          this.alerts = 0;
+          alerts.forEach(alert => {
+
+            if (alert.RoomName == this.room?.RoomName)
+            {
+              this.alerts++
+            }
+            console.log(this.room?.RoomName)
+            console.log(alert.RoomName)
+
+          });
+        }
+      });
+  }
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
@@ -36,6 +56,7 @@ export class RoomCardComponent  implements OnInit {
       .subscribe(roomRecord => {
         if (roomRecord !== undefined) {
           this.room = roomRecord[this.roomId];
+          this.subscribeToAlerts();
         }
       });
   }
