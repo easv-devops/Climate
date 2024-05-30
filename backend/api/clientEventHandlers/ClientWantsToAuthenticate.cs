@@ -53,14 +53,13 @@ public class ClientWantsToAuthenticate : BaseEventHandler<ClientWantsToSignInDto
         StateService.GetClient(socket.ConnectionInfo.Id).IsAuthenticated = true;
         StateService.GetClient(socket.ConnectionInfo.Id).User = user;
         
+        //maps the users devices and rooms in stateService.
+        _userHandler.InitUser(socket);
         
         //sends the JWT token to the client
         socket.SendDto(new ServerAuthenticatesUser
         {
             Jwt =  await _tokenService.IssueJwt(user.Id)
         });
-        
-        //maps the users devices and rooms in stateService.
-        _userHandler.InitUser(socket);
     }
 }
