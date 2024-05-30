@@ -5,7 +5,7 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 
 
 
-                     ![climate-allrooms](https://github.com/easv-devops/Climate/assets/114472157/7958a483-52dd-4df7-a0e3-152c03ccf853)
+  ![climate-allrooms](https://github.com/easv-devops/Climate/assets/114472157/7958a483-52dd-4df7-a0e3-152c03ccf853)
        
 
 
@@ -33,7 +33,8 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 - Alerts: If any of your devices gets a reading that exceeds a threshold an alert will be shown to you
 
 
-      ![climate-alert](https://github.com/easv-devops/Climate/assets/114472157/09765001-f992-446f-826b-00283bce4b71)
+  ![climate-alert](https://github.com/easv-devops/Climate/assets/114472157/58eabe6e-5e6c-4c98-bda1-15b8ac91d2da)
+
                        
 
 - Read particles, temp, humid
@@ -53,11 +54,13 @@ http://20.67.249.7:5001/#/auth/register
 
 
 
-
-
 # Contributors
     Kenni Damkier Madsen. 
     Michael Stoy Dragsbæk.
     Steffan Alexander Jan Eckeroth.
 
 # Documentation
+
+Use this account to log into the application:
+Username: user@example.com
+Password: 12345678
