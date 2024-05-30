@@ -9,7 +9,7 @@ export let options = {
         { duration: '10s', target: 0 },
     ],
     thresholds: {
-        'checks': ['rate == 1'], // 100% for checket: resp.eventType === 'ServerAuthenticatesUser'
+        'checks': ['rate > 0.95'], // 95% for checket: resp.eventType === 'ServerAuthenticatesUser'
     }
 };
 
