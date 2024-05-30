@@ -5,14 +5,18 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 
 
 
-                            [Billede af all rooms]
+                     ![climate-allrooms](https://github.com/easv-devops/Climate/assets/114472157/7958a483-52dd-4df7-a0e3-152c03ccf853)
+       
 
 
 
 # Features
 - Rooms: Creating a room enables you to link devices to a room and see data gathered by your devices
 
-                        [Billede af Device room view]
+                        
+![climate-roomview](https://github.com/easv-devops/Climate/assets/114472157/b542af36-0e84-4a3e-a194-c7e7a453724e)
+
+  
 
 - Devices: By creating a device it is made possible to set custom settings like threshold values for temperature, humidity and particles.
 
@@ -21,8 +25,10 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 
 
 - Data in graphs: View data gathered by devices in a graph both on individual devices and in rooms.
+  
 
-                            [Billede af Device view]
+  ![climate-graph](https://github.com/easv-devops/Climate/assets/114472157/891e3d9e-0fe1-493f-813d-0ceacf5a6fde)
+
 
 - Alerts: If any of your devices gets a reading that exceeds a threshold an alert will be shown to you
 
