@@ -38,7 +38,8 @@ http://74.234.8.67:5001/#/auth/login
 http://74.234.8.67:5001/#/auth/register
 
 
-          billede af Login
+    
+![login](https://github.com/easv-devops/Climate/assets/114472157/b117d589-9797-4169-8945-a9aeaf7b4a78)
 
 
 
