@@ -52,7 +52,7 @@ export class WebSocketConnectionService {
   //TODO check for these objects. Make sure they are used or removed
   //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
-  private jwtSubject = new BehaviorSubject<string | undefined>(undefined);
+  public jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
 
   //used to reset password
@@ -133,7 +133,7 @@ export class WebSocketConnectionService {
   // Observable for alerts
   private alertsSubject = new BehaviorSubject<AlertDto[] | undefined>(undefined);
   alerts: Observable<AlertDto[] | undefined> = this.alertsSubject.asObservable();
-  
+
 
   constructor(private errorHandlingService: ErrorHandlingService) {
     //Pointing to the direction the websocket can be found at
@@ -317,19 +317,28 @@ export class WebSocketConnectionService {
   clearDataOnLogout() {
     localStorage.setItem("jwt", ""); // Nulstil JWT i local storage
     this.jwtSubject.next(undefined); // Nulstil JWT-subjektet
-    this.isResetSubject.next(undefined); // Nulstil isReset-subjektet
-    this.isDeletedSubject.next(undefined); // Nulstil isDeleted-subjektet
-    this.deviceIdSubject.next(undefined); // Nulstil deviceId-subjektet
-    this.allDevicesSubject.next(undefined); // Nulstil allDevices-subjektet
-    this.isDeviceEditedSubject.next(undefined); // Nulstil isDeviceEdited-subjektet
-    this.userSubject.next(undefined); // Nulstil allUsers-subjektet
-    this.allCountryCodesSubject.next(undefined); // Nulstil allCountryCodes-subjektet
-    this.allRoomsSubject.next(undefined); // Nulstil allRooms-subjektet
-    this.temperatureReadingsSubject.next(undefined); // Nulstil temperatureReadings-subjektet
-    this.humidityReadingsSubject.next(undefined); // Nulstil humidityReadings-subjektet
-    this.pm25ReadingsSubject.next(undefined); // Nulstil pm25Readings-subjektet
-    this.pm100ReadingsSubject.next(undefined); // Nulstil pm100Readings-subjektet
-
+    this.jwtSubject.next(undefined);
+    this.isResetSubject.next(undefined);
+    this.isDeletedSubject.next(undefined);
+    this.deviceIdSubject.next(undefined);
+    this.userSubject.next(undefined);
+    this.allCountryCodesSubject.next(undefined);
+    this.allDevicesSubject.next(undefined);
+    this.allRoomsSubject.next(undefined);
+    this.isDeviceEditedSubject.next(undefined);
+    this.allDeviceRangeSettingsSubject.next(undefined);
+    this.allDeviceSettingsSubject.next(undefined);
+    this.temperatureReadingsSubject.next(undefined);
+    this.humidityReadingsSubject.next(undefined);
+    this.pm25ReadingsSubject.next(undefined);
+    this.pm100ReadingsSubject.next(undefined);
+    this.latestDeviceReadingsSubject.next(undefined);
+    this.temperatureRoomReadingsSubject.next(undefined);
+    this.humidityRoomReadingsSubject.next(undefined);
+    this.pm25RoomReadingsSubject.next(undefined);
+    this.pm100RoomReadingsSubject.next(undefined);
+    this.latestRoomReadingsSubject.next(undefined);
+    this.alertsSubject.next(undefined);
   }
 
   ServerSendsTemperatureReadings(dto: ServerSendsTemperatureReadingsDto) {
