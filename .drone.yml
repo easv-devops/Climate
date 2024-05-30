@@ -158,30 +158,30 @@ steps:
       tags:
         - prod
 
-  - name: trigger update
-    image: curlimages/curl
-    commands:
-      # Must match the token defined in docker-compose.yml
-      - "curl --fail -X GET 'http://20.67.249.7:8080/v1/update' -H 'Authorization: Bearer mytoken'"
-      - sleep 10
-    depends_on:
-      - publish prod backend
-      - publish prod frontend
-
-  - name: update prod database
-    image: flyway/flyway
-    environment:
-      DB_NAME:
-        from_secret: DBNameSecretProd
-      DB_USER:
-        from_secret: DBUserSecretProd
-      DB_PASSWORD:
-        from_secret: DBPasswordSecretProd
-    commands: 
-      - flyway migrate
-        -url="jdbc:mariadb://20.67.249.7:3306/climate"
-        -user="$DB_USER"
-        -password="$DB_PASSWORD"
-        -locations=filesystem:./db/sql
-    depends_on:
-      - trigger update
+#  - name: trigger update
+#    image: curlimages/curl
+#    commands:
+#      # Must match the token defined in docker-compose.yml
+#      - "curl --fail -X GET 'http://20.67.249.7:8080/v1/update' -H 'Authorization: Bearer mytoken'"
+#      - sleep 10
+#    depends_on:
+#      - publish prod backend
+#      - publish prod frontend
+#
+#  - name: update prod database
+#    image: flyway/flyway
+#    environment:
+#      DB_NAME:
+#        from_secret: DBNameSecretProd
+#      DB_USER:
+#        from_secret: DBUserSecretProd
+#      DB_PASSWORD:
+#        from_secret: DBPasswordSecretProd
+#    commands: 
+#      - flyway migrate
+#        -url="jdbc:mariadb://20.67.249.7:3306/climate"
+#        -user="$DB_USER"
+#        -password="$DB_PASSWORD"
+#        -locations=filesystem:./db/sql
+#    depends_on:
+#      - trigger update
