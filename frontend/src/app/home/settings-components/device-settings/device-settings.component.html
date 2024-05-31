@@ -19,10 +19,21 @@
         </ion-popover>
       </ion-item>
 
+      <ion-item lines="none">
+        <ion-label class="climate-color">Temperature (°C)</ion-label>
+        <ion-button id="temp-popover" fill="clear">
+          <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="temp-popover" triggerAction="click">
+          <ng-template>
+            <ion-content class="ion-padding">
+              Recommended: <br> 15 - 25 °C
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
       <ion-item>
         <ion-range aria-label="Dual Knobs Range" [dualKnobs]="true" [(ngModel)]="temperatureRange"
-                   style="font-size: 20px"
-                   labelPlacement="stacked" label="Temperature"
                    [value]="{ lower: deviceRange.TemperatureMin, upper: deviceRange.TemperatureMax }"
                    [pin]="true"
                    [min]="-10" [max]="40"
@@ -33,10 +44,21 @@
         </ion-range>
       </ion-item>
 
+      <ion-item lines="none">
+        <ion-label class="climate-color">Humidity (%)</ion-label>
+        <ion-button id="hum-popover" fill="clear">
+          <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="hum-popover" triggerAction="click">
+          <ng-template>
+            <ion-content class="ion-padding">
+              Recommended: <br> 30 - 60 %
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
       <ion-item>
         <ion-range aria-label="Dual Knobs Range" [dualKnobs]="true" [(ngModel)]="humidityRange"
-                   style="font-size: 20px"
-                   labelPlacement="stacked" label="Humidity"
                    [value]="{ lower: deviceRange.HumidityMin, upper: deviceRange.HumidityMax }"
                    [pin]="true"
                    [min]="0" [max]="100"
@@ -47,10 +69,21 @@
         </ion-range>
       </ion-item>
 
+      <ion-item lines="none">
+        <ion-label class="climate-color">Particles 2.5 um/m3</ion-label>
+        <ion-button id="p25-popover" fill="clear">
+          <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="p25-popover" triggerAction="click">
+          <ng-template>
+            <ion-content class="ion-padding">
+              Recommended: <br> 0 - 15 μm/m3
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
       <ion-item>
         <ion-range
-          style="font-size: 20px"
-          labelPlacement="stacked" label="Particles 2.5 pr 1000"
           [(ngModel)]="particle25Max"
           [value]="deviceRange.Particle25Max"
           [pin]="true"
@@ -63,10 +96,21 @@
         </ion-range>
       </ion-item>
 
+      <ion-item lines="none">
+        <ion-label class="climate-color">Particles 10 um/m3</ion-label>
+        <ion-button id="p100-popover" fill="clear">
+          <ion-icon name="information-circle-outline" style="font-size: 25px;"></ion-icon>
+        </ion-button>
+        <ion-popover trigger="p100-popover" triggerAction="click">
+          <ng-template>
+            <ion-content class="ion-padding">
+              Recommended: <br> 0 - 15 μm/m3
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-item>
       <ion-item>
         <ion-range aria-label="Dual Knobs Range"
-                   style="font-size: 20px"
-                   labelPlacement="stacked" label="Particles 10 pr 1000"
                    [(ngModel)]="particle100Max"
                    [value]="deviceRange.Particle100Max"
                    [pin]="true"
