@@ -4,7 +4,7 @@ import {Subject, takeUntil} from "rxjs";
 import {Device, Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {RoomService} from "../room.service";
-import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/ClientWantsToGetDeviceIdsForRoomDto";
+import {ClientWantsToGetDeviceIdsForRoomDto} from "../../../../models/roomModels/ClientWantsToGetDeviceIdsForRoomDto";
 import {AlertController} from "@ionic/angular";
 
 @Component({

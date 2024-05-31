@@ -2,8 +2,8 @@ import { AlertDto } from "../../../models/Entities";
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from "rxjs";
 import { WebSocketConnectionService } from "../../web-socket-connection.service";
-import { ClientWantsToGetAlertsDto } from "../../../models/ClientWantsToGetAlertsDto";
-import { ClientWantsToEditAlertDto } from "../../../models/ClientWantsToEditAlertDto";
+import { ClientWantsToGetAlertsDto } from "../../../models/alertModels/ClientWantsToGetAlertsDto";
+import { ClientWantsToEditAlertDto } from "../../../models/alertModels/ClientWantsToEditAlertDto";
 
 @Component({
   selector: 'app-alert',

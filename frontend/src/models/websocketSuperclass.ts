@@ -1,7 +1,7 @@
 import {BaseDto} from "./baseDto";
 import {ClientWantsToAuthenticateWithJwt} from "./clientRequests";
 import ReconnectingWebSocket from "reconnecting-websocket";
-import {ClientWantsToGetDevicesByUserIdDto} from "./ClientWantsToGetDevicesByUserIdDto";
+import {ClientWantsToGetDevicesByUserIdDto} from "./deviceModels/ClientWantsToGetDevicesByUserIdDto";
 import {ClientWantsToGetAllRoomsDto} from "./roomModels/clientWantsToGetAllRoomsDto";
 import {WebSocketConnectionService} from "../app/web-socket-connection.service";
 

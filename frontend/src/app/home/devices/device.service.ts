@@ -1,19 +1,19 @@
 import {Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToCreateDeviceDto} from "../../../models/ClientWantsToCreateDeviceDto";
+import {ClientWantsToCreateDeviceDto} from "../../../models/deviceModels/ClientWantsToCreateDeviceDto";
 
-import {ClientWantsToEditDeviceDto} from "../../../models/ClientWantsToEditDeviceDto";
+import {ClientWantsToEditDeviceDto} from "../../../models/deviceModels/ClientWantsToEditDeviceDto";
 
-import {ClientWantsToDeleteDeviceDto} from "../../../models/ClientWantsToDeleteDevice";
-import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/ClientWantsToGetTemperatureReadingsDto";
-import {ClientWantsToGetHumidityReadingsDto} from "../../../models/ClientWantsToGetHumidityReadings";
-import {ClientWantsToGetPm25ReadingsDto} from "../../../models/ClientWantsToGetPm25ReadingsDto";
-import {ClientWantsToGetPm100ReadingsDto} from "../../../models/ClientWantsToGetPm100ReadingsDto";
-import {ClientWantsGetDeviceSettingsDto} from "../../../models/ClientWantsToGetDeviceSettingsDto";
+import {ClientWantsToDeleteDeviceDto} from "../../../models/deviceModels/ClientWantsToDeleteDevice";
+import {ClientWantsToGetTemperatureReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetTemperatureReadingsDto";
+import {ClientWantsToGetHumidityReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetHumidityReadings";
+import {ClientWantsToGetPm25ReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetPm25ReadingsDto";
+import {ClientWantsToGetPm100ReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetPm100ReadingsDto";
+import {ClientWantsGetDeviceSettingsDto} from "../../../models/deviceModels/ClientWantsToGetDeviceSettingsDto";
 import {DeviceRange, DeviceSettings, LatestData} from "../../../models/Entities";
-import {ClientWantsToEditDeviceRangeDto} from "../../../models/ClientWantsToEditDeviceRange";
-import {ClientWantsToEditDeviceSettingsDto} from "../../../models/ClientWantsToEditDeviceSettingsDto";
-import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToEditDeviceRangeDto} from "../../../models/deviceModels/ClientWantsToEditDeviceRange";
+import {ClientWantsToEditDeviceSettingsDto} from "../../../models/deviceModels/ClientWantsToEditDeviceSettingsDto";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetLatestDeviceReadingsDto";
 import {take} from "rxjs";
 
 @Injectable({providedIn: 'root'})

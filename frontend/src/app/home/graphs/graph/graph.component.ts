@@ -5,7 +5,7 @@ import {DeviceService} from '../../devices/device.service';
 import {BaseGraphComponent} from "../graphSuper.component";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {takeUntil} from "rxjs";
-import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetLatestDeviceReadingsDto";
 import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
 
 

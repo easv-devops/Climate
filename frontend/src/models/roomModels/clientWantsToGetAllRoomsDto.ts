@@ -1,5 +1,5 @@
 import {BaseDto} from "../baseDto";
-import {ClientWantsToGetDevicesByUserIdDto} from "../ClientWantsToGetDevicesByUserIdDto";
+import {ClientWantsToGetDevicesByUserIdDto} from "../deviceModels/ClientWantsToGetDevicesByUserIdDto";
 
 
 export class ClientWantsToGetAllRoomsDto extends BaseDto<ClientWantsToGetAllRoomsDto> {

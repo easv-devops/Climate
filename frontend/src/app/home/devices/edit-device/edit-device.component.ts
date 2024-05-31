@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {DeviceService} from "../device.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {ClientWantsToEditDeviceDto} from "../../../../models/ClientWantsToEditDeviceDto";
+import {ClientWantsToEditDeviceDto} from "../../../../models/deviceModels/ClientWantsToEditDeviceDto";
 import {Subject, takeUntil} from "rxjs";
 import {Device, Room} from "../../../../models/Entities";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";

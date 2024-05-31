@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
-import {ClientWantsToCreateDeviceDto} from "../../../../models/ClientWantsToCreateDeviceDto";
+import {ClientWantsToCreateDeviceDto} from "../../../../models/deviceModels/ClientWantsToCreateDeviceDto";
 import {DeviceService} from "../device.service";
 import {WebSocketConnectionService} from "../../../web-socket-connection.service";
 import {Router} from "@angular/router";

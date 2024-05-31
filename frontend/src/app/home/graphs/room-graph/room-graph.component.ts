@@ -5,8 +5,8 @@ import {BaseGraphComponent} from "../graphSuper.component";
 import {RoomService} from "../../rooms/room.service";
 import {BreakpointObserver, Breakpoints} from "@angular/cdk/layout";
 import {LatestData, LatestReadingsDto} from "../../../../models/Entities";
-import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/ClientWantsToGetLatestDeviceReadingsDto";
-import {ClientWantsToGetLatestRoomReadingsDto} from "../../../../models/ClientWantsToGetLatestRoomReadingsDto";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../../models/roomModels/roomReadingModels/ClientWantsToGetLatestRoomReadingsDto";
 import {takeUntil} from "rxjs";
 
 @Component({

@@ -22,26 +22,26 @@ import {
   Room,
   SensorDto
 } from "../models/Entities";
-import {ServerEditsDeviceDto} from "../models/ServerEditsDeviceDto";
-import {ServerSendsDevicesByUserIdDto} from "../models/ServerSendsDevicesByUserIdDto";
-import {ServerSendsTemperatureReadingsDto} from "../models/ServerSendsTemperatureReadingsDto";
-import {ServerSendsHumidityReadingsDto} from "../models/ServerSendsHumidityReadingsDto";
-import {ServerSendsPm25ReadingsDto} from "../models/ServerSendsPm25ReadingsDto";
-import {ServerSendsPm100ReadingsDto} from "../models/ServerSendsPm100ReadingsDto";
+import {ServerEditsDeviceDto} from "../models/deviceModels/ServerEditsDeviceDto";
+import {ServerSendsDevicesByUserIdDto} from "../models/deviceModels/ServerSendsDevicesByUserIdDto";
+import {ServerSendsTemperatureReadingsDto} from "../models/deviceModels/deviceReadingsModels/ServerSendsTemperatureReadingsDto";
+import {ServerSendsHumidityReadingsDto} from "../models/deviceModels/deviceReadingsModels/ServerSendsHumidityReadingsDto";
+import {ServerSendsPm25ReadingsDto} from "../models/deviceModels/deviceReadingsModels/ServerSendsPm25ReadingsDto";
+import {ServerSendsPm100ReadingsDto} from "../models/deviceModels/deviceReadingsModels/ServerSendsPm100ReadingsDto";
 import {ServerReturnsAllRoomsDto} from "../models/roomModels/ServerReturnsAllRoomsDto";
-import {ServerSendsDeviceIdListForRoomDto} from "../models/ServerSendsDeviceIdListForRoomDto";
+import {ServerSendsDeviceIdListForRoomDto} from "../models/deviceModels/ServerSendsDeviceIdListForRoomDto";
 import {ServerSendsRoom} from "../models/roomModels/ServerSendsRoom";
 import {ServerDeletesRoom} from "../models/roomModels/ServerDeletesRoom";
-import {FullUserDto, ServerSendsUser} from "../models/ServerSendsUser";
+import {FullUserDto, ServerSendsUser} from "../models/userModels/ServerSendsUser";
 import {ServerSendsCountryCodesDto} from "../models/ServerSendsCountryCodes";
 import {ServerSendsPm25ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm25ReadingsForRoom";
 import {ServerSendsTemperatureReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsTemperatureReadingsForRoom";
 import {ServerSendsPm100ReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsPm100ReadingsForRoom";
 import {ServerSendsHumidityReadingsForRoom} from "../models/roomModels/roomReadingModels/ServerSendsHumidityReadingsForRoom";
-import {ServerSendsLatestDeviceReadingsDto} from "../models/ServerSendsLatestDeviceReadingsDto";
-import {ServerSendsLatestRoomReadingsDto} from "../models/ServerSendsLatestRoomReadingsDto";
-import {ServerSendsAlertList} from "../models/ServerSendsAlertList";
-import {ServerSendsAlert} from "../models/ServerSendsAlert";
+import {ServerSendsLatestDeviceReadingsDto} from "../models/deviceModels/deviceReadingsModels/ServerSendsLatestDeviceReadingsDto";
+import {ServerSendsLatestRoomReadingsDto} from "../models/roomModels/ServerSendsLatestRoomReadingsDto";
+import {ServerSendsAlertList} from "../models/alertModels/ServerSendsAlertList";
+import {ServerSendsAlert} from "../models/alertModels/ServerSendsAlert";
 
 
 

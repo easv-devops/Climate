@@ -18,8 +18,8 @@ import {
 } from "../../../models/roomModels/roomReadingModels/ClientWantsToGetPm100ReadingsForRoomDto";
 import {LatestData} from "../../../models/Entities";
 import {take} from "rxjs";
-import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/ClientWantsToGetLatestDeviceReadingsDto";
-import {ClientWantsToGetLatestRoomReadingsDto} from "../../../models/ClientWantsToGetLatestRoomReadingsDto";
+import {ClientWantsToGetLatestDeviceReadingsDto} from "../../../models/deviceModels/deviceReadingsModels/ClientWantsToGetLatestDeviceReadingsDto";
+import {ClientWantsToGetLatestRoomReadingsDto} from "../../../models/roomModels/roomReadingModels/ClientWantsToGetLatestRoomReadingsDto";
 
 
 @Injectable({

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
 import {Subject, takeUntil} from "rxjs";
-import {FullUserDto} from "../../../models/ServerSendsUser";
+import {FullUserDto} from "../../../models/userModels/ServerSendsUser";
 import {PopoverController} from "@ionic/angular";
 import {AlertDto} from "../../../models/Entities";
 

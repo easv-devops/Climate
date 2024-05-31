@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {WebSocketConnectionService} from "../../web-socket-connection.service";
-import {ClientWantsToEditUserInfoDto} from "../../../models/ClientWantsToEditUserInfoDto";
+import {ClientWantsToEditUserInfoDto} from "../../../models/userModels/ClientWantsToEditUserInfoDto";
 
 @Injectable({providedIn: 'root'})
 export class UserService {
