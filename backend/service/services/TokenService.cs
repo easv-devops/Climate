@@ -52,7 +52,6 @@ public class TokenService
         }
         catch (Exception e)
         {
-            //todo should be Logged and caught in a global exception handler. 
             throw new AuthenticationException("Authentication failed.");
         }
     }

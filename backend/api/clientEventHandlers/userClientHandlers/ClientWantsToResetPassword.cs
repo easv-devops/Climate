@@ -29,7 +29,6 @@ public class ClientWantsToResetPassword : BaseEventHandler<ClientWantsToResetPas
         _notificationService = notificationService;
     }
     
-    //todo should maybe have some security question Like (What is your username or phone number...)
     public override async Task Handle(ClientWantsToResetPasswordDto dto, IWebSocketConnection socket)
     {
         string newPassword = _authService.ResetPassword(dto.Email);

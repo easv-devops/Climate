@@ -9,7 +9,6 @@ export class ErrorHandlingService {
   constructor(private toastController: ToastController) { }
 
   handleError(errorMessage: string) {
-    //todo maybe log these at a later time
     this.presentToast(errorMessage);
   }
 

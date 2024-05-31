@@ -46,7 +46,7 @@ public class ClientWantsToEditDevice: BaseEventHandler<ClientWantsToEditDeviceDt
         {
             throw new AuthenticationException("You do not have access to edit this device");
         }
-        //todo should check if you have access to the device 
+      
         bool wasEdit = _deviceService.EditDevice(new DeviceWithIdDto
         {
             Id = dto.Id,

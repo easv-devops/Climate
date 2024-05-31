@@ -31,18 +31,14 @@ export class RoomCardComponent  implements OnInit {
         if (alerts) {
           this.alerts = 0;
           alerts.forEach(alert => {
-
             if (alert.RoomName == this.room?.RoomName)
             {
               this.alerts++
             }
-            console.log(this.room?.RoomName)
-            console.log(alert.RoomName)
-
           });
         }
       });
-  }
+  } 
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

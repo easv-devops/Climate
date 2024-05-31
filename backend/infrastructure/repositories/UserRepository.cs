@@ -52,7 +52,6 @@ public class UserRepository
             connection.Execute(insertContactInfoQuery, new { UserId = userId, IsoCode = dto.CountryCode, Number = dto.Phone });
 
             // Returner EndUser-objektet
-            //todo should set isBanned as false when added on enduser (when isBanned is added to user object)
             return new EndUser
             {
                 Id = userId,

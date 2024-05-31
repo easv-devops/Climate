@@ -66,15 +66,6 @@ public class MqttClientSubscriber
                 SendRoomReadingsToClient(messageObject);
                 SendLatestRoomReadingsToClient(messageObject.DeviceId);
                 
-                //todo check for current listeners in state service and call relevant server to client handlers
-                var pongMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic("response_topic")//todo do we want some confirm? 
-                    .WithPayload("yes we received the message, thank you very much, " +
-                                 "the websocket client(s) also has the data")
-                    .WithQualityOfServiceLevel(e.ApplicationMessage.QualityOfServiceLevel)
-                    .WithRetainFlag(e.ApplicationMessage.Retain)
-                    .Build();
-                await mqttClient.PublishAsync(pongMessage, CancellationToken.None);
             }
             catch (Exception exc)
             {

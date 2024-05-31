@@ -32,7 +32,6 @@ public class DeviceService
     
     public bool EditDevice(DeviceWithIdDto dto)
     {
-        //todo should change room id if it is present in the dto 
         return _deviceRepository.EditDevice(dto);
     }
 

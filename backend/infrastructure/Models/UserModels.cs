@@ -14,7 +14,6 @@ public class EndUser
     public string? Email { get; set; }
 
     public PasswordHash? PasswordInfo;
-    //todo should we have admin and ban rights??
 
 }
 /**

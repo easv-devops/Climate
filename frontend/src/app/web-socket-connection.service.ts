@@ -49,8 +49,7 @@ import {ServerSendsAlert} from "../models/ServerSendsAlert";
 export class WebSocketConnectionService {
 
   //Different objects used in the application
-  //TODO check for these objects. Make sure they are used or removed
-  //todo we should maybe have an endpoint for getting a user we can call when hitting the main page
+
   //observable jwt  --remember to unsub when done using (se login JWT ngOnit for more info)
   public jwtSubject = new BehaviorSubject<string | undefined>(undefined);
   jwt: Observable<string | undefined> = this.jwtSubject.asObservable();
@@ -236,8 +235,6 @@ export class WebSocketConnectionService {
     });
   }
 
-
-  //todo could maybe just check if the new values has been changed on the alldevice list just maybe..
   ServerEditsDevice(dto: ServerEditsDeviceDto) {
     this.isDeviceEditedSubject.next(dto.IsEdit)
   }
@@ -264,7 +261,6 @@ export class WebSocketConnectionService {
     this.isDeviceEditedSubject.next(value);
   }
 
-  //todo skal slette deviceId i allRooms record device-liste
   ServerSendsDeviceDeletionStatus(dto: ServerSendsDeviceDeletionStatusDto) {
     if (dto.IsDeleted && this.allDevicesSubject.value) {
       const devices = {...this.allDevicesSubject.value};

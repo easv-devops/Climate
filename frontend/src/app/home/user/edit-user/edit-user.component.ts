@@ -73,7 +73,6 @@ export class EditUserComponent implements OnInit {
 
   editUser() {
     if (!this.form.valid) {
-      //TODO toast error message
       return;
     }
     let userDto = new FullUserDto();

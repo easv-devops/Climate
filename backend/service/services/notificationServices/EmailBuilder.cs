@@ -7,8 +7,8 @@ public class EmailBuilder
 { 
     public string BuildWelcomeMessage(string userName) 
     { 
-        //todo load from program so it know if it is localhost or server ip..
-        string siteUrl = "http://localhost:4200/";
+        
+        string siteUrl = "http://20.67.249.7:5001/#/auth/login";
         string template = 
             $@"
 <!DOCTYPE html>

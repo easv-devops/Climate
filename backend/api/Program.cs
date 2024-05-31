@@ -24,7 +24,7 @@ public static class Startup
         app.Run();
     }
 
-    //TODO: Rethink the connectionString parameter setup (for testing). Depends on what db we'll use for testing
+    
     public static WebApplication Start(string[] args, string? connectionString)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -68,7 +68,6 @@ public static class Startup
         builder.Services.AddSingleton(provider => new ParticlesRepository(provider.GetRequiredService<string>()));
         builder.Services.AddSingleton<MqttClientSubscriber>();
         
-        //todo lav en metode der finder dem her af sig selv..
         builder.Services.AddSingleton<ServerWantsToSendDevice>();
         builder.Services.AddSingleton<ServerWantsToSendRoom>();
         builder.Services.AddSingleton<ServerWantsToSendUser>();
@@ -98,8 +97,6 @@ public static class Startup
                 {
                     Console.WriteLine(e);
                     //error handler
-                    //todo should have a logger that logs the error so we can se it when deployed 
-                    //todo handle what errors the client should se and what should belogged in backend in prod
                     if (app.Environment.IsProduction() && (e is ValidationException || e is AuthenticationException))
                     {
                         socket.SendDto(new ServerSendsErrorMessageToClient()

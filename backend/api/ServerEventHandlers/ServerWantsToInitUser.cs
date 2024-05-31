@@ -64,7 +64,7 @@ public class ServerWantsToInitUser
         {
             StateService.AddUserToDevice(device.Id, socket.ConnectionInfo.Id);
         }
-        return true;//todo check if mapping was succes
+        return true;
     }
     
     private bool InitUserMapping(IWebSocketConnection socket)
@@ -79,7 +79,7 @@ public class ServerWantsToInitUser
         });
 
         StateService.AddConnectionToUser(user.Id, socket.ConnectionInfo.Id);
-        return true;//todo check if mapping was succes
+        return true;
     }
     
     private bool FetchAlerts(IWebSocketConnection socket)

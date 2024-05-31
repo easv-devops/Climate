@@ -33,8 +33,6 @@ export class AllRoomsComponent implements OnInit {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
-  //todo load a list of all deviceId into all rooms observable
   subscribeToAllRooms() {
     this.ws.allRooms
       .pipe(

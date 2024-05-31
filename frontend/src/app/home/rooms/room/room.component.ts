@@ -29,8 +29,8 @@ export class RoomComponent implements OnInit {
 
   ngOnInit() {
 
-    this.getRoomFromRoute();//todo skal bruges til at loade room info later
-    this.subscribeToRoomDevice();//todo skal ændres til allrooms.
+    this.getRoomFromRoute();
+    this.subscribeToRoomDevice();
   }
 
 

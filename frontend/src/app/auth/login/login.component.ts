@@ -54,7 +54,6 @@ export class LoginComponent {
     if (this.form.get('email') && this.form.get('password')) {
       //The ?? operator works like this:
       //const value = possiblyNullOrUndefinedValue ?? defaultValue;
-      //todo should be from form group instead (so it is validated) look in register component for example code
       const email: string = this.form.get('email')!.value ?? '';
       const password: string = this.form.get('password')!.value ?? '';
       this.authService.loginUser(email, password);
