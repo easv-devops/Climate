@@ -14,7 +14,7 @@ const routes: Routes = [
     component: HomePage,
     children: [ // Child routes for authentication
       {
-        path: '', // Path for login component (e.g., /auth/login)
+        path: '',
         redirectTo: 'rooms/all',
         pathMatch: "full"
       },

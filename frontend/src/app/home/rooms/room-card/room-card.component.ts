@@ -38,7 +38,7 @@ export class RoomCardComponent  implements OnInit {
           });
         }
       });
-  } 
+  }
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

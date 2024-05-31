@@ -1,5 +1,4 @@
-﻿
-using lib;
+﻿using lib;
 
 namespace api.serverEventModels;
 
