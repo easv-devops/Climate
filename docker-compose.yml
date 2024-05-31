@@ -15,6 +15,7 @@ services:
       context: .
       dockerfile: frontend/docker/staging/Dockerfile
     image: midr/climate-frontend:staging
+    restart: always
     ports:
       - "5001:80"
     labels:
@@ -25,6 +26,7 @@ services:
   
   climate-backend:
     image: midr/climate-backend:staging
+    restart: always
     ports:
       - "5002:8080"
     depends_on:
@@ -47,6 +49,7 @@ services:
 
   watchtower:
     image: containrrr/watchtower
+    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --debug --http-api-update
