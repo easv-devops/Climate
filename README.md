@@ -5,7 +5,7 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 
 
 
-  ![climate-allrooms](https://github.com/easv-devops/Climate/assets/114472157/7958a483-52dd-4df7-a0e3-152c03ccf853)
+![climate-allrooms](https://github.com/easv-devops/Climate/assets/114472157/7958a483-52dd-4df7-a0e3-152c03ccf853)
        
 
 
@@ -27,13 +27,13 @@ This makes Climate an invaluable tool for anyone looking to protect their home a
 - Data in graphs: View data gathered by devices in a graph both on individual devices and in rooms.
   
 
-  ![climate-graph](https://github.com/easv-devops/Climate/assets/114472157/891e3d9e-0fe1-493f-813d-0ceacf5a6fde)
+![climate-graph](https://github.com/easv-devops/Climate/assets/114472157/891e3d9e-0fe1-493f-813d-0ceacf5a6fde)
 
 
 - Alerts: If any of your devices gets a reading that exceeds a threshold an alert will be shown to you
 
 
-  ![climate-alert](https://github.com/easv-devops/Climate/assets/114472157/58eabe6e-5e6c-4c98-bda1-15b8ac91d2da)
+![climate-alert](https://github.com/easv-devops/Climate/assets/114472157/58eabe6e-5e6c-4c98-bda1-15b8ac91d2da)
 
                        
 
@@ -53,9 +53,9 @@ http://20.67.249.7:5001/#/auth/register
 
 
 # Contributors
-    Kenni Damkier Madsen. 
-    Michael Stoy Dragsbæk.
-    Steffan Alexander Jan Eckeroth.
+    Kenni Damkier Madsen -  https://github.com/JennyTromTheBlock
+    Michael Stoy Dragsbæk - https://github.com/micdra01
+    Steffan Alexander Jan Eckeroth - https://github.com/steffaneckeroth
 
 # Documentation
 
